@@ -1,0 +1,1472 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ZKTeco — أجهزة البصمة والبرمجة</title>
+<style>
+:root{--bg:#f8fafc;--card:#fff;--tx:#0f172a;--mut:#475569;--bd:#e2e8f0;--pri:#2563eb;--acc:#0d9488;--code:#0b1220;--codetx:#e2e8f0;--warn:#fef3c7;--warnbd:#f59e0b;--lab:#ecfdf5;--labbd:#10b981;--side:#0f172a}
+@media(prefers-color-scheme:dark){:root{--bg:#0b1220;--card:#111a2e;--tx:#e5e7eb;--mut:#94a3b8;--bd:#22304d;--pri:#60a5fa;--acc:#2dd4bf;--code:#050a14;--warn:#3b2f0b;--lab:#06281f}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.8 "Segoe UI",Tahoma,Arial,sans-serif}
+#side{position:fixed;top:0;right:0;bottom:0;width:280px;background:var(--side);color:#cbd5e1;overflow:auto;padding:16px;z-index:20;transition:transform .25s}
+#side h1{font-size:18px;color:#fff;margin:0 0 4px}
+#side small{color:#94a3b8}
+#side a{display:block;color:#cbd5e1;text-decoration:none;padding:7px 10px;border-radius:8px;font-size:14px}
+#side a:hover,#side a.on{background:#1e293b;color:#fff}
+#q{width:100%;margin-top:10px;padding:8px 10px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#fff;font:14px inherit}
+#qinfo{font-size:12px;color:#94a3b8;margin-top:4px;min-height:16px}
+mark.hit{background:#fde047;color:#000;border-radius:3px}mark.cur{background:#fb923c}
+#menu{display:none;position:fixed;top:10px;right:10px;z-index:30;background:var(--pri);color:#fff;border:0;border-radius:8px;padding:8px 12px;font-size:18px}
+main{margin-right:280px;padding:24px;max-width:1100px}
+.hero{background:linear-gradient(135deg,#1d4ed8,#0d9488);color:#fff;border-radius:16px;padding:28px;margin-bottom:24px}
+.hero h1{margin:0 0 8px;font-size:30px}
+section.module{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:22px 26px;margin-bottom:28px}
+section.module>h2{margin-top:0;font-size:26px;color:var(--pri);border-bottom:3px solid var(--pri);padding-bottom:8px}
+h3{color:var(--acc);margin-top:28px;font-size:20px}
+h4{margin:18px 0 6px}
+.en{direction:ltr;unicode-bidi:isolate;display:inline-block;font-family:Consolas,monospace;font-size:.92em;background:rgba(37,99,235,.1);color:var(--pri);padding:0 6px;border-radius:5px}
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14.5px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--bd);padding:7px 10px;text-align:right;vertical-align:top}
+th{background:rgba(37,99,235,.12)}
+td.l,th.l{direction:ltr;text-align:left}
+pre.code{direction:ltr;text-align:left;background:var(--code);color:var(--codetx);padding:14px 16px;border-radius:10px;overflow-x:auto;font:13.5px/1.6 Consolas,"Courier New",monospace;position:relative;white-space:pre}
+pre.code b{color:#fbbf24;font-weight:400}
+pre.code i{color:#64748b;font-style:normal}
+.cp{position:absolute;top:6px;left:6px;font-size:11px;background:#1e293b;color:#cbd5e1;border:0;border-radius:6px;padding:3px 8px;cursor:pointer}
+.note,.warn{border-radius:10px;padding:10px 14px;margin:14px 0;border-right:5px solid}
+.note{background:rgba(37,99,235,.08);border-color:var(--pri)}
+.warn{background:var(--warn);border-color:var(--warnbd)}
+.lab{background:var(--lab);border:2px solid var(--labbd);border-radius:14px;padding:6px 20px 16px;margin:26px 0}
+.lab>h3{color:#059669;margin-top:14px}
+.lab h3:before{content:"🧪 "}
+.tag{display:inline-block;background:var(--labbd);color:#fff;border-radius:6px;padding:0 8px;font-size:13px;margin-left:6px}
+.diagram,.topo,.seq{direction:ltr;margin:14px 0;text-align:center;overflow-x:auto}
+.diagram svg,.topo svg,.seq svg{max-width:100%;height:auto;background:var(--card);border:1px solid var(--bd);border-radius:12px}
+svg text{fill:var(--tx);font-family:Segoe UI,Arial,sans-serif}
+.stack{direction:ltr;display:flex;gap:18px;flex-wrap:wrap;justify-content:center;margin:14px 0}
+.stack>div{min-width:230px}
+.stack .ly{padding:8px 12px;margin:3px 0;border-radius:8px;color:#fff;font-size:14px;display:flex;justify-content:space-between;gap:10px}
+.bits{direction:ltr;display:flex;flex-wrap:wrap;margin:12px 0}
+.bits div{border:1px solid var(--pri);background:rgba(37,99,235,.08);padding:6px 8px;font-size:13px;text-align:center;flex:1 1 auto;min-width:60px}
+details{border:1px solid var(--bd);border-radius:10px;padding:8px 14px;margin:8px 0;background:var(--bg)}
+summary{cursor:pointer;font-weight:600}
+ul,ol{padding-right:22px;padding-left:0}
+.q{margin-top:24px;border-top:2px dashed var(--bd);padding-top:6px}
+@media(max-width:900px){#side{transform:translateX(100%)}#side.open{transform:none}#menu{display:block}main{margin-right:0;padding:56px 12px 12px}section.module{padding:14px}}
+@media print{#side,#menu{display:none}main{margin:0}}
+</style>
+</head>
+<body>
+<button id="menu" onclick="document.getElementById('side').classList.toggle('open')">☰</button>
+<nav id="side"><h1>ZKTeco Biometrics</h1><small>الشرح بالعربي • المصطلحات English • Labs عملية</small><input id="q" type="search" placeholder="بحث… (Ctrl+K)" autocomplete="off"><div id="qinfo"></div><hr style="border-color:#1e293b"><div id="toc"></div></nav>
+<main>
+<div class="hero">
+<h1>ZKTeco — أجهزة البصمة، البرامج، والبرمجة</h1>
+<div>14 موديول + 6 ملاحق • الأجهزة + التركيب + ZKBio Time/ZKTime.Net + برمجة (pyzk / C# SDK / ADMS Push) • رسومات • Labs • بحث (Ctrl+K)</div>
+</div>
+<section class="module" id="howto">
+<h2>إزاي تذاكر الكورس ده</h2>
+<ul>
+<li>الكورس بيغطي <b>3 حاجات</b>: (1) الأجهزة نفسها وتركيبها وإعدادها، (2) البرامج اللي بتديرها (ZKBio Time / ZKTime.Net ...)، (3) <b>البرمجة</b>: إزاي تسحب الحضور وتدير المستخدمين بالكود (Python / C# / سيرفر ADMS-Push).</li>
+<li>المصطلحات English زي ما بتظهر في الجهاز والبرنامج، والشرح بالعربي المصري.</li>
+<li>كل موديول فيه رسومات، وأغلبها فيه Lab. جرّب بإيدك على جهاز حقيقي لو متاح.</li></ul>
+<div class="warn"><b>صراحة بخصوص "الصور":</b> مقدرش أنزّل صور المنتجات الرسمية من الإنترنت ولا أحطها في الملف. بدل كده رسمت <b>رسومات SVG توضيحية</b> للأجهزة والتوصيلات والبروتوكول. شكل الجهاز عندك هيختلف حسب الموديل.</div>
+<div class="warn"><b>تنبيهات:</b> (1) الـ Labs والأكواد <b>ما اتجربتش على جهاز فعلي</b>، اختبرها على جهاز Lab الأول. (2) أسماء القوائم بتختلف بين الموديلات والـ Firmware (Standalone / Push / Face). (3) تفاصيل بروتوكول ADMS/Push مجمعة من مصادر مجتمعية ووثائق عامة، وبعض الأجهزة بتخالف؛ راجع وثيقة <span class="en">PUSH SDK</span> الرسمية من ZKTeco لموديلك.</div>
+
+<h3>خريطة الكورس</h3>
+<table>
+<tr><th>الجزء</th><th>الموديولات</th></tr>
+<tr><td>الأجهزة والتركيب</td><td>1 مدخل • 2 الأنواع والاختيار • 3 التركيب والتوصيل • 4 قوائم الجهاز والتسجيل • 5 الشبكة</td></tr>
+<tr><td>البرامج</td><td>6 مقارنة البرامج وتنصيب ZKBio Time • 7 الورديات والتقارير • 8 USB والملفات</td></tr>
+<tr><td>البرمجة</td><td>9 خريطة الـ SDKs • 10 Python (pyzk) • 11 C# (zkemkeeper) • 12 ADMS/Push Server • 13 ربط مع قاعدة بيانات/نظام</td></tr>
+<tr><td>التشغيل</td><td>14 Troubleshooting + الأمان + Capstone</td></tr></table>
+
+<h3>اللي محتاجه للـ Labs</h3>
+<table>
+<tr><th>العنصر</th><th>ملاحظات</th></tr>
+<tr><td>جهاز ZKTeco</td><td>أي جهاز حضور/بصمة بشبكة (مثل F18 / K40 / MB160 / iClock / SpeedFace / ProFace). يفضّل جهاز تدريب مش Production.</td></tr>
+<tr><td>كمبيوتر Windows</td><td>لـ ZKBio Time (64-bit) وتجارب C#. Python بيشتغل على أي نظام.</td></tr>
+<tr><td>شبكة</td><td>الجهاز والكمبيوتر على نفس الـ Subnet (Switch/Router).</td></tr>
+<tr><td>أدوات</td><td>Python 3.9+، Visual Studio (للـ C#)، Wireshark، Postman/curl.</td></tr></table>
+</section>
+<section class="module" id="z1">
+<h2>Module 1 — مدخل: البصمة وأجهزة ZKTeco</h2>
+
+<h3>1.1 ZKTeco إيه؟</h3>
+<p><b>ZKTeco</b> شركة صينية متخصصة في الـ <span class="en">Biometrics</span> (بصمة إصبع، وجه، كف، قزحية) وأنظمة الحضور والانصراف <span class="en">Time &amp; Attendance</span> وكنترول الأبواب <span class="en">Access Control</span>. أجهزتها منتشرة جدًا في مصر والمنطقة، وبتلاقيها بأسماء تجارية متعددة (بعض الشركات بتبيعها بعلامة تانية).</p>
+
+<h3>1.2 فئات المنتجات</h3>
+<table>
+<tr><th>الفئة</th><th>الاستخدام</th><th>أمثلة (أسماء عامة)</th></tr>
+<tr><td class="l">Time &amp; Attendance (T&amp;A)</td><td>تسجيل حضور/انصراف موظفين</td><td>سلاسل F18 / K40 / MB / iClock / U160</td></tr>
+<tr><td class="l">Access Control Standalone</td><td>جهاز واحد بيفتح باب (Lock relay) لوحده</td><td>أجهزة بقارئ بصمة + كارت + Keypad</td></tr>
+<tr><td class="l">Access Controller Panel</td><td>لوحة مركزية بتدير 1–4 أبواب وقارئين لكل باب</td><td>InBio / C3 / C4 series</td></tr>
+<tr><td class="l">Face / Palm devices</td><td>تعرف على الوجه/الكف (Contactless)</td><td>SpeedFace / ProFace / MultiBio</td></tr>
+<tr><td class="l">Turnstile / Barriers</td><td>بوابات</td><td>Flap / Tripod / Swing</td></tr>
+<tr><td class="l">Software</td><td>إدارة وتقارير</td><td>ZKBio Time, ZKTime.Net, ZKBioSecurity ...</td></tr></table>
+<div class="note">الأسماء والموديلات بتتجدد باستمرار. اتأكد من الكتالوج الرسمي للموديل اللي في إيدك.</div>
+
+<h3>1.3 رسم توضيحي: شكل عام لجهاز بصمة حضور</h3>
+<div class="diagram"><svg viewBox="0 0 560 330" width="560" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI,Tahoma,sans-serif">
+<rect x="40" y="10" width="190" height="300" rx="18" fill="#1e293b" stroke="#475569" stroke-width="3"/>
+<rect x="60" y="30" width="150" height="80" rx="6" fill="#0ea5e9"/><text style="fill:#fff" x="135" y="68" text-anchor="middle" font-size="22" font-weight="700">08:45</text><text style="fill:#e0f2fe" x="135" y="92" text-anchor="middle" font-size="12">Mon 18-11</text>
+<g fill="#334155" stroke="#64748b"><rect x="62" y="125" width="30" height="22" rx="4"/><rect x="100" y="125" width="30" height="22" rx="4"/><rect x="138" y="125" width="30" height="22" rx="4"/><rect x="176" y="125" width="30" height="22" rx="4"/>
+<rect x="62" y="153" width="30" height="22" rx="4"/><rect x="100" y="153" width="30" height="22" rx="4"/><rect x="138" y="153" width="30" height="22" rx="4"/><rect x="176" y="153" width="30" height="22" rx="4"/></g>
+<rect x="75" y="195" width="120" height="100" rx="14" fill="#0f172a" stroke="#22d3ee" stroke-width="2"/>
+<g fill="none" stroke="#22d3ee" stroke-width="2"><path d="M100 270 q35 -60 70 0"/><path d="M108 270 q27 -45 54 0"/><path d="M116 270 q19 -30 38 0"/></g>
+<text style="fill:#67e8f9" x="135" y="287" text-anchor="middle" font-size="11">Fingerprint sensor</text>
+<g font-size="13" ><text x="260" y="70" style="fill:currentColor">① Screen / Clock (TFT)</text><line x1="215" y1="70" x2="255" y2="66" stroke="#94a3b8"/>
+<text x="260" y="150" style="fill:currentColor">② Keypad (User ID / Menu)</text><line x1="210" y1="150" x2="255" y2="146" stroke="#94a3b8"/>
+<text x="260" y="250" style="fill:currentColor">③ Optical/Capacitive sensor</text><line x1="196" y1="250" x2="255" y2="246" stroke="#94a3b8"/>
+<text x="260" y="300" fill="#64748b" style="fill:currentColor">Back: LAN / DC 12V / USB / Relay</text></g></svg></div>
+
+<h3>1.4 البصمة شغالة إزاي؟</h3>
+<div class="diagram"><svg viewBox="0 0 700 220" width="700" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI,Tahoma,sans-serif">
+<defs><marker id="zA" markerWidth="9" markerHeight="9" refX="8" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2563eb"/></marker></defs>
+<g fill="#2563eb"><rect x="10" y="70" width="120" height="70" rx="10"/><rect x="170" y="70" width="120" height="70" rx="10"/><rect x="330" y="70" width="120" height="70" rx="10"/><rect x="490" y="70" width="90" height="70" rx="10" fill="#16a34a"/><rect x="610" y="70" width="80" height="70" rx="10" fill="#7c3aed"/></g>
+<g  font-size="13" text-anchor="middle" font-weight="700"><text x="70" y="100" style="fill:#fff">Capture</text><text x="70" y="120" font-weight="400" font-size="11" style="fill:#fff">صورة البصمة</text>
+<text x="230" y="100" style="fill:#fff">Enhance</text><text x="230" y="120" font-weight="400" font-size="11" style="fill:#fff">تحسين/Binarize</text>
+<text x="390" y="100" style="fill:#fff">Extract</text><text x="390" y="120" font-weight="400" font-size="11" style="fill:#fff">Minutiae → Template</text>
+<text x="535" y="100" style="fill:#fff">Match</text><text x="535" y="120" font-weight="400" font-size="11" style="fill:#fff">1:1 / 1:N</text>
+<text x="650" y="100" style="fill:#fff">Result</text><text x="650" y="120" font-weight="400" font-size="11" style="fill:#fff">Pass/Fail</text></g>
+<g stroke="#2563eb" stroke-width="2" marker-end="url(#zA)"><line x1="130" y1="105" x2="168" y2="105"/><line x1="290" y1="105" x2="328" y2="105"/><line x1="450" y1="105" x2="488" y2="105"/><line x1="580" y1="105" x2="608" y2="105"/></g>
+<g font-size="12"  text-anchor="middle"><text x="390" y="175" style="fill:currentColor">Template (مش صورة): ملف صغير بيوصف نقاط مميزة</text><text x="390" y="195" style="fill:currentColor">ZKFinger 9.0 / 10.0 (إصدارات الـ Algorithm)</text></g></svg></div>
+<ul>
+<li><b>Fingerprint template:</b> الجهاز <b>مش بيخزن صورة</b> البصمة، بيستخلص منها <span class="en">Minutiae</span> (نقاط مميزة زي <span class="en">Ridge ending</span> و<span class="en">Bifurcation</span>) ويخزنها كـ Template صغير (حوالي مئات Bytes). عملية عكسية لرجوع الصورة الأصلية غير ممكنة عمليًا، لكن الـ Template نفسه بيانات حساسة وتتعامل بخصوصية.</li>
+<li><b>Verification (1:1):</b> المستخدم يدخل رقمه/كارته ← الجهاز يقارن بصمته بتمبلت واحد. أسرع وأدق.</li>
+<li><b>Identification (1:N):</b> المستخدم يحط إصبعه وبس ← الجهاز يقارن مع كل التمبلتس. أبطأ كل ما العدد يزيد.</li>
+<li><span class="en">FAR</span> (False Accept Rate: قبول شخص غلط) و<span class="en">FRR</span> (False Reject Rate: رفض شخص صح). تزويد الحساسية بيقلل واحد ويزود التاني. <span class="en">Threshold</span> بتحدده الإعدادات.</li>
+<li><b>مستشعرات:</b> <span class="en">Optical</span> (بتصوّر بالضوء، أرخص، حساسة للأتربة والبصمات المتبقية) و<span class="en">Capacitive/Semiconductor</span> (أدق وأقاوم). والـ Liveness (فحص إن الإصبع حي) في موديلات معينة.</li></ul>
+
+<h3>1.5 نصايح تسجيل بصمة ممتاز</h3>
+<ul>
+<li>سجّل <b>أكتر من إصبع</b> (على الأقل 2–3، من إيدين مختلفين) عشان لو الإصبع اتجرح.</li>
+<li>الإصبع <b>مركزه على الحساس</b>، ضغط متوسط، ومسطح (مش بس الطرف). كرر التسجيل 3 مرات بنفس الوضعية.</li>
+<li>إيد نظيفة وجافة (الرطوبة والزيوت والمواد الكاشطة بتضرّ جودة البصمة). عمال البناء/الورق/الكيماويات ممكن تبصمهم ضعيفة → اتجه للكارت أو الوجه.</li>
+<li>سجّل بنفس طريقة الاستخدام اليومي (الواقف نفسه).</li></ul>
+
+<h3>1.6 أسئلة مراجعة</h3>
+<div class="q">
+<details><summary>1) الجهاز بيخزن صورة البصمة؟</summary>لا، بيخزن Template (Minutiae) مش صورة.</details>
+<details><summary>2) الفرق بين 1:1 و 1:N؟</summary>1:1 بيقارن مع Template واحد بعد ID/كارت. 1:N بيقارن مع الكل.</details>
+<details><summary>3) إيه FAR و FRR؟</summary>قبول غلط / رفض غلط.</details>
+<details><summary>4) ليه نسجل أكتر من إصبع؟</summary>لتفادي مشاكل الجروح أو الضعف.</details></div>
+</section>
+<section class="module" id="z2">
+<h2>Module 2 — أنواع الأجهزة وإزاي تختار</h2>
+
+<h3>2.1 Time &amp; Attendance مقابل Access Control</h3>
+<table>
+<tr><th></th><th>Time &amp; Attendance</th><th>Access Control</th></tr>
+<tr><td>الهدف</td><td>تسجيل الحضور والانصراف</td><td>التحكم في فتح الأبواب (مين يدخل فين وإمتى)</td></tr>
+<tr><td>المخرج</td><td>Logs (PIN + Time + Verify mode + Status)</td><td>Logs + أمر فتح Relay + Zones/Levels</td></tr>
+<tr><td>التوصيل</td><td>شبكة + طاقة</td><td>شبكة + طاقة + Lock + Exit button + Door sensor</td></tr>
+<tr><td>البرنامج</td><td>ZKBio Time / ZKTime.Net</td><td>ZKBioSecurity / ZKAccess</td></tr>
+<tr><td>كتير من الأجهزة</td><td colspan="2">بتجمع الاتنين (حضور + فتح باب) في جهاز واحد (Standalone) أو Controller + Readers.</td></tr></table>
+
+<h3>2.2 معماريات الجهاز</h3>
+<div class="topo">{"w":760,"h":300,"n":[["A1","server",90,70,"Standalone|(جهاز واحد)"],["A2","pc",250,70,"PC / ZKBio Time"],["B1","server",90,220,"Controller Panel|(InBio)"],["B2","laptop",250,220,"Reader 1"],["B3","laptop",420,220,"Reader 2"],["C1","server",600,70,"Push Device|(ADMS)"],["C2","cloud",600,200,"Server (Web)"]],"l":[["A1","A2","LAN","","#16a34a"],["B1","B2","RS485/Wiegand","","#d97706"],["B1","B3","RS485/Wiegand","","#d97706"],["C1","C2","HTTP(S)","","#7c3aed"]],"t":[[170,20,"1) Standalone + PC pull (TCP 4370)",12,"#16a34a"],[170,165,"2) Controller + Readers",12,"#d97706"],[600,20,"3) Push / ADMS",12,"#7c3aed"]]}</div>
+<ul>
+<li><b>Standalone:</b> الجهاز فيه الذاكرة والمعالج والتمبلتس. البرنامج بيتصل (Pull) ويسحب البيانات (بورت TCP 4370 عادةً).</li>
+<li><b>Controller + Readers:</b> اللوحة بتقرر الدخول، والقارئ بس بيقرأ. أمان أعلى (لو القارئ اتكسر ما يفتحش الباب).</li>
+<li><b>Push (ADMS):</b> الجهاز <b>بيبعت</b> البيانات لسيرفر HTTP بدل ما السيرفر يسأل. ممتاز لما الجهاز على شبكة بعيدة/خلف NAT.</li></ul>
+
+<h3>2.3 مواصفات لازم تقارنها</h3>
+<table>
+<tr><th>البند</th><th>إيه معناه / ازاي تختار</th></tr>
+<tr><td>Fingerprint capacity</td><td>عدد التمبلتس (مثلاً 1,500 / 3,000 / 10,000...). أكتر من عدد الموظفين × عدد الأصابع.</td></tr>
+<tr><td>User capacity</td><td>عدد المستخدمين (كارت/باسورد/وجه).</td></tr>
+<tr><td>Log capacity</td><td>عدد السجلات (مثلاً 100,000). لو الجهاز امتلأ يرفض/يمسح القديم.</td></tr>
+<tr><td>Verification mode</td><td>Finger / Card (RFID 125kHz / MIFARE 13.56MHz) / Password / Face / Palm.</td></tr>
+<tr><td>Communication</td><td>TCP/IP, Wi-Fi, RS232/485, USB host, GPRS/4G, PoE.</td></tr>
+<tr><td>Push / ADMS support</td><td>لو محتاج سيرفر بعيد أو Cloud.</td></tr>
+<tr><td>Battery backup</td><td>لو الكهربا بتقطع (مهم للحضور).</td></tr>
+<tr><td>Anti-passback / Multi-door</td><td>للـ Access Control المتقدم.</td></tr>
+<tr><td>البيئة</td><td>IP65 للخارج، درجة الحرارة، الأتربة.</td></tr>
+<tr><td>Firmware</td><td>إصدار الـ Firmware بيحدد الـ SDK والـ Push version.</td></tr></table>
+
+<h3>2.4 وسائل التحقق <span class="en">Verification methods</span></h3>
+<table>
+<tr><th>الوسيلة</th><th>مزايا</th><th>عيوب</th></tr>
+<tr><td>Fingerprint</td><td>رخيصة، دقيقة</td><td>مشاكل مع الأيدي الخشنة، مخاوف صحية (لمس)</td></tr>
+<tr><td>Card (RFID)</td><td>سريعة، لا تتأثر بالإصبع</td><td>تتشارك/تتنسخ (Buddy punching)</td></tr>
+<tr><td>Face</td><td>Contactless، سريع</td><td>أغلى، إضاءة، خصوصية</td></tr>
+<tr><td>Palm</td><td>دقيقة جدًا، Contactless</td><td>غالية</td></tr>
+<tr><td>Password/PIN</td><td>بسيطة</td><td>أضعف أمنيًا</td></tr></table>
+<div class="note"><b>Buddy punching</b> = موظف بيبصم لزميله. البصمة/الوجه بيقللوها، الكارت والباسورد لا.</div>
+
+<h3>2.5 تحذيرات قانونية/خصوصية</h3>
+<ul><li>البيانات البيومترية حساسة: خد موافقة/اتبع القانون المحلي وسياسة الشركة، وخزّن أقل ما يمكن وأمّن الاتصال والـ Backups.</li></ul>
+
+<div class="lab"><h3>Lab 1 — جرد الجهاز <span class="tag">بسيط</span></h3>
+<ol>
+<li>من الجهاز: <span class="en">Menu → System Info (Device Info)</span> وسجّل: Serial Number، Firmware Version، Algorithm version، سعة Users/Fingerprints/Logs، MAC.</li>
+<li>الموديل مكتوب على الخلف/الملصق. ابحث عن الـ Datasheet الرسمي وقارن بالمعلومات.</li>
+<li>اعمل جدول Excel: الجهاز، الموقع، IP، Serial، Firmware، الاستخدام (حضور/باب)، المسؤول.</li></ol></div>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) إمتى تختار Push/ADMS؟</summary>لما الجهاز على شبكة بعيدة أو خلف NAT/Cloud، فمش ممكن السيرفر يتصل بيه مباشرة.</details>
+<details><summary>2) ميزة Controller Panel؟</summary>القرار في اللوحة المؤمّنة مش في القارئ المعرّض للكسر.</details>
+<details><summary>3) أنهي أنسب للأيدي الخشنة؟</summary>كارت أو وجه/كف.</details></div>
+</section>
+<section class="module" id="z3">
+<h2>Module 3 — التركيب والتوصيل (Power / Network / Door)</h2>
+
+<h3>3.1 مكان التركيب</h3>
+<ul>
+<li>ارتفاع الجهاز حوالي <b>1.2–1.4 متر</b> لمركز الشاشة/الحساس (راجع دليل الموديل). بعيد عن الشمس المباشرة (بتأثر على Optical والكاميرا) وعن المياه/الأتربة.</li>
+<li>جنب الباب (في Access Control) بحيث الموظف يقف براحة. وفي مداخل المصانع: قارئ مغطى ضد المطر لو برا.</li>
+<li>كابل شبكة قريب أو PoE، وكهرباء مستقرة (UPS لو الكهرباء بتقطع).</li></ul>
+
+<h3>3.2 الكهرباء</h3>
+<table>
+<tr><th>البند</th><th>التفاصيل</th></tr>
+<tr><td>جهد الجهاز</td><td>غالبًا <b>12V DC</b> (1–3A حسب الموديل) أو PoE. راجع الملصق.</td></tr>
+<tr><td>القفل (Lock)</td><td>يفضّل <b>Power supply منفصل</b> للقفل (12V/24V) مش من نفس مصدر الجهاز، وإلا الـ Reset يحصل عند فتح القفل (Back EMF).</td></tr>
+<tr><td>Diode</td><td>ركّب Diode/Surge على القفل (1N4007) لحماية الريليه.</td></tr>
+<tr><td>Fail-safe vs Fail-secure</td><td><b>Fail-safe</b> (Magnetic lock): بيقفل بالكهرباء وبيفتح لما تقطع (مناسب للطوارئ/الحريق). <b>Fail-secure</b> (Electric strike): بيفضل مقفول لو الكهرباء قطعت (مناسب للأمان). قرّر حسب كود الحريق.</td></tr></table>
+
+<h3>3.3 رسم توصيل باب (Standalone Access Terminal)</h3>
+<div class="diagram"><svg viewBox="0 0 780 350" width="780" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI,Tahoma,sans-serif">
+<g stroke-width="3" fill="none">
+<path d="M170 95 H290" stroke="#dc2626"/><path d="M170 110 H290" stroke="#64748b"/>
+<path d="M440 160 H560" stroke="#16a34a"/><path d="M440 175 H560" stroke="#d97706"/>
+<path d="M440 212 H560" stroke="#7c3aed"/><path d="M440 247 H560" stroke="#7c3aed"/>
+<path d="M170 280 H290" stroke="#0ea5e9"/><path d="M170 295 H290" stroke="#0ea5e9" stroke-dasharray="5 4"/>
+<path d="M650 95 V140" stroke="#dc2626"/></g>
+<rect x="20" y="62" width="150" height="62" rx="8" fill="#16a34a"/><text x="95" y="90" text-anchor="middle" style="fill:#fff" font-weight="700" font-size="14">Power Supply</text><text x="95" y="110" text-anchor="middle" style="fill:#dcfce7" font-size="12">12V DC (للجهاز)</text>
+<rect x="290" y="40" width="150" height="285" rx="10" fill="#1e293b" stroke="#475569" stroke-width="3"/>
+<text x="365" y="64" text-anchor="middle" style="fill:#fff" font-weight="700" font-size="14">ZKTeco Terminal</text>
+<g font-size="12"><text x="300" y="99" style="fill:#cbd5e1">+12V</text><text x="300" y="114" style="fill:#cbd5e1">GND</text>
+<text x="300" y="164" style="fill:#cbd5e1">NO (Relay)</text><text x="300" y="179" style="fill:#cbd5e1">COM (Relay)</text>
+<text x="300" y="216" style="fill:#cbd5e1">SENSOR</text><text x="300" y="251" style="fill:#cbd5e1">BUTTON</text>
+<text x="300" y="284" style="fill:#cbd5e1">LAN (RJ45)</text><text x="300" y="299" style="fill:#cbd5e1">Wiegand/485</text></g>
+<rect x="560" y="30" width="190" height="65" rx="8" fill="#16a34a"/><text x="655" y="58" text-anchor="middle" style="fill:#fff" font-weight="700" font-size="14">Lock Power Supply</text><text x="655" y="78" text-anchor="middle" style="fill:#dcfce7" font-size="12">12/24V منفصل</text>
+<rect x="560" y="140" width="190" height="48" rx="8" fill="#d97706"/><text x="655" y="170" text-anchor="middle" style="fill:#fff" font-size="14" font-weight="700">Electric Lock</text>
+<rect x="560" y="198" width="190" height="30" rx="6" fill="#7c3aed"/><text x="655" y="218" text-anchor="middle" style="fill:#fff" font-size="13">Door Sensor (Reed)</text>
+<rect x="560" y="233" width="190" height="30" rx="6" fill="#7c3aed"/><text x="655" y="253" text-anchor="middle" style="fill:#fff" font-size="13">Exit Button</text>
+<rect x="20" y="268" width="150" height="40" rx="8" fill="#0ea5e9"/><text x="95" y="293" text-anchor="middle" style="fill:#fff" font-size="13" font-weight="700">Switch / LAN</text>
+<text x="400" y="344" text-anchor="middle" font-size="12">رسم تبسيطي: ألوان/مسميات الأطراف بتختلف؛ اتبع دليل الموديل</text></svg></div>
+<ul>
+<li><b>Relay output:</b> أطراف <span class="en">NO</span> (Normally Open) <span class="en">COM</span> <span class="en">NC</span> (Normally Closed). الجهاز بيقفل الريليه لفترة <span class="en">Lock Drive Time</span> (مثلاً 3–5 ثواني).</li>
+<li><b>Door sensor</b> (Reed switch): بيقول الباب مفتوح/مقفول (لتنبيه Door Left Open).</li>
+<li><b>Exit button:</b> زر خروج من جوه.</li>
+<li><b>Wiegand:</b> بروتوكول بسيط (D0/D1) بين قارئ ولوحة. <b>RS485</b> أأمن وأبعد (لحد حوالي 1200م).</li>
+<li><b>Alarm:</b> <span class="en">Tamper</span> (كسر الجهاز)، <span class="en">Duress</span> (إجبار).</li></ul>
+
+<h3>3.4 الشبكة</h3>
+<ul>
+<li>كابل <b>Cat5e/Cat6</b> لحد 100م. وصّل بـ Switch. يفضّل VLAN منفصل لأجهزة البصمة.</li>
+<li>IP ثابت (Static) أو DHCP Reservation. ما تخليش الـ IP يتغير لأن البرنامج متعرّف عليه بالـ IP.</li>
+<li>لو Wi-Fi: التغطية مستقرة وكلمة سر قوية. الكابل أفضل للاعتمادية.</li></ul>
+
+<div class="lab"><h3>Lab 2 — تشغيل الجهاز لأول مرة <span class="tag">بسيط</span></h3>
+<ol>
+<li>وصّل الكهرباء والشبكة، وانتظر الإقلاع. اضبط <span class="en">Date &amp; Time</span> (مهم جدًا).</li>
+<li>اتأكد إن الـ Switch بيدي Link LED. جرّب <span class="en">ping</span> بعد ما تحط IP (Module 5).</li>
+<li>سجّل أول Admin: <span class="en">Menu → User Mgt → New User</span> بـ Role = Administrator (لو الجهاز فيه Administrators فاضيين، أي حد يدخل Menu).</li>
+<li>سجّل مستخدم تجريبي وبصمة. اعمل Check-in وشوف الشاشة.</li>
+<li>(Access) وصّل ريليه وLED تجريبي بدل القفل وتأكد إنه بيشتغل عند البصمة.</li></ol>
+<div class="warn">متتعاملش مع Mains (220V) إلا بكهربائي. اختبر القفل بمصدر منفصل وبمقاومة/ليد قبل القفل الحقيقي.</div></div>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) ليه Power Supply منفصل للقفل؟</summary>القفل بيسحب تيار وبيعمل Back-EMF فيعيد تشغيل الجهاز.</details>
+<details><summary>2) الفرق بين Fail-safe و Fail-secure؟</summary>Fail-safe بيفتح عند قطع الكهربا (Maglock)، Fail-secure بيفضل مقفول.</details>
+<details><summary>3) إيه Door sensor؟</summary>Reed switch بيكشف حالة الباب للتنبيه.</details></div>
+</section>
+<section class="module" id="z4">
+<h2>Module 4 — قوائم الجهاز، المستخدمين، تسجيل البصمة</h2>
+
+<div class="note">أسماء القوائم تقريبية. موديلات الـ Standalone (F18/K40...) وموديلات Android/Face (SpeedFace/ProFace) واجهاتها مختلفة. اضغط <span class="en">Menu</span> (أو <span class="en">M/OK</span>) وادخل بالـ Admin.</div>
+
+<h3>4.1 القوائم الرئيسية</h3>
+<table>
+<tr><th>القائمة</th><th>الوظيفة</th></tr>
+<tr><td class="l">User Mgt</td><td>إضافة/تعديل/حذف المستخدمين، تسجيل بصمة/كارت/باسورد/وجه، تحديد الصلاحية (User / Admin / Enroller)</td></tr>
+<tr><td class="l">User Role</td><td>صلاحيات مخصصة (على الموديلات الحديثة)</td></tr>
+<tr><td class="l">Comm. (COMM)</td><td>Ethernet (IP/Subnet/Gateway/Port)، Serial، PC Connection (Comm Key / Device ID)، Cloud Server Setting (ADMS)، Wi-Fi، Wiegand</td></tr>
+<tr><td class="l">System</td><td>Date/Time، Attendance (Duplicate punch period، Log alert)، Fingerprint (Threshold)، Face، Reset، Format، Update firmware</td></tr>
+<tr><td class="l">Personalize</td><td>واجهة، صوت، Short messages، Work code، Punch states</td></tr>
+<tr><td class="l">Data Mgt</td><td>Delete attendance، Delete all data، Backup/Restore</td></tr>
+<tr><td class="l">USB Manager</td><td>تحميل/رفع المستخدمين والـ Logs عبر USB</td></tr>
+<tr><td class="l">Attendance Search</td><td>عرض السجلات على الجهاز</td></tr>
+<tr><td class="l">Access Control</td><td>Time zones، Groups، Holidays، Lock settings (Lock delay، Sensor delay)، Anti-passback، Duress</td></tr>
+<tr><td class="l">Auto Test / Sys Info</td><td>اختبار الشاشة، الحساس، الصوت + معلومات الجهاز (Serial/Firmware)</td></tr></table>
+
+<h3>4.2 إضافة مستخدم</h3>
+<ol>
+<li><span class="en">Menu → User Mgt → New User</span>.</li>
+<li><b>User ID (PIN):</b> رقم الموظف (فريد). ابقاه ثابت ومتطابق مع رقم الموظف في HR/البرنامج. (الأفضل أرقام بدون أصفار بادئة تتلخبط في Excel).</li>
+<li><b>Name</b>: بالإنجليزي أفضل (بعض الأجهزة ما بتدعمش العربي على الشاشة). في ZKBio Time ممكن تكتبه عربي لكن الجهاز ممكن يعرضه رموز.</li>
+<li><b>Privilege:</b> <span class="en">Normal User</span> أو <span class="en">Administrator</span> (بيدخل Menu) أو <span class="en">Enroller</span>.</li>
+<li>سجّل <b>FP</b> (Fingerprint: 3 مرات للإصبع) أو <b>Card</b> (مرر الكارت) أو <b>Password</b> أو <b>Face</b>.</li>
+<li>اختياري: <span class="en">Verification mode</span> خاص بالمستخدم، <span class="en">Group/Time zone</span> (Access).</li></ol>
+
+<h3>4.3 Duplicate Punch و Punch State</h3>
+<ul>
+<li><span class="en">Duplicate Punch Period</span>: فترة (بالدقائق) يتجاهل بعدها البصمة المكررة (مثلاً 1–5 دقايق) لتفادي تسجيلات مزدوجة.</li>
+<li><span class="en">Punch State</span>: Check-In / Check-Out / Break-Out / Break-In / OT-In / OT-Out. في الأجهزة اللي فيها أزرار F1–F4 بتختار الحالة قبل البصمة. كتير بيستخدموا <b>Auto-State switch</b> بالجدول الزمني. في الواقع كتير من الأنظمة بتستنتج In/Out من ترتيب البصمات (راجع Module 7 و13).</li>
+<li><span class="en">Work Code</span>: كود اختياري مع كل بصمة (سبب/مهمة).</li></ul>
+
+<h3>4.4 Verify mode و Status في الـ Logs</h3>
+<table>
+<tr><th>الحقل</th><th>أمثلة (تختلف حسب الموديل)</th></tr>
+<tr><td class="l">Status / In-Out</td><td>0 Check In • 1 Check Out • 2 Break Out • 3 Break In • 4 OT In • 5 OT Out</td></tr>
+<tr><td class="l">Verify</td><td>0 Password • 1 Fingerprint • 2 Card • 15 Face • 25 Palm (قيم تقريبية للموديلات الحديثة؛ راجع وثيقتك)</td></tr></table>
+
+<h3>4.5 Backup واستعادة</h3>
+<ul><li>خد Backup للمستخدمين والتمبلتس بشكل دوري: من البرنامج (Sync/Export) أو من <span class="en">USB Manager</span> أو بالكود (pyzk: <span class="en">get_users / get_templates</span>). Attendance بعد ما تتمسح من الجهاز مبترجعش.</li></ul>
+
+<div class="lab"><h3>Lab 3 — مستخدمين + بصمة + تقرير سريع <span class="tag">بسيط</span></h3>
+<ol>
+<li>أضف 3 مستخدمين (PIN 1،2،3) بـ Administrator واحد. سجّل بصمتين لكل واحد.</li>
+<li>ضبط <span class="en">Duplicate Punch</span> = 1 دقيقة. بصّم 3 مرات متتالية وشوف <span class="en">Attendance Search</span>.</li>
+<li>جرّب إصبع غلط/مش مسجل وشوف الرسالة.</li>
+<li>غيّر <span class="en">Fingerprint Threshold</span> (لو متاح) وشوف الفرق في القبول/الرفض.</li>
+<li>سجّل Card (لو فيه RFID) وجرب الدخول بالكارت.</li></ol></div>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) إيه User ID؟</summary>رقم الموظف الفريد (PIN) وبيتطابق مع نظام الـ HR.</details>
+<details><summary>2) فايدة Duplicate Punch Period؟</summary>تجاهل البصمات المكررة السريعة.</details>
+<details><summary>3) ليه نسجل Administrator؟</summary>عشان نمنع أي حد من دخول القوائم.</details></div>
+</section>
+<section class="module" id="z5">
+<h2>Module 5 — الشبكة والاتصال (IP / Port 4370 / Comm Key / ADMS)</h2>
+
+<h3>5.1 الإعدادات في الجهاز</h3>
+<table>
+<tr><th>الإعداد</th><th>الشرح</th></tr>
+<tr><td class="l">IP Address</td><td>عنوان الجهاز. الافتراضي في كتير من الموديلات <span class="en">192.168.1.201</span> (راجع دليلك).</td></tr>
+<tr><td class="l">Subnet Mask / Gateway</td><td>زي أي جهاز شبكة. Gateway لازم لو السيرفر على Subnet مختلف.</td></tr>
+<tr><td class="l">Port</td><td>بورت الـ SDK/Pull: افتراضي <b>4370</b> (TCP وبعض الموديلات UDP).</td></tr>
+<tr><td class="l">Comm Key (Connection password)</td><td>رقم سري (0 = بدون) لازم يتطابق في البرنامج/الكود. <b>مش تشفير قوي</b> لكنه Authentication.</td></tr>
+<tr><td class="l">Device ID (Machine No.)</td><td>رقم الجهاز على RS485/Serial (1–254).</td></tr>
+<tr><td class="l">DHCP</td><td>مفضّل تعطيله وتثبيت IP.</td></tr>
+<tr><td class="l">Cloud Server Setting (ADMS)</td><td>إعداد الـ Push: Server Mode = ADMS، Server Address (IP/Domain)، Server Port (80/8081/...)، Enable Domain، Enable Proxy، HTTPS.</td></tr></table>
+
+<h3>5.2 نموذجين للاتصال</h3>
+<div class="seq">{"a":["ZKBio Time / Script","Device (TCP 4370)"],"m":[[0,1,"TCP connect + Comm Key"],[0,1,"CMD: Get Attendance"],[1,0,"Data (Logs)"],[0,1,"CMD: Get/Set Users"],[1,0,"ACK / Data"]]}</div>
+<div class="seq">{"a":["Device","ADMS Server (HTTP)"],"m":[[0,1,"GET /iclock/cdata?SN=..&options=all"],[1,0,"Options"],[0,1,"POST /iclock/cdata?table=ATTLOG"],[1,0,"OK"],[0,1,"GET /iclock/getrequest?SN=.."],[1,0,"OK / C:ID:command"]]}</div>
+<table>
+<tr><th></th><th>Pull (SDK)</th><th>Push (ADMS)</th></tr>
+<tr><td>مين بيبدأ</td><td>البرنامج → الجهاز</td><td>الجهاز → السيرفر</td></tr>
+<tr><td>البورت</td><td>4370 على الجهاز</td><td>بورت HTTP على السيرفر</td></tr>
+<tr><td>مناسب لـ</td><td>LAN / VPN</td><td>Internet / فروع / Cloud</td></tr>
+<tr><td>Real-time</td><td>بـ Live events (SDK) أو Polling</td><td>تقريبًا Real-time (الجهاز بيبعت فور البصمة)</td></tr>
+<tr><td>الأمان</td><td>VPN + Comm Key</td><td>HTTPS لو متاح، وتحقق من SN على السيرفر</td></tr></table>
+
+<h3>5.3 اختبار الاتصال</h3>
+<pre class="code"># من الكمبيوتر
+ping 192.168.1.201
+# فحص البورت (Windows PowerShell)
+Test-NetConnection 192.168.1.201 -Port 4370
+# Linux/macOS
+nc -vz 192.168.1.201 4370</pre>
+<ul>
+<li>الـ ping ينجح لكن 4370 فاشل: غالبًا Firewall على الكمبيوتر، أو <span class="en">Comm Key</span> أو الجهاز في وضع Push فقط (بعض الأجهزة بتعطّل Pull)، أو الموديل UDP.</li>
+<li>الـ Port 4370 ممكن يتغير من قائمة <span class="en">Comm</span> أو يستخدم 4370 للـ UDP على أجهزة قديمة.</li></ul>
+
+<h3>5.4 تصميم شبكة لأجهزة الفروع</h3>
+<div class="topo">{"w":760,"h":300,"n":[["HQ","server",110,150,"HQ Server|ZKBio Time"],["FW","fw",300,150,"Firewall / VPN"],["NET","cloud",470,150,"Internet"],["B1","router",620,70,"Branch 1 Router"],["D1","server",740,70,"ZK Device"],["B2","router",620,230,"Branch 2 Router"],["D2","server",740,230,"ZK Device"]],"l":[["HQ","FW","","","#16a34a"],["FW","NET","","","#d97706"],["NET","B1","","VPN","#dc2626"],["B1","D1","","","#16a34a"],["NET","B2","","VPN","#dc2626"],["B2","D2","","","#16a34a"]]}</div>
+<ul>
+<li><b>الأفضل:</b> VPN Site-to-Site بين الفروع والمقر، وبعدها الجهاز يتواصل داخليًا (4370 أو ADMS).</li>
+<li><b>بديل:</b> Push/ADMS على سيرفر على Public IP (HTTPS) مع تقييد بالـ Serial Numbers.</li>
+<li>لا تفتح 4370 للإنترنت مباشرة (Comm Key ضعيف، والبروتوكول مش مصمم للتعرض العام).</li></ul>
+
+<div class="lab"><h3>Lab 4 — ضبط الشبكة واختبار الاتصال <span class="tag">بسيط</span></h3>
+<ol>
+<li>من الجهاز: <span class="en">Comm → Ethernet</span> ثبّت IP (مثلاً 192.168.1.201/24) وGateway، واترك Port 4370، واضبط <span class="en">Comm Key</span> = 1234 مؤقتًا.</li>
+<li>من الكمبيوتر (نفس الـ Subnet): ping ثم <span class="en">Test-NetConnection ... -Port 4370</span>.</li>
+<li>شغّل Wireshark وفلتر <span class="en">ip.addr == 192.168.1.201 &amp;&amp; tcp.port == 4370</span>، وبعدين نفّذ سكربت pyzk (Module 10) وراقب الـ Handshake.</li>
+<li>غيّر الـ Comm Key في الجهاز بس، وشوف فشل الاتصال في السكربت. رجّع.</li></ol></div>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) البورت الافتراضي للـ SDK؟</summary>4370 (TCP، وأحيانًا UDP).</details>
+<details><summary>2) ping شغال و4370 فاشل، أسباب؟</summary>Firewall، Comm Key غلط، الجهاز Push-only، أو UDP.</details>
+<details><summary>3) الفرق بين Pull و Push؟</summary>Pull: البرنامج بيسأل. Push: الجهاز بيبعت للسيرفر.</details></div>
+</section>
+<section class="module" id="z6">
+<h2>Module 6 — برامج ZKTeco وتنصيب ZKBio Time</h2>
+
+<h3>6.1 الخريطة</h3>
+<table>
+<tr><th>البرنامج</th><th>النوع</th><th>الاستخدام</th></tr>
+<tr><td class="l">ZKBio Time (كان BioTime 8.x)</td><td>Web-based (Browser)</td><td>حضور وانصراف: ورديات، إجازات، تقارير، Payroll بسيط، تطبيق موبايل، يدعم أجهزة Push</td></tr>
+<tr><td class="l">ZKTime.Net</td><td>Desktop (Windows)</td><td>برنامج حضور تقليدي للأجهزة Standalone (Pull بالـ SDK). منتشر في المشاريع الصغيرة</td></tr>
+<tr><td class="l">ZKBioSecurity / ZKBio CVSecurity</td><td>Web platform</td><td>منصة متكاملة: Access Control + Attendance + Visitor + Elevator + Video ...</td></tr>
+<tr><td class="l">ZKAccess 3.5</td><td>Desktop</td><td>كنترول أبواب لـ Controller panels (أقدم)</td></tr>
+<tr><td class="l">ZKBio Zlink / Cloud</td><td>Cloud (SaaS)</td><td>إدارة سحابية لأجهزة Push (حسب المنطقة والاشتراك)</td></tr>
+<tr><td class="l">ZKBio WDMS</td><td>Web Device Management</td><td>إدارة أجهزة Push مركزيًا (أقدم/مدمج في بعض الحلول)</td></tr></table>
+<div class="warn">أسماء المنتجات والتوفر والتراخيص بتتغير باستمرار. اتأكد من موقع ZKTeco أو الموزع المحلي قبل الشراء. ولو بتشتغل على جهاز قديم: تحقق من توافق الـ Firmware مع إصدار البرنامج.</div>
+
+<h3>6.2 اختيار البرنامج</h3>
+<table>
+<tr><th>الحالة</th><th>الأنسب</th></tr>
+<tr><td>شركة صغيرة، جهاز واحد أو اتنين، Pull على LAN</td><td>ZKTime.Net (أو ZKBio Time لو الجهاز Push)</td></tr>
+<tr><td>فروع كتير، أجهزة Push، تقارير ويب وبيانات للموظفين</td><td>ZKBio Time</td></tr>
+<tr><td>أبواب + حضور + زوار في منشأة</td><td>ZKBioSecurity / CVSecurity</td></tr>
+<tr><td>تدمج مع ERP/HR خاص بيك</td><td>أي برنامج + API / أو سيرفر ADMS خاص بيك (Module 12)</td></tr></table>
+
+<h3>6.3 معلومات ZKBio Time (من صفحة ZKTeco الرسمية)</h3>
+<ul>
+<li>برنامج ويب لإدارة الحضور: جداول ورديات، حساب الحضور والـ Overtime، إجازات، Payroll، اعتمادات متعددة المستويات، تقارير، ومزامنة التمبلتس بين الأجهزة.</li>
+<li>يدعم حتى <b>500 جهاز</b> (قابل للتوسع بطلب).</li>
+<li>قواعد بيانات: <b>PostgreSQL</b> (الافتراضي) و SQL Server و MySQL و Oracle.</li>
+<li>التشغيل: <b>Windows 64-bit</b> (7–11 / Server 2008–2019 حسب الصفحة)، والحد الأدنى: معالج ثنائي 2.4GHz، RAM 4GB، 100GB مساحة.</li>
+<li>مصمم لأجهزة بروتوكول <b>Attendance PUSH</b> (الأجهزة اللي بتتصل بالسيرفر).</li></ul>
+
+<h3>6.4 المعمارية</h3>
+<div class="topo">{"w":760,"h":260,"n":[["D1","server",80,60,"Device 1"],["D2","server",80,130,"Device 2"],["D3","server",80,200,"Device 3"],["SW","switch",250,130,"Switch"],["SRV","server",450,130,"ZKBio Time|Web + Service"],["DB","server",620,60,"PostgreSQL"],["U","pc",620,200,"Admin / HR|(Browser)"]],"l":[["D1","SW","","","#16a34a"],["D2","SW","","","#16a34a"],["D3","SW","","","#16a34a"],["SW","SRV","","HTTP push","#7c3aed"],["SRV","DB","","","#2563eb"],["SRV","U","","HTTP(S)","#d97706"]]}</div>
+
+<h3>6.5 خطوات التنصيب (عامة)</h3>
+<ol>
+<li>جهّز Windows Server/PC بـ IP ثابت، وحدّث الويندوز، وافتح <b>Firewall</b> لبورت الويب (عادةً بيتحدد أثناء التنصيب).</li>
+<li>نزّل المثبّت من الموقع الرسمي أو الموزع، وشغله <b>كـ Administrator</b>.</li>
+<li>اختار قاعدة البيانات (PostgreSQL افتراضي مدمج) ومسار التخزين (يفضّل Drive بعيد عن الـ C).</li>
+<li>حدد بورت الويب (راجع المثبّت؛ كتير بيستخدم 8081 أو 80) وتأكد إنه مش مستخدم (IIS/Apache).</li>
+<li>افتح المتصفح على <span class="en">http://SERVER_IP:PORT</span> وأنشئ/سجّل دخول Admin (بيانات الدخول الافتراضية حسب الإصدار: راجع دليله وغيّرها فورًا).</li>
+<li>فعّل الترخيص (<span class="en">License Activation</span>) حسب نظام الشركة.</li></ol>
+
+<h3>6.6 إضافة جهاز في ZKBio Time</h3>
+<ol>
+<li>على الجهاز: <span class="en">Comm → Cloud Server Setting</span>: Server Mode = <b>ADMS</b>، Server Address = IP السيرفر، Port = بورت الويب، Domain OFF (لو IP)، Proxy OFF → احفظ وأعد التشغيل لو طلب.</li>
+<li>في البرنامج: <span class="en">Device → Device</span>: الجهاز بيظهر تلقائيًا في <span class="en">Authorize/Pending</span> (أو أضفه يدويًا بالـ Serial Number). اعمل <span class="en">Authorize</span> واختار <span class="en">Area</span>.</li>
+<li>اتأكد من <span class="en">Online</span> وإن الوقت متزامن (<span class="en">Sync Time</span>).</li></ol>
+<div class="note">البورتات والقوائم دي لازم تتأكد منها من دليل النسخة اللي عندك. الجهاز لازم يوصل للسيرفر على نفس البورت. جهاز "Standalone فقط" (بدون Cloud Server Setting) هتحتاج ZKTime.Net أو سيرفر/سكريبت Pull.</div>
+
+<h3>6.7 هيكل البيانات في البرنامج</h3>
+<ul>
+<li><b>Area:</b> موقع جغرافي (فرع/مبنى) وتربط الأجهزة والموظفين بيه.</li>
+<li><b>Department / Position:</b> الهيكل الإداري.</li>
+<li><b>Employee:</b> (Employee ID = PIN على الجهاز) + الاسم + القسم + المنطقة + Shift + طرق التحقق.</li>
+<li><b>Device:</b> أجهزة بـ Serial و IP وArea.</li>
+<li><b>Transactions:</b> الـ Raw punches القادمة من الأجهزة.</li></ul>
+
+<div class="lab"><h3>Lab 5 — تنصيب ZKBio Time وربط جهاز <span class="tag">متوسط</span></h3>
+<ol>
+<li>جهّز VM Windows 64-bit (4GB RAM+). ثبّت ZKBio Time (نسخة تجريبية/مرخصة من الموزع).</li>
+<li>ادخل لوحة الويب، أنشئ Area <span class="en">HQ</span> وDepartment <span class="en">IT</span>.</li>
+<li>اضبط Cloud Server Setting على الجهاز (6.6) وسجّل جهازك في البرنامج.</li>
+<li>أضف Employee بنفس PIN الموجود على الجهاز، واعمل <span class="en">Sync to device</span>.</li>
+<li>بصّم على الجهاز وشوف ظهور الـ Transaction في البرنامج.</li>
+<li>غيّر IP السيرفر وراقب انقطاع الجهاز (Offline) وإزاي تظبط الاتصال.</li></ol></div>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) الفرق بين ZKBio Time و ZKTime.Net؟</summary>ZKBio Time ويب ويدعم Push وفروع كتير. ZKTime.Net Desktop لأجهزة Standalone (Pull).</details>
+<details><summary>2) قاعدة البيانات الافتراضية لـ ZKBio Time؟</summary>PostgreSQL (حسب ZKTeco).</details>
+<details><summary>3) جهاز مش ظاهر في البرنامج. أول حاجة تفحصها؟</summary>Cloud Server Setting (Address/Port/Mode)، Firewall، شبكة، ومطابقة الوقت.</details></div>
+</section>
+<section class="module" id="z7">
+<h2>Module 7 — الورديات، حساب الحضور، والتقارير</h2>
+
+<h3>7.1 من بصمة لحضور</h3>
+<div class="topo">{"w":760,"h":200,"n":[["P","laptop",70,100,"Raw Punches|(PIN, Time)"],["R","server",250,100,"Rules|Shift/Grace/Rounding"],["C","server",430,100,"Calculation|Late / OT / Absent"],["RP","pc",620,100,"Reports|Payroll"]],"l":[["P","R","","","#16a34a"],["R","C","","","#2563eb"],["C","RP","","","#d97706"]]}</div>
+<p>الجهاز بيسجّل <b>بصمات خام</b> (Raw) بس. البرنامج هو اللي بيحوّلها لحضور وانصراف حسب الوردية والقواعد.</p>
+
+<h3>7.2 المفاهيم</h3>
+<table>
+<tr><th>المفهوم</th><th>الشرح</th></tr>
+<tr><td class="l">Timetable</td><td>جدول يوم عمل: وقت بداية/نهاية + نافذة قبول البصمة (Check-in window) + Grace period + Break.</td></tr>
+<tr><td class="l">Shift</td><td>مجموعة Timetables على دورة (أسبوعية/شهرية) أو ورديات صباحي/مسائي/ليلي.</td></tr>
+<tr><td class="l">Schedule</td><td>ربط الموظف/القسم بوردية لفترة.</td></tr>
+<tr><td class="l">Grace period</td><td>سماحية تأخير (مثلاً 10 دقايق).</td></tr>
+<tr><td class="l">Overtime</td><td>إضافي: قبل/بعد الوردية بمعامل (1.5×، 2×).</td></tr>
+<tr><td class="l">Rounding</td><td>تقريب الدقائق.</td></tr>
+<tr><td class="l">Missed punch</td><td>بصمة ناقصة (نسي الانصراف) → Absent/Incomplete أو Manual/Request.</td></tr>
+<tr><td class="l">Night shift</td><td>وردية بتعدّي منتصف الليل: لازم تتحدد على أنها بتتبع يوم البداية.</td></tr>
+<tr><td class="l">Leave types</td><td>سنوي، مرضي، بدون أجر + الأرصدة والاعتمادات.</td></tr>
+<tr><td class="l">Holiday / Weekend</td><td>إجازات رسمية وعطلة أسبوعية.</td></tr></table>
+
+<h3>7.3 مثال: وردية 9–5 مع سماحية</h3>
+<table>
+<tr><th>الإعداد</th><th>القيمة</th></tr>
+<tr><td>Start / End</td><td>09:00 / 17:00</td></tr>
+<tr><td>Check-in window</td><td>07:00 → 12:00</td></tr>
+<tr><td>Check-out window</td><td>15:00 → 23:00</td></tr>
+<tr><td>Grace (Late)</td><td>10 دقايق</td></tr>
+<tr><td>Early leave grace</td><td>5 دقايق</td></tr>
+<tr><td>Break</td><td>60 دقيقة (Auto-deduct)</td></tr>
+<tr><td>OT</td><td>بعد 17:30، معامل 1.5×</td></tr></table>
+
+<h3>7.4 التقارير</h3>
+<ul>
+<li><b>Daily Attendance / Monthly Summary / Late &amp; Early / Absent / Overtime / Missed punches / Leave</b>.</li>
+<li><b>Raw Transactions:</b> للتدقيق والـ Audit.</li>
+<li>تصدير Excel/PDF + جدولة إرسال Email (حسب الإصدار) + API.</li>
+<li>راجع دايمًا الـ Raw Transactions لو حصل خلاف مع الموظف.</li></ul>
+
+<h3>7.5 قواعد عملية</h3>
+<ul>
+<li>اتفق على السياسة <b>الأول</b> (سماحية، تقريب، إضافي) ثم اضبط البرنامج.</li>
+<li>سجل التعديلات اليدوية (Manual punches) مع المسؤول والسبب.</li>
+<li>أقفل الفترة (<span class="en">Close period</span>) قبل Payroll لمنع التغيير.</li></ul>
+
+<div class="lab"><h3>Lab 6 — ورديتين وتقرير تأخير <span class="tag">متوسط</span></h3>
+<ol>
+<li>أنشئ Timetable صباحي 09:00–17:00 و Timetable مسائي 16:00–00:00.</li>
+<li>اعمل Shift لكل واحد وادخل 3 موظفين بتجارب: متأخر 5 دقايق، متأخر 20 دقيقة، ما بصمش انصراف.</li>
+<li>سجّل بصمات (أو أدخل Manual Transactions للتجربة).</li>
+<li>اطلع Daily + Late + Missed Punch Reports. قارن مع النتيجة المتوقعة.</li>
+<li>غيّر Grace لـ 30 دقيقة وأعد الحساب (<span class="en">Recalculate</span>)، وشوف الفرق.</li></ol></div>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) إيه اللي الجهاز بيسجله؟</summary>بصمات خام (PIN + Time + Verify/Status) فقط.</details>
+<details><summary>2) ليه Night shift حساسة؟</summary>لأن الانصراف بيكون في اليوم التالي ولازم يتنسب ليوم البداية.</details>
+<details><summary>3) لو موظف اعترض على التأخير، تعمل إيه؟</summary>مراجعة Raw Transactions + الـ Shift + الوقت على الجهاز.</details></div>
+</section>
+<section class="module" id="z8">
+<h2>Module 8 — USB والملفات (بدون شبكة)</h2>
+
+<h3>8.1 ليه USB؟</h3>
+<p>لو الجهاز مش على شبكة (فرع صغير/موقع بعيد)، تقدر تنقل البيانات بفلاشة: تنزّل الـ Logs والمستخدمين من الجهاز، وترفعهم للبرنامج (أو العكس).</p>
+
+<h3>8.2 الخطوات (عامة)</h3>
+<ol>
+<li>فلاشة <b>FAT32</b> (أغلب الأجهزة ما بتقرأش NTFS/exFAT) وحجم صغير (≤ 32GB أضمن).</li>
+<li>الجهاز: <span class="en">Menu → USB Manager</span>.</li>
+<li><b>Download:</b> <span class="en">Attendance Data</span> (سجلات الحضور)، <span class="en">User Data</span> (المستخدمين + البصمات)، <span class="en">Attendance Photo</span> (لو فيه كاميرا).</li>
+<li><b>Upload:</b> <span class="en">User Data</span>، <span class="en">Screen Saver</span>، <span class="en">Work Code</span>، <span class="en">Short message</span>.</li>
+<li>في البرنامج: <span class="en">Import → From USB</span> (ZKTime.Net: Download from USB / ZKBio Time: Import).</li></ol>
+
+<h3>8.3 الملفات</h3>
+<table>
+<tr><th>الملف (أمثلة)</th><th>المحتوى</th></tr>
+<tr><td class="l">*_attlog.dat / ATTLOG.dat</td><td>سجلات حضور: نص Tab-delimited</td></tr>
+<tr><td class="l">user.dat / *_user.dat</td><td>بيانات المستخدمين (قد تتضمن التمبلتس مشفرة)</td></tr>
+<tr><td class="l">*.dat الأخرى</td><td>Photos / Short messages ...</td></tr></table>
+<p>مثال لسطر Attendance في ملف .dat (الحقول الفعلية تتغير حسب الموديل):</p>
+<pre class="code">1	2026-11-18 08:55:12	0	1	0	0
+# عمود1: PIN | عمود2: الوقت | عمود3: Status (0=In) | عمود4: Verify (1=Finger) | الباقي: WorkCode/Reserved</pre>
+<div class="note">ترتيب الأعمدة بيختلف (أحيانًا PIN ثم Time ثم Status ثم Verify). افتح ملف تجريبي من جهازك وطابق مع البصمات الفعلية قبل ما تكتب Parser.</div>
+
+<h3>8.4 Parser بسيط (Python)</h3>
+<pre class="code">import csv, datetime
+
+def parse_attlog(path):
+    rows = []
+    with open(path, encoding="utf-8", errors="ignore") as f:
+        for line in f:
+            p = line.rstrip("\r\n").split("\t")
+            if len(p) &lt; 2:
+                continue
+            pin = p[0].strip()
+            ts = datetime.datetime.strptime(p[1].strip(), "%Y-%m-%d %H:%M:%S")
+            status = p[2].strip() if len(p) &gt; 2 else ""
+            verify = p[3].strip() if len(p) &gt; 3 else ""
+            rows.append((pin, ts, status, verify))
+    return rows
+
+for r in parse_attlog("ATTLOG.dat")[:10]:
+    print(r)</pre>
+
+<div class="lab"><h3>Lab 7 — تحميل Logs بالفلاشة وتحليلها <span class="tag">بسيط</span></h3>
+<ol>
+<li>فورمات فلاشة FAT32. <span class="en">USB Manager → Download → Attendance Data</span>.</li>
+<li>افتح الملف بـ Notepad وطابق أول سطر مع بصمة معروفة (وقتها وPIN).</li>
+<li>عدّل الـ Parser حسب ترتيب أعمدة جهازك، وصدّر النتيجة CSV.</li>
+<li>ارفع الملف في البرنامج (<span class="en">Import</span>) وتأكد إن عدد السجلات متطابق.</li></ol></div>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) نظام ملفات الفلاشة المناسب؟</summary>FAT32.</details>
+<details><summary>2) ليه نتحقق من ترتيب الأعمدة؟</summary>بيختلف بين الموديلات والـ Firmware.</details></div>
+</section>
+<section class="module" id="z9">
+<h2>Module 9 — خريطة البرمجة: إزاي تتعامل مع الجهاز بالكود</h2>
+
+<h3>9.1 الطرق الأربعة</h3>
+<div class="topo">{"w":780,"h":330,"n":[["APP","laptop",390,40,"تطبيقك|(HR / ERP / Script)"],["A","server",110,170,"1) Pull SDK|TCP 4370"],["B","server",300,170,"2) Windows COM SDK|zkemkeeper"],["C","server",490,170,"3) PUSH / ADMS|HTTP"],["D","server",680,170,"4) برنامج وسيط|ZKBio Time API/DB"],["DEV","server",390,290,"ZKTeco Device"]],"l":[["APP","A","","","#16a34a"],["APP","B","","","#2563eb"],["APP","C","","","#7c3aed"],["APP","D","","","#d97706"],["A","DEV","","","#16a34a"],["B","DEV","","","#2563eb"],["C","DEV","","","#7c3aed",1],["D","DEV","","","#d97706",1]]}</div>
+<table>
+<tr><th>الطريقة</th><th>إزاي</th><th>مزايا</th><th>عيوب</th></tr>
+<tr><td>1) Pull بمكتبة مفتوحة</td><td class="l">Python pyzk / Node zkteco-js / PHP zklib</td><td>سهلة، Cross-platform، بدون Windows</td><td>غير رسمية، موديلات بتختلف، لازم وصول للشبكة</td></tr>
+<tr><td>2) Standalone SDK الرسمي</td><td class="l">zkemkeeper.dll (COM) من C#/VB/Delphi</td><td>وظائف كاملة، أحداث Real-time</td><td>Windows فقط، 32-bit غالبًا، ترخيص/تحميل من ZKTeco</td></tr>
+<tr><td>3) PUSH / ADMS</td><td>سيرفر HTTP تكتبه بنفسك</td><td>مناسب للإنترنت والفروع، Real-time</td><td>محتاج سيرفر عام، تفاصيل البروتوكول بتختلف</td></tr>
+<tr><td>4) عبر البرنامج</td><td>قراءة DB/API لـ ZKBio Time</td><td>أسرع وأأمن للمشاريع</td><td>مرتبط بالبرنامج والترخيص</td></tr></table>
+
+<h3>9.2 اختار إزاي؟</h3>
+<ul>
+<li>جهاز/أجهزة على نفس الشبكة + سكريبت تقارير: <b>pyzk</b>.</li>
+<li>تطبيق Windows Desktop بوظائف كاملة (تسجيل بصمات، أحداث): <b>zkemkeeper</b>.</li>
+<li>فروع عبر الإنترنت وأجهزة Push: <b>ADMS Server</b>.</li>
+<li>عندك ZKBio Time بالفعل: اقرأ منه (API/DB) بدل ما تعمل Pull مزدوج (الاتنين يسحبوا من الجهاز ممكن يتعارضوا).</li></ul>
+
+<h3>9.3 قواعد ذهبية</h3>
+<ul>
+<li><b>ما تخليش اتنين</b> (البرنامج + سكربتك) يسحبوا ويمسحوا Logs من نفس الجهاز بدون تنسيق.</li>
+<li>لا تمسح Logs من الجهاز إلا بعد ما تتأكد إنها اتخزنت وعملت Backup.</li>
+<li>Idempotency: خزّن بصمات بمفتاح (Device SN + PIN + Timestamp) فريد لتفادي التكرار.</li>
+<li>الوقت: الجهاز بيسجل Local time بدون Timezone. وثّق Timezone الجهاز، وزامنه (NTP/SetTime).</li>
+<li>اختبر على موديلك: السلوك بيختلف حسب الـ Firmware.</li></ul>
+</section>
+<section class="module" id="z10">
+<h2>Module 10 — Python مع pyzk</h2>
+<div class="note"><b>pyzk</b> مكتبة مجتمعية غير رسمية (<span class="en">pip install pyzk</span>) بتتكلم بروتوكول ZK على TCP/UDP (بورت 4370). موثقة في GitHub/ReadTheDocs. أسماء الحقول والـ Methods ممكن تختلف بين النسخ؛ اتحقق بـ <span class="en">dir(obj)</span>. الأكواد هنا <b>ما اتجربتش على جهازك</b>.</div>
+
+<h3>10.1 تثبيت واتصال</h3>
+<pre class="code">pip install pyzk
+
+from zk import ZK, const
+
+zk = ZK('192.168.1.201', port=4370, timeout=5, password=0,
+        force_udp=False, ommit_ping=False)
+conn = None
+try:
+    conn = zk.connect()
+    conn.disable_device()          # يقفل الجهاز مؤقتًا أثناء السحب
+    print("Firmware:", conn.get_firmware_version())
+    print("Serial:", conn.get_serialnumber())
+    print("Time:", conn.get_time())
+finally:
+    if conn:
+        conn.enable_device()       # مهم! ارجّع الجهاز يشتغل
+        conn.disconnect()</pre>
+<ul>
+<li><span class="en">password</span> = Comm Key (رقم). <span class="en">force_udp=True</span> للأجهزة القديمة. <span class="en">ommit_ping=True</span> لو الـ ping ممنوع على الشبكة.</li>
+<li>دايمًا <b>enable_device()</b> في <span class="en">finally</span>؛ لو السكريبت وقع والجهاز فضل Disabled، المستخدمين مش هيعرفوا يبصموا!</li></ul>
+
+<h3>10.2 قراءة المستخدمين</h3>
+<pre class="code">for u in conn.get_users():
+    print(u.uid, u.user_id, u.name, u.privilege, u.password, u.group_id, u.card)
+# uid = رقم داخلي في الجهاز (1..N)، user_id = الـ PIN (نص) اللي بتتعامل معاه</pre>
+
+<h3>10.3 قراءة الحضور</h3>
+<pre class="code">logs = conn.get_attendance()
+for a in logs[:20]:
+    # a.user_id (PIN) , a.timestamp (datetime), a.status, a.punch, a.uid
+    print(a.user_id, a.timestamp, a.status, a.punch)</pre>
+<ul><li><span class="en">status</span> غالبًا نوع التحقق (Finger/Card/..) و<span class="en">punch</span> حالة الدخول/الخروج (In/Out)، والتسمية بتتلخبط بين الإصدارات. اختبر ببصمة معروفة.</li></ul>
+
+<h3>10.4 إضافة/حذف مستخدم</h3>
+<pre class="code">conn.set_user(uid=10, name='Ahmed Ali', privilege=const.USER_DEFAULT,
+              password='', group_id='', user_id='1010', card=0)
+conn.delete_user(uid=10)         # أو user_id='1010'
+# مدير:
+# privilege=const.USER_ADMIN</pre>
+<ul><li>الـ <span class="en">uid</span> لازم يكون فريد في الجهاز. اختار uid = أول رقم فاضي أو اربطه بالـ PIN.</li></ul>
+
+<h3>10.5 Live Capture (الأحداث لحظيًا)</h3>
+<pre class="code">for att in conn.live_capture():
+    if att is None:
+        continue                    # Timeout (مفيش بصمة)
+    print("LIVE:", att.user_id, att.timestamp)
+    # لإيقاف: conn.end_live_capture = True</pre>
+
+<h3>10.6 الوقت، Backup، أوامر</h3>
+<pre class="code">import datetime
+conn.set_time(datetime.datetime.now())        # ضبط الوقت
+conn.get_templates()                           # كل التمبلتس (بصمات) - للنسخ الاحتياطي
+conn.clear_attendance()                        # يمسح Logs! لا تستخدمه قبل التأكد من التخزين
+conn.restart()                                 # إعادة تشغيل</pre>
+
+<h3>10.7 سكربت كامل: سحب الحضور وتخزينه SQLite بدون تكرار</h3>
+<pre class="code">import sqlite3, datetime
+from zk import ZK
+
+DEVICES = [{"name": "HQ-Main", "ip": "192.168.1.201", "port": 4370, "pwd": 0}]
+
+db = sqlite3.connect("attendance.db")
+db.execute("""CREATE TABLE IF NOT EXISTS punches(
+  device TEXT, pin TEXT, ts TEXT, status INTEGER, punch INTEGER,
+  PRIMARY KEY(device, pin, ts))""")
+
+def pull(d):
+    zk = ZK(d["ip"], port=d["port"], timeout=10, password=d["pwd"])
+    conn = None
+    try:
+        conn = zk.connect()
+        conn.disable_device()
+        n = 0
+        for a in conn.get_attendance():
+            cur = db.execute("INSERT OR IGNORE INTO punches VALUES (?,?,?,?,?)",
+                (d["name"], a.user_id, a.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+                 a.status, a.punch))
+            n += cur.rowcount
+        db.commit()
+        print(d["name"], "new punches:", n)
+    except Exception as e:
+        print(d["name"], "ERROR:", e)
+    finally:
+        if conn:
+            conn.enable_device()
+            conn.disconnect()
+
+for d in DEVICES:
+    pull(d)</pre>
+<div class="note">شغّله بـ Cron / Task Scheduler كل 5–10 دقايق. <b>ما تعملش clear_attendance</b> في الاستخدام العادي؛ سيب الجهاز يدوّر Logs بنفسه واحتفظ بنسخة في قاعدتك.</div>
+
+<h3>10.8 أخطاء شائعة</h3>
+<table>
+<tr><th>الخطأ</th><th>السبب/الحل</th></tr>
+<tr><td class="l">timeout / can't reach device</td><td>IP/Firewall/Port، جرّب <span class="en">force_udp=True</span> أو <span class="en">ommit_ping=True</span></td></tr>
+<tr><td class="l">Unauthenticated</td><td>Comm Key غلط (<span class="en">password</span>)</td></tr>
+<tr><td class="l">get_attendance بطيء جدًا</td><td>Logs كتير. اسحب بوقت أقل تكرارًا، أو ADMS للـ Real-time</td></tr>
+<tr><td class="l">أسماء عربي رموز</td><td>جرّب <span class="en">ZK(..., encoding='gbk')</span> أو 'utf-8' حسب الموديل</td></tr>
+<tr><td class="l">الجهاز فضل Disabled</td><td>نسيت enable_device() أو حصل Crash — استخدم finally</td></tr>
+<tr><td class="l">Timestamps غلط</td><td>ساعة الجهاز مش مضبوطة</td></tr></table>
+
+<div class="lab"><h3>Lab 8 — سحب وتخزين وتصدير CSV <span class="tag">متوسط</span></h3>
+<ol>
+<li>ثبّت pyzk واتصل بجهازك واطبع Serial وFirmware.</li>
+<li>اطبع المستخدمين وقارنهم بالقائمة على الجهاز.</li>
+<li>شغّل السكربت 10.7 مرتين متتاليتين: تأكد إن الثانية تضيف 0 سجل.</li>
+<li>بصّم 3 مرات، واستخدم <span class="en">live_capture</span> لعرض الأحداث لحظيًا.</li>
+<li>أضف دالة تصدّر CSV لآخر 24 ساعة، وأضف أمر <span class="en">set_time</span> لضبط الساعة.</li>
+<li><b>تحدّي:</b> اعمل Backup يومي للمستخدمين والتمبلتس في ملفات JSON/Pickle مشفّرة.</li></ol></div>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) ليه نكتب enable_device في finally؟</summary>عشان الجهاز ما يفضلش مقفول لو السكريبت فشل.</details>
+<details><summary>2) إزاي نمنع تكرار السجلات؟</summary>Primary key (Device + PIN + Timestamp) و INSERT OR IGNORE.</details>
+<details><summary>3) إمتى تستخدم clear_attendance؟</summary>نادرًا، بعد التأكد من التخزين والـ Backup.</details></div>
+</section>
+<section class="module" id="z11">
+<h2>Module 11 — C# مع Standalone SDK (zkemkeeper)</h2>
+<div class="warn">الـ <b>Standalone SDK</b> بيتنزّل من ZKTeco/الموزع (مكتبات COM اسمها <span class="en">zkemkeeper.dll</span>). الأسماء هنا من معرفتي بالـ API الشائع وغير مجربة؛ <b>راجع وثيقة SDK (Developer Manual) اللي مع المكتبة</b> لإصدارك. الـ DLL غالبًا 32-bit، فاضبط مشروعك على <span class="en">x86</span>.</div>
+
+<h3>11.1 الإعداد</h3>
+<ol>
+<li>انسخ ملفات الـ SDK لفولدر، وشغّل <span class="en">regsvr32 zkemkeeper.dll</span> (Command Prompt كـ Administrator) أو استخدم ملف التسجيل المرفق.</li>
+<li>Visual Studio: <span class="en">Add Reference → COM → zkemkeeper</span> (أو Browse للـ DLL / Interop).</li>
+<li><span class="en">Project → Properties → Build → Platform target = x86</span>.</li></ol>
+
+<h3>11.2 اتصال وقراءة الحضور</h3>
+<pre class="code">using System;
+using zkemkeeper;
+
+class Program {
+    static void Main() {
+        var zk = new CZKEMClass();
+        int machine = 1;                      // Machine number (عادة 1)
+        // zk.SetCommPassword(0);             // لو فيه Comm Key (قبل الاتصال)
+        if (!zk.Connect_Net("192.168.1.201", 4370)) {
+            int err = 0; zk.GetLastError(ref err);
+            Console.WriteLine("Connect failed: " + err); return;
+        }
+        zk.EnableDevice(machine, false);      // قفل مؤقت
+        try {
+            if (zk.ReadGeneralLogData(machine)) {
+                string enroll = ""; int verify = 0, inout = 0, y=0, m=0, d=0, h=0, mi=0, s=0, work=0;
+                while (zk.SSR_GetGeneralLogData(machine, out enroll, out verify, out inout,
+                       out y, out m, out d, out h, out mi, out s, ref work)) {
+                    Console.WriteLine($"{enroll}  {y}-{m:D2}-{d:D2} {h:D2}:{mi:D2}:{s:D2}  verify={verify} inout={inout}");
+                }
+            }
+        } finally {
+            zk.EnableDevice(machine, true);
+            zk.Disconnect();
+        }
+    }
+}</pre>
+
+<h3>11.3 مستخدمين</h3>
+<pre class="code">// قراءة
+zk.ReadAllUserID(machine);
+string id="", name="", pwd=""; int priv=0; bool enabled=false;
+while (zk.SSR_GetAllUserInfo(machine, out id, out name, out pwd, out priv, out enabled)) {
+    Console.WriteLine($"{id} {name} priv={priv} en={enabled}");
+}
+// إضافة/تعديل
+zk.SSR_SetUserInfo(machine, "1010", "Ahmed Ali", "", 0, true);
+// حذف
+zk.SSR_DeleteEnrollData(machine, "1010", 12);   // 12 = حذف كل بيانات المستخدم (حسب الوثيقة)</pre>
+
+<h3>11.4 أحداث Real-time</h3>
+<pre class="code">if (zk.RegEvent(machine, 65535)) {            // اشترك في كل الأحداث
+    zk.OnAttTransactionEx += (string id, int isValid, int state, int verify,
+        int y, int m, int d, int h, int mi, int s, int work) =&gt; {
+        Console.WriteLine($"LIVE {id} {y}-{m}-{d} {h}:{mi}:{s}");
+    };
+}
+// لازم الـ Thread يفضل شغال + STA message pump (Windows Forms Application.Run)</pre>
+<div class="note">الأحداث COM محتاجة <b>STA thread</b> و Message loop (Windows Forms/WPF). في Console App ممكن لا تصل. استخدم <span class="en">System.Windows.Forms.Application.Run()</span> بعد الاشتراك.</div>
+
+<h3>11.5 أوامر مفيدة</h3>
+<table>
+<tr><th>الوظيفة</th><th>Method (حسب إصدار SDK)</th></tr>
+<tr><td>ضبط الوقت</td><td class="l">SetDeviceTime(machine) / SetDeviceTime2(...)</td></tr>
+<tr><td>مسح Logs</td><td class="l">ClearGLog(machine)</td></tr>
+<tr><td>Serial</td><td class="l">GetSerialNumber(machine, out string)</td></tr>
+<tr><td>تسجيل بصمة (Template)</td><td class="l">SetUserTmpExStr / GetUserTmpExStr</td></tr>
+<tr><td>فتح الباب</td><td class="l">ACUnlock(machine, seconds)</td></tr>
+<tr><td>إعادة تشغيل</td><td class="l">RestartDevice(machine)</td></tr></table>
+
+<div class="lab"><h3>Lab 9 — تطبيق Windows بسيط <span class="tag">متقدم</span></h3>
+<ol>
+<li>سجّل الـ SDK وأنشئ مشروع Windows Forms (x86).</li>
+<li>أضف زر Connect وجدول لعرض الـ Logs (11.2).</li>
+<li>أضف شاشة مستخدمين (11.3) وزر Add/Delete.</li>
+<li>سجّل Event الـ <span class="en">OnAttTransactionEx</span> واعرض آخر بصمة لحظيًا.</li>
+<li>خزّن النتائج في SQL Server/SQLite بنفس فكرة منع التكرار.</li></ol></div>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) ليه Platform target = x86؟</summary>الـ COM DLL غالبًا 32-bit.</details>
+<details><summary>2) ليه الأحداث محتاجة STA؟</summary>لأنها COM Callbacks بتعتمد على Message loop.</details></div>
+</section>
+<section class="module" id="z12">
+<h2>Module 12 — ADMS / PUSH: اعمل سيرفر خاص بيك</h2>
+<div class="warn">تفاصيل الـ PUSH/ADMS هنا مجمعة من تطبيقات مجتمعية مفتوحة المصدر (Go / Laravel / Python) ومن اختبارات على أجهزة معينة (مثل Horus TL2 و SpeedFace). الوثيقة الرسمية <span class="en">PUSH SDK Protocol</span> بتتوزع من ZKTeco/الموزعين ومش متاحة للعامة بالكامل. <b>الأجهزة بتختلف في الحقول والأوامر</b>، فاستخدم <span class="en">Logging</span> كامل واعمل تجارب.</div>
+
+<h3>12.1 الفكرة</h3>
+<p>بدل ما تسأل الجهاز، الجهاز نفسه <b>بيتصل بيك</b> كـ HTTP Client: بيبعت الحضور فورًا، وبيسأل كل كام ثانية "عندك أوامر ليا؟". ميزتها إن الجهاز ممكن يكون في أي شبكة طالما بيوصل للسيرفر (مفيش Port Forwarding للجهاز).</p>
+
+<h3>12.2 الـ Endpoints</h3>
+<table>
+<tr><th>Request</th><th>الغرض</th><th>الرد</th></tr>
+<tr><td class="l">GET /iclock/cdata?SN=..&amp;options=all</td><td>الجهاز بيعمل Handshake عند الاتصال</td><td>نص إعدادات <span class="en">Options</span></td></tr>
+<tr><td class="l">POST /iclock/cdata?SN=..&amp;table=ATTLOG&amp;Stamp=..</td><td>إرسال سجلات حضور</td><td><span class="en">OK</span></td></tr>
+<tr><td class="l">POST /iclock/cdata?SN=..&amp;table=OPERLOG</td><td>عمليات وبيانات مستخدمين (USER ...) وتعديلات</td><td><span class="en">OK</span></td></tr>
+<tr><td class="l">GET /iclock/getrequest?SN=..</td><td>الجهاز بيسأل عن أوامر (كل 2–5 ثواني تقريبًا)</td><td><span class="en">OK</span> أو <span class="en">C:&lt;ID&gt;:&lt;COMMAND&gt;</span></td></tr>
+<tr><td class="l">POST /iclock/devicecmd?SN=..</td><td>نتيجة تنفيذ أمر</td><td><span class="en">OK</span></td></tr>
+<tr><td class="l">POST /iclock/registry</td><td>تسجيل بيانات الجهاز (حسب الإصدار)</td><td>حسب الـ Push version</td></tr></table>
+
+<div class="seq">{"a":["Device","Your Server"],"m":[[0,1,"GET /iclock/cdata?SN=ABC&options=all"],[1,0,"GET OPTION FROM: ABC ... Realtime=1"],[0,1,"POST cdata?table=ATTLOG (PIN Time Status Verify)"],[1,0,"OK"],[0,1,"GET /iclock/getrequest?SN=ABC"],[1,0,"C:12:DATA UPDATE USERINFO PIN=1010 ..."],[0,1,"POST /iclock/devicecmd  ID=12&Return=0"],[1,0,"OK"]]}</div>
+
+<h3>12.3 صيغ الرسائل</h3>
+<pre class="code"># ATTLOG (Body: سطر لكل بصمة، الحقول Tab-separated)
+1010&lt;TAB&gt;2026-11-18 08:55:12&lt;TAB&gt;0&lt;TAB&gt;1&lt;TAB&gt;0
+ PIN       Time                Status Verify WorkCode
+
+# أمر من السيرفر (الرد على getrequest)
+C:12:DATA UPDATE USERINFO PIN=1010&lt;TAB&gt;Name=Ahmed Ali&lt;TAB&gt;Pri=0&lt;TAB&gt;Passwd=&lt;TAB&gt;Card=&lt;TAB&gt;Grp=1
+C:13:DATA DELETE USERINFO PIN=1010
+C:14:INFO
+C:15:REBOOT
+
+# نتيجة الأمر من الجهاز (POST /iclock/devicecmd)
+ID=12&amp;Return=0&amp;CMD=DATA</pre>
+<ul>
+<li><b>Status:</b> 0 Check-In • 1 Check-Out • 2 Break-Out • 3 Break-In • 4 OT-In • 5 OT-Out. <b>Verify:</b> 0 Password • 1 Finger • 4 Card • 15 Face (قيم الموديلات الحديثة، تختلف).</li>
+<li>أوامر مهمة: <span class="en">DATA UPDATE USERINFO</span>، <span class="en">DATA DELETE USERINFO</span>، <span class="en">DATA QUERY USERINFO</span> (النتيجة بتيجي على cdata)، <span class="en">INFO</span>، <span class="en">REBOOT</span>، <span class="en">CHECK</span>، <span class="en">CLEAR LOG</span> (حسب الموديل).</li>
+<li>بعض الأجهزة بتستخدم <span class="en">Pri</span> للصلاحية، وبعضها <span class="en">Privilege</span>. و<span class="en">DATA DEL</span> بتفشل؛ لازم <span class="en">DELETE</span> كاملة. و<span class="en">USER ADD/USER DEL</span> القديمة بترجع -1002 على أجهزة حديثة.</li>
+<li><span class="en">Return</span> = 0 نجاح. قيم سالبة (مثل -1، -2، -1002، -1004) = غير مدعوم/صيغة خاطئة/ملف فشل.</li></ul>
+
+<h3>12.4 سيرفر Flask كامل (Prototype)</h3>
+<pre class="code">pip install flask
+
+# adms_server.py
+import sqlite3, datetime, threading
+from flask import Flask, request, Response
+
+app = Flask(__name__)
+DB = "adms.db"
+lock = threading.Lock()
+ALLOWED_SN = set()       # حط Serial Numbers المسموحة، فاضي = اقبل الكل (للتجارب فقط)
+
+def db():
+    c = sqlite3.connect(DB); c.row_factory = sqlite3.Row; return c
+
+with db() as c:
+    c.executescript("""
+    CREATE TABLE IF NOT EXISTS punches(sn TEXT, pin TEXT, ts TEXT, status INT, verify INT, raw TEXT,
+        PRIMARY KEY(sn,pin,ts));
+    CREATE TABLE IF NOT EXISTS commands(id INTEGER PRIMARY KEY AUTOINCREMENT, sn TEXT,
+        cmd TEXT, sent INT DEFAULT 0, result TEXT);
+    CREATE TABLE IF NOT EXISTS devices(sn TEXT PRIMARY KEY, last_seen TEXT, ip TEXT);
+    """)
+
+def text(s): return Response(s, mimetype="text/plain")
+
+def check(sn):
+    if ALLOWED_SN and sn not in ALLOWED_SN: return False
+    with lock, db() as c:
+        c.execute("INSERT INTO devices VALUES(?,?,?) ON CONFLICT(sn) DO UPDATE SET last_seen=?, ip=?",
+                  (sn, datetime.datetime.now().isoformat(), request.remote_addr,
+                   datetime.datetime.now().isoformat(), request.remote_addr))
+    return True
+
+@app.route("/iclock/cdata", methods=["GET", "POST"])
+def cdata():
+    sn = request.args.get("SN", "")
+    if not check(sn): return text("ERROR"), 403
+    if request.method == "GET":                      # Handshake
+        return text(f"GET OPTION FROM: {sn}\nATTLOGStamp=None\nOPERLOGStamp=9999\n"
+                    "ErrorDelay=30\nDelay=10\nTransTimes=00:00;14:05\nTransInterval=1\n"
+                    "TransFlag=TransData AttLog OpLog\nRealtime=1\nEncrypt=0\n")
+    table = request.args.get("table", "")
+    body = request.get_data(as_text=True)
+    if table == "ATTLOG":
+        n = 0
+        with lock, db() as c:
+            for line in body.splitlines():
+                p = line.strip().split("\t")
+                if len(p) &lt; 2: continue
+                st = int(p[2]) if len(p) &gt; 2 and p[2].isdigit() else None
+                vf = int(p[3]) if len(p) &gt; 3 and p[3].isdigit() else None
+                cur = c.execute("INSERT OR IGNORE INTO punches VALUES(?,?,?,?,?,?)",
+                                (sn, p[0], p[1], st, vf, line))
+                n += cur.rowcount
+        print(f"[{sn}] ATTLOG {n} new")
+    else:
+        print(f"[{sn}] {table}: {body[:300]}")        # OPERLOG / USERINFO / غيره: سجّل وشوف
+    return text("OK")
+
+@app.route("/iclock/getrequest")
+def getreq():
+    sn = request.args.get("SN", "")
+    if not check(sn): return text("ERROR"), 403
+    with lock, db() as c:
+        r = c.execute("SELECT * FROM commands WHERE sn=? AND sent&lt;3 ORDER BY id LIMIT 1", (sn,)).fetchone()
+        if not r: return text("OK")
+        c.execute("UPDATE commands SET sent=sent+1 WHERE id=?", (r["id"],))
+    return text(f"C:{r['id']}:{r['cmd']}")
+
+@app.route("/iclock/devicecmd", methods=["POST"])
+def devicecmd():
+    sn = request.args.get("SN", "")
+    body = request.get_data(as_text=True)
+    with lock, db() as c:
+        for line in body.splitlines():
+            kv = dict(x.split("=", 1) for x in line.split("&amp;") if "=" in x)
+            if "ID" in kv:
+                c.execute("UPDATE commands SET sent=99, result=? WHERE id=?", (line, kv["ID"]))
+    print(f"[{sn}] CMD RESULT: {body}")
+    return text("OK")
+
+@app.route("/iclock/registry", methods=["GET", "POST"])
+def registry():
+    print("REGISTRY", request.args, request.get_data(as_text=True)[:300])
+    return text("OK")
+
+@app.route("/api/queue/&lt;sn&gt;", methods=["POST"])   # أضف أمر (محمي في الواقع بـ Auth)
+def queue(sn):
+    cmd = request.get_data(as_text=True).strip()
+    with lock, db() as c:
+        c.execute("INSERT INTO commands(sn,cmd) VALUES(?,?)", (sn, cmd))
+    return "queued"
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8081)</pre>
+<pre class="code"># إضافة مستخدم عبر الأمر (TAB حقيقي بين الحقول)
+curl -X POST http://localhost:8081/api/queue/ABC1234 \
+  --data-binary $'DATA UPDATE USERINFO PIN=2020\tName=Sara\tPri=0\tPasswd=\tCard=\tGrp=1'</pre>
+
+<h3>12.5 على الجهاز</h3>
+<ol>
+<li><span class="en">Menu → Comm → Cloud Server Setting</span>: Server Mode = ADMS • Server Address = IP الكمبيوتر • Port = 8081 • Enable Domain = OFF • Proxy = OFF.</li>
+<li>افتح Firewall لـ TCP 8081. وتأكد إن ZKBio Time أو أي برنامج تاني مش شاغل نفس البورت.</li>
+<li>أعد تشغيل الجهاز وراقب Console السيرفر: لازم تشوف GET /iclock/cdata ثم getrequest كل ثواني.</li></ol>
+
+<h3>12.6 نقاط حرجة للأمان والجودة</h3>
+<ul>
+<li><b>HTTPS:</b> لو الجهاز بيدعمه، خلف Reverse Proxy (Nginx/Caddy) بشهادة. HTTP على الإنترنت بيكشف الأسماء والـ Logs.</li>
+<li><b>تحقق من الـ SN:</b> اقبل أجهزة معروفة فقط (Allowlist) + Rate limiting. ما تعتمدش على الـ SN كسر (بيتخمّن)، فقيّد بالـ IP/VPN لو أمكن.</li>
+<li>اعتبر كل البيانات القادمة <b>غير موثوقة</b>: تحقق من الحقول وحجم الـ Body.</li>
+<li>الـ <span class="en">Stamp</span>: الجهاز بيتتبع آخر سجل اتبعت. لو رجّعت Stamp غلط ممكن يعيد إرسال القديم؛ استخدم مفتاح فريد في DB.</li>
+<li>سجل كل Request خام (Raw) في ملف عند التجارب، عشان تفهم صيغة جهازك.</li>
+<li>القفل: SQLite بسيط للـ Lab. للإنتاج استخدم PostgreSQL وطابور (Queue) للأوامر.</li></ul>
+
+<div class="lab"><h3>Lab 10 — شغّل سيرفر ADMS وستقبل بصمة <span class="tag">متقدم</span></h3>
+<ol>
+<li>شغّل السكربت (12.4) وافتح بورت 8081.</li>
+<li>اضبط Cloud Server Setting على الجهاز (12.5) وأعد تشغيله.</li>
+<li>راقب Console: سجّل أول Request خام (الـ Query + Headers) واحفظه.</li>
+<li>بصّم، وتأكد من ظهور الصف في جدول <span class="en">punches</span> (<span class="en">sqlite3 adms.db "select * from punches"</span>).</li>
+<li>ابعت أمر <span class="en">INFO</span> وشوف رد الجهاز في <span class="en">devicecmd</span>.</li>
+<li>ابعت أمر إضافة مستخدم، وتأكد على الجهاز إنه ظهر. وبعدها أمر حذفه.</li>
+<li><b>تحدّي:</b> أضف Allowlist وحدّد SN، وأضف طبقة Token لـ <span class="en">/api/queue</span>.</li></ol></div>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) ميزة Push على Pull؟</summary>الجهاز بيتواصل مع السيرفر، فمفيش حاجة لفتح بورتات على شبكة الجهاز، وبيدي بيانات لحظية.</details>
+<details><summary>2) إيه معنى C:12:INFO؟</summary>أمر برقم 12 اسمه INFO، والجهاز يرد على devicecmd بـ ID=12.</details>
+<details><summary>3) ليه نحتاج مفتاح فريد للـ punches؟</summary>الجهاز ممكن يعيد الإرسال (Retry/Stamp) فنتجنب التكرار.</details>
+<details><summary>4) ليه Allowlist للـ SN؟</summary>عشان نمنع أجهزة/مهاجمين من حقن بيانات حضور مزيفة.</details></div>
+</section>
+<section class="module" id="z13">
+<h2>Module 13 — الربط مع قاعدة بيانات ونظام HR/ERP</h2>
+
+<h3>13.1 المعمارية المقترحة</h3>
+<div class="topo">{"w":780,"h":260,"n":[["D","server",70,130,"ZK Devices"],["I","server",250,130,"Ingest|ADMS / pyzk"],["R","server",430,130,"Raw punches DB"],["P","server",610,60,"Processor|Shifts/Rules"],["A","pc",610,200,"HR / ERP / Payroll"]],"l":[["D","I","","","#7c3aed"],["I","R","","","#2563eb"],["R","P","","","#16a34a"],["P","A","","API","#d97706"]]}</div>
+<ul>
+<li><b>Ingest:</b> يستقبل الخام بدون تفسير. <b>Raw DB:</b> بتتخزن للأبد (Append-only). <b>Processor:</b> يحسب الحضور (Idempotent، تقدر تعيد الحساب). <b>API:</b> للـ HR.</li></ul>
+
+<h3>13.2 مخطط قاعدة البيانات</h3>
+<pre class="code">CREATE TABLE devices (
+  sn VARCHAR(40) PRIMARY KEY, name TEXT, location TEXT, tz TEXT DEFAULT 'Africa/Cairo',
+  last_seen TIMESTAMP);
+CREATE TABLE employees (
+  id SERIAL PRIMARY KEY, pin VARCHAR(20) UNIQUE NOT NULL, full_name TEXT, dept TEXT, active BOOL DEFAULT TRUE);
+CREATE TABLE raw_punches (
+  device_sn VARCHAR(40), pin VARCHAR(20), punched_at TIMESTAMP NOT NULL,
+  status INT, verify INT, received_at TIMESTAMP DEFAULT now(),
+  PRIMARY KEY (device_sn, pin, punched_at));
+CREATE TABLE daily_attendance (
+  employee_id INT, work_date DATE, first_in TIMESTAMP, last_out TIMESTAMP,
+  late_min INT, ot_min INT, status TEXT, PRIMARY KEY(employee_id, work_date));</pre>
+
+<h3>13.3 منطق الحضور</h3>
+<ul>
+<li>كتير من الأجهزة <b>مش بتديك In/Out موثوق</b>. القاعدة الشائعة: أول بصمة في اليوم = دخول، آخر بصمة = انصراف (بعد تجاهل التكرار خلال X دقايق).</li>
+<li><b>Night shift:</b> اربط البصمة بيوم الوردية: لو البصمة بين 00:00 و 06:00 وفيه وردية ليلية من اليوم السابق → تنسب لليوم السابق.</li>
+<li>تجاهل البصمات المكررة (&lt; 2–5 دقايق) و<b>اكتشف شذوذ</b> (بصمة ناقصة، بصمات من جهاز غير متوقع).</li>
+<li>تعامل مع <b>Timezone/DST</b>: خزّن UTC أو Local مع Timezone الجهاز، واستخدم ساعة موحدة.</li></ul>
+
+<h3>13.4 مثال Python: حساب أول دخول وآخر خروج</h3>
+<pre class="code">import sqlite3, datetime as dt
+from collections import defaultdict
+
+db = sqlite3.connect("attendance.db")
+rows = db.execute("SELECT pin, ts FROM punches ORDER BY pin, ts").fetchall()
+
+DEDUP = dt.timedelta(minutes=3)
+by_day = defaultdict(list)
+for pin, ts in rows:
+    t = dt.datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
+    lst = by_day[(pin, t.date())]
+    if lst and t - lst[-1] &lt; DEDUP:
+        continue                      # بصمة مكررة
+    lst.append(t)
+
+for (pin, day), times in sorted(by_day.items()):
+    first, last = times[0], times[-1]
+    worked = (last - first) if len(times) &gt; 1 else dt.timedelta(0)
+    status = "MISSING_OUT" if len(times) == 1 else "OK"
+    print(pin, day, first.time(), last.time(), worked, status)</pre>
+
+<h3>13.5 دمج مع أنظمة جاهزة</h3>
+<table>
+<tr><th>النظام</th><th>ملاحظات</th></tr>
+<tr><td>Odoo</td><td>موديولات مجتمعية/تجارية بتربط أجهزة ZKTeco (بعضها Pull وبعضها Push). تحقق من إصدار Odoo وصيانة الموديول.</td></tr>
+<tr><td>Laravel / Django</td><td>حزم مجتمعية لـ ADMS (مثل laravel-zkteco-adms). مفيدة كبداية، راجع جودة الكود والأمان.</td></tr>
+<tr><td>ERPNext / Horilla</td><td>Horilla بيستخدم pyzk للسحب الدوري (حسب مدونتهم).</td></tr>
+<tr><td>ZKBio Time API</td><td>قراءة Transactions بواسطة REST/DB من البرنامج (راجع وثائق الإصدار).</td></tr></table>
+
+<h3>13.6 Backup و Retention</h3>
+<ul><li>Backup يومي لـ DB، واحتفظ بالـ Raw punches سنوات (حسب القانون)، ونسخة من مستخدمي/تمبلتس الأجهزة.</li>
+<li>سياسة حذف للبيانات البيومترية عند ترك الموظف.</li></ul>
+
+<div class="lab"><h3>Lab 11 — Pipeline مصغّر <span class="tag">متقدم</span></h3>
+<ol>
+<li>استقبل البصمات (ADMS أو pyzk) وخزّنها Raw في SQLite/PostgreSQL.</li>
+<li>اكتب Processor (13.4) بيحسب أول دخول/آخر خروج وبيحدد التأخير بالنسبة لـ 09:00 + Grace 10.</li>
+<li>اعمل API بسيط (Flask) <span class="en">GET /api/attendance?date=..</span> يرجع JSON.</li>
+<li>أضف Test cases: بصمة مكررة، بصمة ناقصة، وردية ليلية.</li>
+<li>أضف Dashboard بسيط (HTML) للتأخيرات اليومية.</li></ol></div>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) ليه نخزن Raw punches منفصلة؟</summary>عشان نقدر نعيد الحساب لو القواعد اتغيرت، وللتدقيق.</details>
+<details><summary>2) أصعب حالة في الحساب؟</summary>الوردية الليلية وبصمات ناقصة.</details>
+<details><summary>3) إزاي نتجنب Duplicate؟</summary>مفتاح (Device + PIN + Time) + نافذة تجاهل قصيرة.</details></div>
+</section>
+<section class="module" id="z14">
+<h2>Module 14 — Troubleshooting، الأمان، Best Practices، Capstone</h2>
+
+<h3>14.1 أعطال شائعة</h3>
+<table>
+<tr><th>العرض</th><th>الأسباب المحتملة</th><th>الحل</th></tr>
+<tr><td>الجهاز Offline في البرنامج</td><td>IP اتغير، Cloud Server Setting غلط، Firewall، السيرفر وقف</td><td>ping + Test-NetConnection + راجع Server Address/Port + ثبّت IP</td></tr>
+<tr><td>الحضور في الجهاز مش في البرنامج</td><td>Push مش شغال، Stamp، Delay، Authorization</td><td>راجع Logs السيرفر، Authorize الجهاز، افحص التاريخ</td></tr>
+<tr><td>وقت غلط</td><td>ساعة الجهاز أو Timezone/DST</td><td>Sync Time من البرنامج/SetTime، وثبت Timezone</td></tr>
+<tr><td>بصمة مش بتتقبل</td><td>جودة التسجيل، حساس متسخ، Threshold، رطوبة</td><td>نضّف الحساس، سجّل تاني بأكتر من إصبع، راجع Algorithm</td></tr>
+<tr><td>مستخدم مش على الجهاز بعد Sync</td><td>سعة الجهاز، Area/Department</td><td>راجع Capacity وسياسة Sync</td></tr>
+<tr><td>Logs ممتلئة</td><td>Log Capacity، مش بتتسحب</td><td>اسحب وخزّن ثم نظّف حسب السياسة</td></tr>
+<tr><td>الجهاز بيعمل Restart</td><td>تغذية ضعيفة، ريليه قفل على نفس المصدر</td><td>Power منفصل، Diode</td></tr>
+<tr><td>pyzk Timeout</td><td>Port/UDP/Comm Key/أجهزة Push-only</td><td>force_udp، ommit_ping، راجع الإعدادات</td></tr>
+<tr><td>أسماء عربي رموز</td><td>الجهاز مش بيدعم/Encoding</td><td>استخدم إنجليزي على الجهاز وعربي في البرنامج، أو جرّب encoding</td></tr></table>
+
+<h3>14.2 منهجية</h3>
+<ol>
+<li><b>طبقيًا:</b> كهرباء → شبكة (ping) → بورت → Auth (Comm Key) → بروتوكول → بيانات.</li>
+<li>Wireshark على الاتصال: Pull (TCP 4370) أو HTTP (ADMS).</li>
+<li>سجّل Raw requests/responses في الـ Server.</li>
+<li>غيّر حاجة واحدة في المرة.</li></ol>
+
+<h3>14.3 الأمان</h3>
+<ul>
+<li>غيّر Admin passwords، وفعّل Comm Key، وعطّل خدمات غير مستخدمة. حدّث الـ Firmware (بعد Backup واختبار).</li>
+<li>VLAN منفصل لأجهزة البصمة + قيود Firewall (من/إلى السيرفر فقط).</li>
+<li>HTTPS للـ ADMS إن أمكن، و VPN للفروع، ولا تعرض 4370 على الإنترنت.</li>
+<li>البيانات البيومترية: تشفير Backups، صلاحيات محدودة، سياسة احتفاظ، موافقة الموظفين حسب القانون.</li>
+<li>راقب: أجهزة جديدة، أخطاء متكررة، محاولات اتصال غريبة.</li></ul>
+
+<h3>14.4 Best Practices</h3>
+<ul>
+<li>PIN ثابت ومنظم (نفس رقم HR) + دليل تسمية للأجهزة والأماكن.</li>
+<li>IP ثابت + توثيق (جدول الأجهزة: SN، IP، Firmware، الموقع).</li>
+<li>مزامنة وقت (NTP/ZKBio Time) وتحقق شهري.</li>
+<li>Backup دوري (مستخدمين + تمبلتس + DB) وتجربة Restore.</li>
+<li>UPS للأجهزة الحرجة. Battery backup لو متاح.</li>
+<li>تدريب الموظفين على البصمة الصحيحة، وبديل (كارت/وجه) لمن لديهم مشاكل.</li>
+<li>لا تعدّل Logs يدويًا بدون Audit.</li></ul>
+
+<h3>14.5 Capstone — حل حضور لشركة بفرعين</h3>
+<div class="topo">{"w":820,"h":330,"n":[["HQ","server",130,80,"HQ Devices|(Push)"],["BR","server",130,230,"Branch Device|(Push)"],["FW","fw",330,155,"Firewall / VPN"],["APP","server",540,155,"Ingest + DB|ADMS server"],["PROC","server",720,80,"Processor|Reports"],["HR","pc",720,230,"HR Portal"]],"l":[["HQ","FW","","","#16a34a"],["BR","FW","","VPN","#dc2626"],["FW","APP","","","#2563eb"],["APP","PROC","","","#16a34a"],["PROC","HR","","","#d97706"]]}</div>
+<ol>
+<li><b>الأجهزة:</b> جهازين HQ + جهاز فرع، IP ثابت، Time sync، Admin password، Comm Key.</li>
+<li><b>الشبكة:</b> VPN Site-to-Site بين الفرع والمقر (راجع كورس CCNA/Sophos).</li>
+<li><b>الاستقبال:</b> سيرفر ADMS (Module 12) على Ubuntu/Windows خلف Nginx + HTTPS، Allowlist للـ SN.</li>
+<li><b>التخزين:</b> PostgreSQL (13.2) + Backup يومي.</li>
+<li><b>المعالجة:</b> وردية 9–5 + Grace 10 + وردية ليلية للأمن (13.3).</li>
+<li><b>التقارير:</b> Daily + Monthly + Exceptions، وتصدير CSV لـ Payroll.</li>
+<li><b>الأمان:</b> VLAN، Firewall، Monitoring، سياسة الاحتفاظ.</li>
+<li><b>التوثيق:</b> جدول أجهزة + رسم شبكة + Runbook للأعطال.</li>
+<li><b>اختبار:</b> فصل شبكة الفرع ساعة ثم رجوعها (هل البصمات بتتزامن بعد العودة؟).</li>
+<li><b>Break/Fix:</b> زميل يغيّر IP السيرفر / يخرب الوقت / يطفي بورت، وأنت تشخّص.</li></ol>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) أول خطوة لو الجهاز Offline؟</summary>ping ثم فحص البورت ثم إعدادات الاتصال.</details>
+<details><summary>2) ليه VLAN منفصل؟</summary>لتقليل سطح الهجوم وعزل أجهزة ضعيفة أمنيًا.</details>
+<details><summary>3) إمتى نحدّث Firmware؟</summary>بعد Backup واختبار على جهاز واحد، ومع قراءة Release notes.</details></div>
+</section>
+<section class="module" id="appA">
+<h2>Appendix A — Glossary (قاموس المصطلحات)</h2>
+<table>
+<tr><th>المصطلح</th><th>الشرح</th></tr>
+<tr><td class="l">Biometrics</td><td>تحقق بالسمات الحيوية (بصمة، وجه، كف، قزحية).</td></tr>
+<tr><td class="l">Fingerprint Template</td><td>تمثيل رقمي لنقاط البصمة (مش صورة).</td></tr>
+<tr><td class="l">Minutiae</td><td>نقاط مميزة: Ridge ending / Bifurcation.</td></tr>
+<tr><td class="l">Enrollment</td><td>تسجيل المستخدم وبصمته على الجهاز.</td></tr>
+<tr><td class="l">Verification (1:1)</td><td>مقارنة مع Template واحد بعد ID/كارت.</td></tr>
+<tr><td class="l">Identification (1:N)</td><td>مقارنة مع كل التمبلتس.</td></tr>
+<tr><td class="l">FAR / FRR</td><td>False Accept / False Reject Rate.</td></tr>
+<tr><td class="l">Threshold</td><td>حد الحساسية للمطابقة.</td></tr>
+<tr><td class="l">Liveness detection</td><td>التأكد إن الإصبع/الوجه حي.</td></tr>
+<tr><td class="l">Time &amp; Attendance (T&amp;A)</td><td>حضور وانصراف.</td></tr>
+<tr><td class="l">Access Control</td><td>التحكم في دخول الأبواب.</td></tr>
+<tr><td class="l">Standalone</td><td>جهاز مستقل بذاكرته.</td></tr>
+<tr><td class="l">Controller / Panel</td><td>لوحة تحكم مركزية للأبواب.</td></tr>
+<tr><td class="l">Reader</td><td>قارئ بصمة/كارت متصل بلوحة.</td></tr>
+<tr><td class="l">Wiegand</td><td>بروتوكول بين قارئ ولوحة (D0/D1).</td></tr>
+<tr><td class="l">RS485 / RS232</td><td>اتصال Serial (485 للمسافات الطويلة).</td></tr>
+<tr><td class="l">Relay (NO/NC/COM)</td><td>مفتاح كهربائي بيتحكم في القفل.</td></tr>
+<tr><td class="l">Fail-safe / Fail-secure</td><td>قفل بيفتح/بيفضل مقفول عند قطع الكهرباء.</td></tr>
+<tr><td class="l">Anti-passback</td><td>منع إعادة استخدام نفس الكارت للدخول بدون خروج.</td></tr>
+<tr><td class="l">Duress</td><td>إنذار إجبار (بصمة/كود خاص).</td></tr>
+<tr><td class="l">PIN / User ID</td><td>رقم المستخدم على الجهاز.</td></tr>
+<tr><td class="l">UID</td><td>رقم داخلي للمستخدم في ذاكرة الجهاز.</td></tr>
+<tr><td class="l">Comm Key</td><td>كلمة سر اتصال الجهاز بالبرنامج.</td></tr>
+<tr><td class="l">Device ID / Machine No.</td><td>رقم الجهاز على Serial.</td></tr>
+<tr><td class="l">SN (Serial Number)</td><td>الرقم التسلسلي، بيعرّف الجهاز في ADMS.</td></tr>
+<tr><td class="l">Firmware</td><td>برنامج الجهاز الداخلي.</td></tr>
+<tr><td class="l">SDK</td><td>مجموعة مكتبات للبرمجة مع الجهاز.</td></tr>
+<tr><td class="l">zkemkeeper</td><td>مكتبة COM الرسمية للـ Standalone SDK.</td></tr>
+<tr><td class="l">pyzk</td><td>مكتبة Python مجتمعية.</td></tr>
+<tr><td class="l">PUSH SDK / ADMS</td><td>بروتوكول HTTP بيبعت فيه الجهاز البيانات للسيرفر (Attendance Data Management System).</td></tr>
+<tr><td class="l">ATTLOG / OPERLOG</td><td>جدول الحضور / جدول العمليات في ADMS.</td></tr>
+<tr><td class="l">Stamp</td><td>علامة آخر سجل تم إرساله.</td></tr>
+<tr><td class="l">Verify Mode</td><td>طريقة التحقق (بصمة/كارت/...).</td></tr>
+<tr><td class="l">Punch State / Status</td><td>Check-In / Check-Out / Break / OT.</td></tr>
+<tr><td class="l">Work Code</td><td>كود إضافي مع البصمة.</td></tr>
+<tr><td class="l">Timetable / Shift / Schedule</td><td>جدول يوم / وردية / ربط الموظف بالوردية.</td></tr>
+<tr><td class="l">Grace period</td><td>سماحية التأخير.</td></tr>
+<tr><td class="l">Buddy punching</td><td>البصم بدل زميل.</td></tr>
+<tr><td class="l">Raw punch</td><td>بصمة خام من الجهاز قبل الحساب.</td></tr>
+<tr><td class="l">Idempotent</td><td>تكرار العملية بنفس النتيجة (مهم لمنع Duplicate).</td></tr>
+<tr><td class="l">Area</td><td>موقع/فرع في ZKBio Time.</td></tr></table>
+</section>
+<section class="module" id="appB">
+<h2>Appendix B — Ports، Defaults، وصيغ الرسائل (Cheat Sheet)</h2>
+<div class="warn">قيم شائعة وغير مضمونة لكل موديل. راجع دليل جهازك.</div>
+<table>
+<tr><th>البند</th><th>القيمة</th></tr>
+<tr><td class="l">SDK / Pull port</td><td>TCP 4370 (وUDP على بعض الأجهزة)</td></tr>
+<tr><td class="l">IP افتراضي (شائع)</td><td class="l">192.168.1.201 (أو حسب الموديل)</td></tr>
+<tr><td class="l">Comm Key افتراضي</td><td>0 (بدون)</td></tr>
+<tr><td class="l">ADMS/Push</td><td>HTTP على بورت السيرفر (80 / 8081 / 8000 / 443 للـ HTTPS)</td></tr>
+<tr><td class="l">Device Time</td><td>Local بدون Timezone</td></tr>
+<tr><td class="l">USB</td><td>FAT32</td></tr>
+<tr><td class="l">RS485</td><td>حتى ~1200م، Twisted pair</td></tr>
+<tr><td class="l">Wiegand</td><td>26/34 bit، حتى ~100م</td></tr></table>
+
+<h3>B.1 ADMS Endpoints</h3>
+<table>
+<tr><th>Method + Path</th><th>الغرض</th></tr>
+<tr><td class="l">GET /iclock/cdata?SN=&amp;options=all</td><td>Handshake</td></tr>
+<tr><td class="l">POST /iclock/cdata?SN=&amp;table=ATTLOG</td><td>حضور</td></tr>
+<tr><td class="l">POST /iclock/cdata?SN=&amp;table=OPERLOG</td><td>عمليات/مستخدمين</td></tr>
+<tr><td class="l">GET /iclock/getrequest?SN=</td><td>سحب أوامر</td></tr>
+<tr><td class="l">POST /iclock/devicecmd?SN=</td><td>نتيجة أمر</td></tr>
+<tr><td class="l">/iclock/registry</td><td>تسجيل (حسب الإصدار)</td></tr></table>
+
+<h3>B.2 أوامر ADMS شائعة</h3>
+<pre class="code">C:&lt;ID&gt;:INFO
+C:&lt;ID&gt;:REBOOT
+C:&lt;ID&gt;:CHECK
+C:&lt;ID&gt;:DATA UPDATE USERINFO PIN=&lt;pin&gt;&lt;TAB&gt;Name=&lt;name&gt;&lt;TAB&gt;Pri=0&lt;TAB&gt;Passwd=&lt;TAB&gt;Card=&lt;TAB&gt;Grp=1
+C:&lt;ID&gt;:DATA DELETE USERINFO PIN=&lt;pin&gt;
+C:&lt;ID&gt;:DATA QUERY USERINFO         # النتيجة على cdata
+C:&lt;ID&gt;:CLEAR LOG                   # حسب الموديل</pre>
+
+<h3>B.3 Return codes (ملاحظات مجتمع)</h3>
+<table>
+<tr><th>Return</th><th>غالبًا</th></tr>
+<tr><td>0</td><td>نجاح</td></tr>
+<tr><td>-1</td><td>غير مدعوم/لا توجد بيانات</td></tr>
+<tr><td>-2</td><td>فشل عملية ملف</td></tr>
+<tr><td>-1002</td><td>صيغة غير صحيحة</td></tr>
+<tr><td>-1004</td><td>غير مدعوم في الموديل</td></tr></table>
+
+<h3>B.4 Status / Verify (قيم شائعة)</h3>
+<table>
+<tr><th>Status</th><th>Verify</th></tr>
+<tr><td>0 In • 1 Out • 2 Break-Out • 3 Break-In • 4 OT-In • 5 OT-Out</td><td>0 Password • 1 Finger • 2 Card (أو 4) • 15 Face • 25 Palm</td></tr></table>
+
+<h3>B.5 pyzk سريع</h3>
+<pre class="code">from zk import ZK, const
+conn = ZK(ip, port=4370, timeout=5, password=0).connect()
+conn.disable_device(); conn.get_users(); conn.get_attendance()
+conn.set_user(uid, name, privilege, password, group_id, user_id, card)
+conn.delete_user(uid=uid); conn.set_time(dt); conn.live_capture()
+conn.enable_device(); conn.disconnect()</pre>
+</section>
+<section class="module" id="appC">
+<h2>Appendix C — قوالب جاهزة (Deployment & Scripts)</h2>
+<div class="warn">قوالب للتعديل. لم تُجرَّب على بيئتك.</div>
+
+<h3>C.1 تشغيل ADMS Server كخدمة على Linux (systemd)</h3>
+<pre class="code"># /etc/systemd/system/adms.service
+[Unit]
+Description=ZK ADMS Server
+After=network.target
+
+[Service]
+User=adms
+WorkingDirectory=/opt/adms
+ExecStart=/opt/adms/venv/bin/gunicorn -w 2 -b 127.0.0.1:8081 adms_server:app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+# sudo systemctl daemon-reload &amp;&amp; sudo systemctl enable --now adms</pre>
+<p>ملحوظة: SQLite مع أكتر من Worker ممكن يعمل Locks. استخدم PostgreSQL في الإنتاج.</p>
+
+<h3>C.2 Nginx Reverse Proxy مع HTTPS</h3>
+<pre class="code">server {
+  listen 443 ssl;
+  server_name adms.example.com;
+  ssl_certificate     /etc/letsencrypt/live/adms.example.com/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/adms.example.com/privkey.pem;
+  client_max_body_size 10m;
+  location /iclock/ { proxy_pass http://127.0.0.1:8081; proxy_set_header X-Real-IP $remote_addr; }
+  location /api/    { allow 10.0.0.0/8; deny all; proxy_pass http://127.0.0.1:8081; }
+}</pre>
+<p>بعض الأجهزة القديمة ما بتدعمش HTTPS حديث أو SNI؛ اختبر.</p>
+
+<h3>C.3 جدولة سحب pyzk</h3>
+<pre class="code"># Linux cron (كل 5 دقايق)
+*/5 * * * * /usr/bin/python3 /opt/zk/pull.py &gt;&gt; /var/log/zk_pull.log 2&gt;&amp;1
+
+# Windows Task Scheduler
+schtasks /Create /SC MINUTE /MO 5 /TN "ZK Pull" /TR "python C:\zk\pull.py"</pre>
+
+<h3>C.4 مزامنة الوقت لكل الأجهزة</h3>
+<pre class="code">import datetime
+from zk import ZK
+for ip in ["192.168.1.201", "192.168.1.202"]:
+    conn = None
+    try:
+        conn = ZK(ip, port=4370, timeout=5).connect()
+        before = conn.get_time()
+        conn.set_time(datetime.datetime.now())
+        print(ip, "was", before)
+    except Exception as e:
+        print(ip, "ERR", e)
+    finally:
+        if conn: conn.disconnect()</pre>
+
+<h3>C.5 Backup المستخدمين (JSON)</h3>
+<pre class="code">import json
+from zk import ZK
+conn = ZK("192.168.1.201", port=4370).connect()
+users = [{"uid":u.uid,"user_id":u.user_id,"name":u.name,"privilege":u.privilege,
+          "password":u.password,"group_id":u.group_id,"card":u.card} for u in conn.get_users()]
+json.dump(users, open("users_backup.json","w",encoding="utf-8"), ensure_ascii=False, indent=1)
+conn.disconnect()</pre>
+<div class="note">ملف الـ Backup فيه بيانات حساسة (Passwords/Card). احفظه مشفر وبصلاحيات محدودة.</div>
+
+<h3>C.6 اختبار ADMS بدون جهاز (محاكاة)</h3>
+<pre class="code"># Handshake
+curl "http://localhost:8081/iclock/cdata?SN=TEST001&amp;options=all"
+# بصمة تجريبية
+printf '1010\t2026-11-18 08:55:12\t0\t1\t0\n' | curl -X POST --data-binary @- \
+  "http://localhost:8081/iclock/cdata?SN=TEST001&amp;table=ATTLOG"
+# سحب أوامر
+curl "http://localhost:8081/iclock/getrequest?SN=TEST001"</pre>
+</section>
+<section class="module" id="appD">
+<h2>Appendix D — سيناريوهات Troubleshooting</h2>
+<div class="note">فكّر الأول، وبعدين افتح الحل.</div>
+<details><summary>1) البصمات بتظهر على الجهاز لكن ZKBio Time مش شايفها.</summary>الجهاز Offline أو غير Authorized، أو Cloud Server Setting على بورت غلط. شوف حالة الجهاز في البرنامج وSN، وجرّب تغيير الـ Address لـ IP مباشر بدل Domain.</details>
+<details><summary>2) كل البصمات بتتسجل قبل الوقت الصح بساعتين.</summary>Timezone/DST مختلف بين الجهاز والسيرفر. ضبط الوقت بعد تثبيت Timezone، وتأكد إنك مش بتحوّل مرتين.</details>
+<details><summary>3) سكريبت pyzk بيشتغل مرة ويفشل مرة.</summary>اتصالات متزامنة (البرنامج + سكربت) على نفس الجهاز، أو جهاز Wi-Fi ضعيف، أو Timeout قصير. نسّق الوصول وزوّد Timeout.</details>
+<details><summary>4) الجهاز "Disabled" والموظفين مش قادرين يبصموا.</summary>سكريبت قبل ما يعمل enable. أعد التفعيل من الجهاز أو سكربت، وصحّح بـ try/finally.</details>
+<details><summary>5) ADMS: الجهاز بيعمل GET كل ثانيتين لكن مش بيبعت ATTLOG.</summary>مفيش بصمات جديدة، أو Stamp عند السيرفر بيمنع إعادة الإرسال، أو الإعدادات (TransFlag) في الـ Handshake مش بتفعّل إرسال Attlog. سجّل Request/Response كامل وقارن.</details>
+<details><summary>6) ADMS: الأوامر بترجع Return=-1002.</summary>صيغة غير صحيحة: استخدم DATA UPDATE USERINFO بفواصل TAB حقيقية، وتحقق من أسماء الحقول (Pri/Privilege) حسب جهازك.</details>
+<details><summary>7) موظف بصمته ما بتتقبلش فجأة.</summary>جرح/رطوبة/حساس متسخ. نضّف الحساس، سجّل إصبع تاني، أو كارت مؤقت.</details>
+<details><summary>8) نفس البصمة بتتسجل مرتين.</summary>Duplicate Punch Period = 0 أو إرسال مزدوج (Push + Pull). ضبط الفترة ومفتاح فريد في DB.</details>
+<details><summary>9) تقرير بيقول "Absent" وهو حاضر.</summary>مفيش PIN مطابق (Mapping)، أو الوردية غلط، أو البصمة خارج Check-in window. راجع Raw.</details>
+<details><summary>10) جهاز بعد انقطاع الكهرباء بيرجع للوقت الافتراضي.</summary>بطارية الساعة (RTC) ضعيفة. غيّر البطارية وفعّل مزامنة تلقائية.</details>
+<details><summary>11) القفل بيفتح وبيقفل بعشوائية / الجهاز بيعيد التشغيل عند الفتح.</summary>مصدر الطاقة مشترك مع القفل. افصل القفل على Power Supply ومعاه Diode.</details>
+<details><summary>12) سيرفر ADMS شغال محلي، والجهاز في فرع ما بيوصلوش.</summary>NAT/Firewall/VPN. تأكد إن الجهاز يوصل للسيرفر على البورت (curl من شبكة الفرع).</details>
+</section>
+<section class="module" id="appE">
+<h2>Appendix E — بنك أسئلة (40 سؤال)</h2>
+<div class="note">اضغط على السؤال لإظهار الإجابة. الأسئلة من تأليفي للتدريب.</div>
+<div id="qbank">
+<h3>الأجهزة والبصمة</h3>
+<details><summary>1) الجهاز بيخزن؟<br><span class="en">A) صورة بصمة  B) Template  C) فيديو  D) PDF</span></summary><b>B</b>.</details>
+<details><summary>2) 1:N معناها؟<br><span class="en">A) مقارنة مع Template واحد  B) مقارنة مع كل التمبلتس  C) تسجيل  D) حذف</span></summary><b>B</b>.</details>
+<details><summary>3) FRR؟<br><span class="en">A) قبول شخص غلط  B) رفض شخص صح  C) سرعة  D) سعة</span></summary><b>B</b>.</details>
+<details><summary>4) أفضل وسيلة لأيدي خشنة؟<br><span class="en">A) Optical فقط  B) كارت/وجه  C) Password فقط  D) لا شيء</span></summary><b>B</b>.</details>
+<details><summary>5) Buddy punching؟<br><span class="en">A) بصمة صديق  B) نسخ بيانات  C) فيروس  D) شبكة</span></summary><b>A</b> — بصمة بدل زميل.</details>
+<details><summary>6) القفل الذي يفتح عند قطع الكهرباء؟<br><span class="en">A) Fail-secure  B) Fail-safe  C) Strike  D) NO</span></summary><b>B</b>.</details>
+<details><summary>7) ليه Power منفصل للقفل؟<br><span class="en">A) جمال  B) تفادي Back-EMF وإعادة التشغيل  C) سرعة  D) شبكة</span></summary><b>B</b>.</details>
+<details><summary>8) Wiegand بيستخدم؟<br><span class="en">A) D0/D1  B) HTTP  C) FTP  D) SMTP</span></summary><b>A</b>.</details>
+<details><summary>9) Duplicate Punch Period؟<br><span class="en">A) يتجاهل بصمات مكررة  B) يحذف مستخدم  C) يضبط الوقت  D) يغيّر IP</span></summary><b>A</b>.</details>
+<details><summary>10) فلاشة الجهاز؟<br><span class="en">A) NTFS  B) FAT32  C) ext4  D) APFS</span></summary><b>B</b> غالبًا.</details>
+<h3>الشبكة والبرامج</h3>
+<details><summary>11) بورت SDK؟<br><span class="en">A) 80  B) 4370  C) 3389  D) 22</span></summary><b>B</b>.</details>
+<details><summary>12) Comm Key؟<br><span class="en">A) شهادة  B) رقم سري للاتصال  C) IP  D) VLAN</span></summary><b>B</b>.</details>
+<details><summary>13) ping شغال و4370 مقفول، سبب محتمل؟<br><span class="en">A) Firewall أو Comm Key  B) كابل مقطوع  C) كهربا  D) لا شيء</span></summary><b>A</b>.</details>
+<details><summary>14) ADMS معناها؟<br><span class="en">A) الجهاز يبعت للسيرفر  B) السيرفر يسحب  C) USB  D) Bluetooth</span></summary><b>A</b>.</details>
+<details><summary>15) ZKBio Time نوعه؟<br><span class="en">A) Web  B) Mobile فقط  C) Firmware  D) كابل</span></summary><b>A</b>.</details>
+<details><summary>16) قاعدة بيانات ZKBio Time الافتراضية؟<br><span class="en">A) PostgreSQL  B) Redis  C) MongoDB  D) SQLite</span></summary><b>A</b> (حسب ZKTeco).</details>
+<details><summary>17) Area؟<br><span class="en">A) موقع/فرع  B) نوع بصمة  C) كابل  D) شهادة</span></summary><b>A</b>.</details>
+<details><summary>18) أنسب طريقة لفروع على الإنترنت؟<br><span class="en">A) فتح 4370 للعامة  B) VPN أو ADMS/HTTPS  C) USB فقط  D) لا يمكن</span></summary><b>B</b>.</details>
+<details><summary>19) ZKTime.Net نوعه؟<br><span class="en">A) Desktop  B) Cloud فقط  C) Firmware  D) Switch</span></summary><b>A</b>.</details>
+<details><summary>20) ما اللي بيسجله الجهاز؟<br><span class="en">A) Raw punches  B) تقارير نهائية  C) رواتب  D) إجازات</span></summary><b>A</b>.</details>
+<h3>البرمجة</h3>
+<details><summary>21) تثبيت pyzk؟<br><span class="en">A) pip install pyzk  B) npm i pyzk  C) apt pyzk  D) go get</span></summary><b>A</b>.</details>
+<details><summary>22) ليه enable_device في finally؟<br><span class="en">A) جمال  B) منع بقاء الجهاز Disabled  C) سرعة  D) اختياري</span></summary><b>B</b>.</details>
+<details><summary>23) live_capture؟<br><span class="en">A) أحداث لحظية  B) حذف  C) Backup  D) Reboot</span></summary><b>A</b>.</details>
+<details><summary>24) zkemkeeper تحتاج؟<br><span class="en">A) Windows/COM  B) Linux فقط  C) Android  D) iOS</span></summary><b>A</b>.</details>
+<details><summary>25) Platform target للـ COM 32-bit؟<br><span class="en">A) x86  B) x64  C) ARM  D) Any</span></summary><b>A</b>.</details>
+<details><summary>26) رد /iclock/getrequest لما مفيش أوامر؟<br><span class="en">A) OK  B) 404  C) JSON  D) فارغ تمامًا دائمًا</span></summary><b>A</b>.</details>
+<details><summary>27) صيغة أمر؟<br><span class="en">A) C:ID:CMD  B) CMD=ID  C) /cmd  D) XML</span></summary><b>A</b>.</details>
+<details><summary>28) Return=0؟<br><span class="en">A) نجاح  B) فشل  C) Timeout  D) Auth</span></summary><b>A</b>.</details>
+<details><summary>29) حذف مستخدم في ADMS؟<br><span class="en">A) DATA DELETE USERINFO  B) USER DEL  C) DATA DEL  D) REMOVE</span></summary><b>A</b> (حسب تجارب مجتمع).</details>
+<details><summary>30) مفتاح منع التكرار؟<br><span class="en">A) Device+PIN+Time  B) PIN فقط  C) Time فقط  D) عشوائي</span></summary><b>A</b>.</details>
+<details><summary>31) clear_attendance؟<br><span class="en">A) يحذف Logs من الجهاز  B) يحذف DB  C) يصلح الوقت  D) يضيف مستخدم</span></summary><b>A</b>.</details>
+<details><summary>32) إيه خطورة HTTP على ADMS؟<br><span class="en">A) كشف البيانات  B) سرعة  C) لا شيء  D) حجم</span></summary><b>A</b>.</details>
+<details><summary>33) أفضل تخزين Raw؟<br><span class="en">A) Append-only  B) تعديل مستمر  C) لا تخزين  D) Excel فقط</span></summary><b>A</b>.</details>
+<details><summary>34) أصعب حالة حساب؟<br><span class="en">A) Night shift  B) يوم عادي  C) عطلة  D) مستخدم واحد</span></summary><b>A</b>.</details>
+<details><summary>35) Allowlist لـ SN؟<br><span class="en">A) أمان  B) جمال  C) سرعة  D) ضغط</span></summary><b>A</b>.</details>
+<h3>التشغيل والأمان</h3>
+<details><summary>36) Timestamps غلط، أول فحص؟<br><span class="en">A) ساعة الجهاز/Timezone  B) كابل  C) DB  D) CPU</span></summary><b>A</b>.</details>
+<details><summary>37) VLAN للأجهزة؟<br><span class="en">A) عزل أمني  B) تقليل سرعة  C) تلوين  D) لا فائدة</span></summary><b>A</b>.</details>
+<details><summary>38) Backup الـ Templates فيه؟<br><span class="en">A) بيانات حساسة  B) عادي  C) صور  D) لا شيء</span></summary><b>A</b>.</details>
+<details><summary>39) قبل تحديث Firmware؟<br><span class="en">A) Backup + اختبار  B) مباشرة  C) فصل شبكة فقط  D) حذف</span></summary><b>A</b>.</details>
+<details><summary>40) 4370 على الإنترنت؟<br><span class="en">A) مقبول  B) لا، استخدم VPN  C) ضروري  D) للـ Admin فقط</span></summary><b>B</b>.</details>
+</div>
+</section>
+<section class="module" id="appF">
+<h2>Appendix F — خطة دراسة، مصادر، وChecklist</h2>
+
+<h3>F.1 خطة 6 أسابيع</h3>
+<table>
+<tr><th>الأسبوع</th><th>المحتوى</th><th>الهدف</th></tr>
+<tr><td>1</td><td>Modules 1–3</td><td>فهم البصمة، اختيار الأجهزة، تركيب وتوصيل</td></tr>
+<tr><td>2</td><td>Modules 4–5</td><td>القوائم، المستخدمين، الشبكة والاتصال</td></tr>
+<tr><td>3</td><td>Modules 6–8</td><td>ZKBio Time، الورديات والتقارير، USB</td></tr>
+<tr><td>4</td><td>Modules 9–10</td><td>pyzk: سحب وتخزين</td></tr>
+<tr><td>5</td><td>Modules 11–12</td><td>C# SDK + ADMS server</td></tr>
+<tr><td>6</td><td>Modules 13–14 + Capstone</td><td>Pipeline كامل + أمان</td></tr></table>
+
+<h3>F.2 مصادر</h3>
+<ul>
+<li>موقع ZKTeco الرسمي وصفحات المنتجات (<span class="en">zkteco.com</span>) + Download Center للـ SDK والأدلة والـ Firmware.</li>
+<li>وثيقة <span class="en">PUSH SDK Protocol</span> من الموزع/ZKTeco لموديلك.</li>
+<li>pyzk: <span class="en">github.com/fananimi/pyzk</span> و <span class="en">pyzk.readthedocs.io</span>.</li>
+<li>مشاريع ADMS مجتمعية (Go: <span class="en">s0x90/zkteco-adms</span>، حزم Laravel...) كأمثلة على الصيغ.</li>
+<li>أدلة الأجهزة (Quick Start / User Manual) للموديل بتاعك: هي المرجع الأول لقوائم الجهاز.</li></ul>
+
+<h3>F.3 Checklist مشروع بصمة</h3>
+<ul>
+<li>☐ جرد الأجهزة (SN، Firmware، سعة، موقع)</li>
+<li>☐ IP ثابت + VLAN + Firewall</li>
+<li>☐ ضبط الوقت والـ Timezone</li>
+<li>☐ Comm Key + Admin password</li>
+<li>☐ ترقيم PIN مطابق لـ HR</li>
+<li>☐ سياسة الورديات والسماحية مكتوبة ومعتمدة</li>
+<li>☐ Backup (Users + Templates + DB) + اختبار Restore</li>
+<li>☐ UPS/كهربا مستقرة</li>
+<li>☐ مراقبة Online/Offline وتنبيهات</li>
+<li>☐ سياسة خصوصية البيانات البيومترية وموافقات</li>
+<li>☐ توثيق + Runbook</li></ul>
+</section>
+</main>
+<script>
+/* ---------- Topology renderer ---------- */
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function nodeSVG(n){
+  const {t,x,y}=n, lines=String(n.l).split('|');
+  let s='';
+  const c={router:'#2563eb',switch:'#16a34a',l3:'#0d9488',pc:'#64748b',server:'#7c3aed',cloud:'#94a3b8',ap:'#f59e0b',fw:'#dc2626',laptop:'#64748b',wlc:'#db2777'}[t]||'#64748b';
+  if(t==='router')s+=`<circle cx="${x}" cy="${y}" r="21" fill="${c}"/><text x="${x}" y="${y+6}" text-anchor="middle" font-size="16" font-weight="700" style="fill:#fff">R</text>`;
+  else if(t==='switch')s+=`<rect x="${x-26}" y="${y-13}" width="52" height="26" rx="4" fill="${c}"/><text x="${x}" y="${y+5}" text-anchor="middle" font-size="13" font-weight="700" style="fill:#fff">SW</text>`;
+  else if(t==='l3')s+=`<rect x="${x-26}" y="${y-13}" width="52" height="26" rx="4" fill="${c}"/><text x="${x}" y="${y+5}" text-anchor="middle" font-size="13" font-weight="700" style="fill:#fff">L3 SW</text>`;
+  else if(t==='pc'||t==='laptop')s+=`<rect x="${x-17}" y="${y-14}" width="34" height="24" rx="3" fill="${c}"/><rect x="${x-12}" y="${y-10}" width="24" height="16" fill="#cbd5e1"/><rect x="${x-9}" y="${y+10}" width="18" height="4" fill="${c}"/>`;
+  else if(t==='server')s+=`<rect x="${x-15}" y="${y-20}" width="30" height="40" rx="3" fill="${c}"/><line x1="${x-10}" y1="${y-8}" x2="${x+10}" y2="${y-8}" stroke="#fff"/><line x1="${x-10}" y1="${y+2}" x2="${x+10}" y2="${y+2}" stroke="#fff"/><circle cx="${x}" cy="${y+12}" r="2" fill="#4ade80"/>`;
+  else if(t==='cloud')s+=`<ellipse cx="${x}" cy="${y}" rx="38" ry="22" fill="${c}"/><text x="${x}" y="${y+5}" text-anchor="middle" font-size="13" font-weight="700" style="fill:#fff">Cloud</text>`;
+  else if(t==='ap')s+=`<circle cx="${x}" cy="${y}" r="17" fill="${c}"/><path d="M${x-9} ${y+2} q9 -12 18 0 M${x-5} ${y+6} q5 -6 10 0" stroke="#fff" fill="none" stroke-width="2"/>`;
+  else if(t==='fw')s+=`<rect x="${x-22}" y="${y-16}" width="44" height="32" rx="3" fill="${c}"/><text x="${x}" y="${y+5}" text-anchor="middle" font-size="13" font-weight="700" style="fill:#fff">FW</text>`;
+  else if(t==='wlc')s+=`<rect x="${x-24}" y="${y-14}" width="48" height="28" rx="4" fill="${c}"/><text x="${x}" y="${y+5}" text-anchor="middle" font-size="13" font-weight="700" style="fill:#fff">WLC</text>`;
+  lines.forEach((ln,i)=>{s+=`<text x="${x}" y="${y+36+i*14}" text-anchor="middle" font-size="${i?11:13}" ${i?'opacity=".8"':'font-weight="700"'}>${esc(ln)}</text>`});
+  return s;
+}
+function fit(el){const s=el.querySelector('svg');if(!s)return;try{const b=s.getBBox(),v=s.viewBox.baseVal;const x0=Math.min(v.x,b.x-12),y0=Math.min(v.y,b.y-12),x1=Math.max(v.x+v.width,b.x+b.width+12),y1=Math.max(v.y+v.height,b.y+b.height+12);s.setAttribute('viewBox',x0+' '+y0+' '+(x1-x0)+' '+(y1-y0));s.setAttribute('width',x1-x0);s.style.overflow='visible'}catch(e){}}
+function topo(el){
+  let d;try{d=JSON.parse(el.textContent)}catch(e){el.textContent='diagram error: '+e.message;return}
+  const N={};d.n.forEach(a=>N[a[0]]={t:a[1],x:a[2],y:a[3],l:a[4]!==undefined?a[4]:a[0]});
+  let s=`<svg viewBox="0 0 ${d.w} ${d.h}" width="${d.w}" xmlns="http://www.w3.org/2000/svg">`;
+  d.l.forEach(l=>{const a=N[l[0]],b=N[l[1]];if(!a||!b){return}
+    const col=l[4]||'#64748b',dash=l[5]?'stroke-dasharray="6 4"':'';
+    s+=`<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="${col}" stroke-width="2.5" ${dash}/>`;
+    const p=(f)=>[a.x+(b.x-a.x)*f,a.y+(b.y-a.y)*f];
+    if(l[2]){const q=p(.2);s+=`<text x="${q[0]}" y="${q[1]-5}" text-anchor="middle" font-size="10.5" style="fill:#d97706">${esc(l[2])}</text>`}
+    if(l[3]){const q=p(.8);s+=`<text x="${q[0]}" y="${q[1]-5}" text-anchor="middle" font-size="10.5" style="fill:#d97706">${esc(l[3])}</text>`}
+  });
+  Object.values(N).forEach(n=>s+=nodeSVG(n));
+  (d.t||[]).forEach(t=>{s+=`<text x="${t[0]}" y="${t[1]}" font-size="${t[3]||12}" text-anchor="middle" font-weight="700" style="fill:${t[4]||'#2563eb'}">${esc(t[2])}</text>`});
+  (d.b||[]).forEach(b=>{s+=`<rect x="${b[0]}" y="${b[1]}" width="${b[2]}" height="${b[3]}" rx="10" fill="none" stroke="${b[5]||'#94a3b8'}" stroke-dasharray="5 4"/><text x="${b[0]+8}" y="${b[1]+14}" font-size="11" style="fill:${b[5]||'#94a3b8'}">${esc(b[4]||'')}</text>`});
+  el.innerHTML=s+'</svg>';
+}
+/* ---------- Sequence diagram ---------- */
+function seq(el){
+  let d;try{d=JSON.parse(el.textContent)}catch(e){el.textContent='seq error: '+e.message;return}
+  const n=d.a.length,W=Math.max(560,n*220),gap=W/n,H=70+d.m.length*42;
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2563eb"/></marker></defs>`;
+  const X=i=>gap*i+gap/2;
+  d.a.forEach((a,i)=>{s+=`<rect x="${X(i)-55}" y="8" width="110" height="28" rx="6" fill="#2563eb"/><text x="${X(i)}" y="27" text-anchor="middle" font-size="13" font-weight="700" style="fill:#fff">${esc(a)}</text><line x1="${X(i)}" y1="36" x2="${X(i)}" y2="${H-8}" stroke="#94a3b8" stroke-dasharray="4 4"/>`});
+  d.m.forEach((m,k)=>{const y=70+k*42,x1=X(m[0]),x2=X(m[1]);
+    s+=`<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="#2563eb" stroke-width="2" marker-end="url(#ar)"/><text x="${(x1+x2)/2}" y="${y-7}" text-anchor="middle" font-size="12.5">${esc(m[2])}</text>`});
+  el.innerHTML=s+'</svg>';
+}
+document.querySelectorAll('.topo').forEach(e=>{topo(e);fit(e)});
+document.querySelectorAll('.seq').forEach(e=>{seq(e);fit(e)});
+/* ---------- TOC ---------- */
+const toc=document.getElementById('toc');
+document.querySelectorAll('section.module').forEach(s=>{
+  const h=s.querySelector('h2');if(!h)return;
+  const a=document.createElement('a');a.href='#'+s.id;a.textContent=h.textContent;
+  a.onclick=()=>document.getElementById('side').classList.remove('open');toc.appendChild(a);
+});
+const links=[...toc.querySelectorAll('a')];
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle('on',l.getAttribute('href')==='#'+e.target.id))}}),{rootMargin:'-20% 0px -70% 0px'});
+document.querySelectorAll('section.module').forEach(s=>io.observe(s));
+/* ---------- Copy buttons ---------- */
+document.querySelectorAll('pre.code').forEach(p=>{
+  const b=document.createElement('button');b.className='cp';b.textContent='Copy';
+  b.onclick=()=>{const t=p.cloneNode(true);t.querySelector('.cp').remove();
+    const txt=t.textContent.replace(/^\s*!.*$/gm,m=>m);navigator.clipboard&&navigator.clipboard.writeText(txt).then(()=>{b.textContent='✓';setTimeout(()=>b.textContent='Copy',1200)})};
+  p.appendChild(b);
+});
+/* ---------- Search ---------- */
+(function(){
+const q=document.getElementById('q'),info=document.getElementById('qinfo');let hits=[],cur=-1,tm;
+function clear(){document.querySelectorAll('mark.hit').forEach(m=>{const p=m.parentNode;p.replaceChild(document.createTextNode(m.textContent),m);p.normalize()});hits=[];cur=-1}
+function go(i){if(!hits.length)return;if(hits[cur])hits[cur].classList.remove('cur');cur=(i+hits.length)%hits.length;const m=hits[cur];m.classList.add('cur');let d=m.parentElement;while(d){if(d.tagName==='DETAILS')d.open=true;d=d.parentElement}m.scrollIntoView({block:'center'});info.textContent=(cur+1)+' / '+hits.length}
+function run(){clear();const v=q.value.trim();if(v.length<2){info.textContent='';return}
+ const re=new RegExp(v.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi');
+ const w=document.createTreeWalker(document.querySelector('main'),NodeFilter.SHOW_TEXT,{acceptNode:n=>(n.parentElement.closest('script,style,button,.cp')||!n.nodeValue.trim())?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT});
+ const nodes=[];while(w.nextNode())nodes.push(w.currentNode);
+ nodes.forEach(n=>{const s=n.nodeValue;re.lastIndex=0;if(!re.test(s))return;re.lastIndex=0;const f=document.createDocumentFragment();let last=0,m;
+  while((m=re.exec(s))){if(m.index>last)f.appendChild(document.createTextNode(s.slice(last,m.index)));const k=document.createElement('mark');k.className='hit';k.textContent=m[0];f.appendChild(k);hits.push(k);last=m.index+m[0].length;if(m[0].length===0)re.lastIndex++}
+  if(last<s.length)f.appendChild(document.createTextNode(s.slice(last)));n.parentNode.replaceChild(f,n)});
+ info.textContent=hits.length?'':'لا نتائج';if(hits.length)go(0)}
+q.addEventListener('input',()=>{clearTimeout(tm);tm=setTimeout(run,250)});
+q.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();go(cur+(e.shiftKey?-1:1))}if(e.key==='Escape'){q.value='';clear();info.textContent=''}});
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();document.getElementById('side').classList.add('open');q.focus();q.select()}});
+})();
+</script>
+</body>
+</html>

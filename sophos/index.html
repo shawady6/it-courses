@@ -1,0 +1,1665 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sophos Firewall — الكورس الكامل</title>
+<style>
+:root{--bg:#f8fafc;--card:#fff;--tx:#0f172a;--mut:#475569;--bd:#e2e8f0;--pri:#2563eb;--acc:#0d9488;--code:#0b1220;--codetx:#e2e8f0;--warn:#fef3c7;--warnbd:#f59e0b;--lab:#ecfdf5;--labbd:#10b981;--side:#0f172a}
+@media(prefers-color-scheme:dark){:root{--bg:#0b1220;--card:#111a2e;--tx:#e5e7eb;--mut:#94a3b8;--bd:#22304d;--pri:#60a5fa;--acc:#2dd4bf;--code:#050a14;--warn:#3b2f0b;--lab:#06281f}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.8 "Segoe UI",Tahoma,Arial,sans-serif}
+#side{position:fixed;top:0;right:0;bottom:0;width:280px;background:var(--side);color:#cbd5e1;overflow:auto;padding:16px;z-index:20;transition:transform .25s}
+#side h1{font-size:18px;color:#fff;margin:0 0 4px}
+#side small{color:#94a3b8}
+#side a{display:block;color:#cbd5e1;text-decoration:none;padding:7px 10px;border-radius:8px;font-size:14px}
+#side a:hover,#side a.on{background:#1e293b;color:#fff}
+#q{width:100%;margin-top:10px;padding:8px 10px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#fff;font:14px inherit}
+#qinfo{font-size:12px;color:#94a3b8;margin-top:4px;min-height:16px}
+mark.hit{background:#fde047;color:#000;border-radius:3px}mark.cur{background:#fb923c}
+#menu{display:none;position:fixed;top:10px;right:10px;z-index:30;background:var(--pri);color:#fff;border:0;border-radius:8px;padding:8px 12px;font-size:18px}
+main{margin-right:280px;padding:24px;max-width:1100px}
+.hero{background:linear-gradient(135deg,#1d4ed8,#0d9488);color:#fff;border-radius:16px;padding:28px;margin-bottom:24px}
+.hero h1{margin:0 0 8px;font-size:30px}
+section.module{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:22px 26px;margin-bottom:28px}
+section.module>h2{margin-top:0;font-size:26px;color:var(--pri);border-bottom:3px solid var(--pri);padding-bottom:8px}
+h3{color:var(--acc);margin-top:28px;font-size:20px}
+h4{margin:18px 0 6px}
+.en{direction:ltr;unicode-bidi:isolate;display:inline-block;font-family:Consolas,monospace;font-size:.92em;background:rgba(37,99,235,.1);color:var(--pri);padding:0 6px;border-radius:5px}
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14.5px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--bd);padding:7px 10px;text-align:right;vertical-align:top}
+th{background:rgba(37,99,235,.12)}
+td.l,th.l{direction:ltr;text-align:left}
+pre.code{direction:ltr;text-align:left;background:var(--code);color:var(--codetx);padding:14px 16px;border-radius:10px;overflow-x:auto;font:13.5px/1.6 Consolas,"Courier New",monospace;position:relative;white-space:pre}
+pre.code b{color:#fbbf24;font-weight:400}
+pre.code i{color:#64748b;font-style:normal}
+.cp{position:absolute;top:6px;left:6px;font-size:11px;background:#1e293b;color:#cbd5e1;border:0;border-radius:6px;padding:3px 8px;cursor:pointer}
+.note,.warn{border-radius:10px;padding:10px 14px;margin:14px 0;border-right:5px solid}
+.note{background:rgba(37,99,235,.08);border-color:var(--pri)}
+.warn{background:var(--warn);border-color:var(--warnbd)}
+.lab{background:var(--lab);border:2px solid var(--labbd);border-radius:14px;padding:6px 20px 16px;margin:26px 0}
+.lab>h3{color:#059669;margin-top:14px}
+.lab h3:before{content:"🧪 "}
+.tag{display:inline-block;background:var(--labbd);color:#fff;border-radius:6px;padding:0 8px;font-size:13px;margin-left:6px}
+.diagram,.topo,.seq{direction:ltr;margin:14px 0;text-align:center;overflow-x:auto}
+.diagram svg,.topo svg,.seq svg{max-width:100%;height:auto;background:var(--card);border:1px solid var(--bd);border-radius:12px}
+svg text{fill:var(--tx);font-family:Segoe UI,Arial,sans-serif}
+.stack{direction:ltr;display:flex;gap:18px;flex-wrap:wrap;justify-content:center;margin:14px 0}
+.stack>div{min-width:230px}
+.stack .ly{padding:8px 12px;margin:3px 0;border-radius:8px;color:#fff;font-size:14px;display:flex;justify-content:space-between;gap:10px}
+.bits{direction:ltr;display:flex;flex-wrap:wrap;margin:12px 0}
+.bits div{border:1px solid var(--pri);background:rgba(37,99,235,.08);padding:6px 8px;font-size:13px;text-align:center;flex:1 1 auto;min-width:60px}
+details{border:1px solid var(--bd);border-radius:10px;padding:8px 14px;margin:8px 0;background:var(--bg)}
+summary{cursor:pointer;font-weight:600}
+ul,ol{padding-right:22px;padding-left:0}
+.q{margin-top:24px;border-top:2px dashed var(--bd);padding-top:6px}
+@media(max-width:900px){#side{transform:translateX(100%)}#side.open{transform:none}#menu{display:block}main{margin-right:0;padding:56px 12px 12px}section.module{padding:14px}}
+@media print{#side,#menu{display:none}main{margin:0}}
+</style>
+</head>
+<body>
+<button id="menu" onclick="document.getElementById('side').classList.toggle('open')">☰</button>
+<nav id="side"><h1>Sophos Firewall</h1><small>الشرح بالعربي • المصطلحات English • Labs عملية</small><input id="q" type="search" placeholder="بحث… (Ctrl+K)" autocomplete="off"><div id="qinfo"></div><hr style="border-color:#1e293b"><div id="toc"></div></nav>
+<main>
+<div class="hero">
+<h1>Sophos Firewall — الكورس الكامل</h1>
+<div>16 موديول + 6 ملاحق • Sophos Firewall (SFOS) + Sophos Central + Endpoint • شرح عربي + مصطلحات إنجليزي • رسومات • Labs عملية • بحث (Ctrl+K)</div>
+</div>
+<section class="module" id="howto">
+<h2>إزاي تذاكر الكورس ده</h2>
+<ul>
+<li>الكورس بيغطي <b>Sophos Firewall</b> (نظام التشغيل <span class="en">SFOS</span>، كان اسمه <span class="en">Sophos XG Firewall</span>) من الصفر للاحتراف، ومعاه <b>Sophos Central</b> و<b>Endpoint (Intercept X)</b> و<b>Synchronized Security</b>.</li>
+<li>استخدم مربع <b>البحث</b> في القائمة الجانبية (أو <span class="en">Ctrl+K</span>) لأي مصطلح أو إعداد، و<span class="en">Enter</span> للنتيجة التالية.</li>
+<li>كل موديول: <b>الشرح</b> ← <b>رسومات</b> ← <b>مسار الإعداد في الـ WebAdmin</b> ← <b>Lab</b> ← <b>أسئلة مراجعة</b>.</li>
+<li>مسارات القوائم مكتوبة بالشكل ده: <span class="en">Protect → Rules and policies</span> (القائمة الرئيسية ← الصفحة). أسماء القوائم والأزرار ممكن تختلف شوية بين الإصدارات، فلو ما لقيتهاش دور بالبحث الداخلي في الـ WebAdmin.</li>
+</ul>
+<div class="warn"><b>مهم عن الـ Labs:</b> Sophos Firewall <b>ما بيشتغلش على Cisco Packet Tracer</b>. الـ Labs هنا مبنية على <b>Sophos Firewall Virtual</b> (نسخة Home Edition المجانية أو Trial) فوق <span class="en">VirtualBox / VMware / Hyper-V / EVE-NG / GNS3</span>، ومعاها VMs بسيطة (Windows/Ubuntu) كـ Clients. شروط وقيود الـ Home Edition (RAM/Cores/الميزات) بتتغير، راجعها من موقع Sophos قبل ما تبدأ. الـ Labs اتكتبت من معرفتي بالمنتج ومتجربتش على نسخة بعينها، فلو خطوة ما اشتغلتش بلّغني بالإصدار والخطوة.</div>
+
+<h3>جهّز بيئة التدريب (مرة واحدة)</h3>
+<table>
+<tr><th>العنصر</th><th>المواصفات المقترحة</th></tr>
+<tr><td class="l">Hypervisor</td><td>VirtualBox أو VMware Workstation أو EVE-NG (للـ Labs متعددة الأجهزة)</td></tr>
+<tr><td class="l">Sophos Firewall VM</td><td>4 vCPU / 6 GB RAM تقريبًا (حسب الـ Edition) • 3–4 Network adapters</td></tr>
+<tr><td class="l">Client VM</td><td>Windows 10/11 أو Ubuntu Desktop (متصل بشبكة LAN الداخلية)</td></tr>
+<tr><td class="l">Server VM (اختياري)</td><td>Ubuntu Server أو Windows Server (Web/AD/DHCP/FTP)</td></tr>
+<tr><td class="l">Networks</td><td>WAN = NAT/Bridged (إنترنت) • LAN = Host-only/Internal • DMZ = Internal منفصلة</td></tr></table>
+
+<h3>خريطة الكورس</h3>
+<table>
+<tr><th>الجزء</th><th>المحتوى</th></tr>
+<tr><td class="l">Modules 1–3</td><td>المقدمة، المعمارية وتدفق الـ Packet، التنصيب والإعداد الأولي</td></tr>
+<tr><td class="l">Modules 4–7</td><td>الشبكة والـ Routing/SD-WAN، Firewall Rules، NAT</td></tr>
+<tr><td class="l">Modules 8–9</td><td>Web/App/TLS، IPS/ATP/Zero-day</td></tr>
+<tr><td class="l">Modules 10–11</td><td>Authentication، VPN</td></tr>
+<tr><td class="l">Modules 12–14</td><td>RED/Wireless، Email/WAF، HA/Admin/Logging</td></tr>
+<tr><td class="l">Modules 15–16</td><td>Sophos Central/Endpoint/Synchronized Security، Troubleshooting + Capstone</td></tr>
+<tr><td class="l">Appendix A–F</td><td>Glossary، Ports، CLI/API، سيناريوهات أعطال، بنك أسئلة، خطة وشهادات</td></tr></table>
+</section>
+<section class="module" id="s1">
+<h2>Module 1 — مقدمة عن Sophos ومنتجاتها</h2>
+
+<h3>1.1 مين هي Sophos؟</h3>
+<p><span class="en">Sophos</span> شركة أمن معلومات بريطانية بتقدم حلول <span class="en">Cybersecurity</span> للشركات: حماية الشبكة (<span class="en">Firewall</span>)، حماية الأجهزة (<span class="en">Endpoint</span>)، الإيميل، الـ Cloud، وخدمات الاستجابة المُدارة (<span class="en">MDR</span>). نقطة القوة الأساسية عندها هي <b>التكامل بين المنتجات</b> فيما يسمى <span class="en">Synchronized Security</span>: الـ Firewall والـ Endpoint بيتبادلوا حالة الأمان لحظيًا ويتصرفوا مع بعض.</p>
+
+<h3>1.2 محفظة المنتجات <span class="en">Product Portfolio</span></h3>
+<table>
+<tr><th>المنتج</th><th>الوظيفة</th><th>الإدارة</th></tr>
+<tr><td class="l">Sophos Firewall (SFOS)</td><td>Next-Gen Firewall: حماية الشبكة والـ VPN والـ Web/App/IPS</td><td>WebAdmin محلي + Sophos Central</td></tr>
+<tr><td class="l">Intercept X Endpoint</td><td>حماية الأجهزة (Anti-malware, Anti-ransomware, Exploit prevention, EDR)</td><td>Sophos Central</td></tr>
+<tr><td class="l">Intercept X for Server</td><td>نفس الحماية للـ Servers (Physical/Virtual/Cloud)</td><td>Sophos Central</td></tr>
+<tr><td class="l">XDR / MDR</td><td>كشف واستجابة عبر المنتجات (XDR) / فريق Sophos بيراقب ويستجيب بدالك (MDR)</td><td>Sophos Central</td></tr>
+<tr><td class="l">Sophos Email</td><td>حماية الإيميل (Anti-phishing, Anti-spam, DLP, Encryption)</td><td>Sophos Central</td></tr>
+<tr><td class="l">ZTNA</td><td>Zero Trust Network Access: وصول مباشر للتطبيقات بدل VPN كامل</td><td>Sophos Central</td></tr>
+<tr><td class="l">Sophos Wireless (APX)</td><td>Access Points بتتدار من الـ Firewall أو Central</td><td>Firewall / Central</td></tr>
+<tr><td class="l">Sophos Switch</td><td>Switches بتتدار من Central</td><td>Central</td></tr>
+<tr><td class="l">Cloud Optix / Phish Threat / Mobile</td><td>أمان Cloud / تدريب Phishing / إدارة الموبايل</td><td>Central</td></tr>
+<tr><td class="l">Sophos UTM (Astaro) — Legacy</td><td>الجيل القديم قبل XG/SFOS (نهاية الدعم/التحوّل لـ SFOS)</td><td>WebAdmin</td></tr></table>
+<div class="note">الكورس ده تركيزه الأساسي على <b>Sophos Firewall (SFOS)</b>. وجزء كبير منه على Central/Endpoint لأنهم بيكمّلوه (Module 15).</div>
+
+<h3>1.3 الفرق بين الأسماء: XG / XGS / SFOS</h3>
+<ul>
+<li><span class="en">SFOS (Sophos Firmware Operating System)</span> = نظام التشغيل نفسه (الإصدارات: v18, v19, v20, v21, v22...). وبعض الإصدارات الحديثة فيها Maintenance Releases (MR).</li>
+<li><span class="en">XG</span> = اسم الجيل القديم من الأجهزة/المنتج. <span class="en">XGS</span> = الجيل الأحدث من الأجهزة (بمعالجات <span class="en">Xstream Flow Processor</span> على الموديلات الأكبر).</li>
+<li>الإصدار الأحدث وقت كتابة الكورس: <b>Sophos Firewall v22</b> (متاح عمومًا، وبيتوزع على مراحل). من أهم ميزاته المعلنة: <span class="en">Health Check</span> (مقارنة الإعدادات بـ CIS benchmarks) ومعمارية <span class="en">Next-Gen Xstream</span> بعزل خدمات مثل الـ IPS و<span class="en">hardened kernel</span> ومحرك Anti-malware جديد وTLS 1.3 للـ Admin. راجع Release Notes الرسمية قبل أي ترقية.</li></ul>
+
+<h3>1.4 خيارات التنصيب <span class="en">Deployment Options</span></h3>
+<div class="stack"><div>
+<div class="ly" style="background:#2563eb"><span>Hardware</span><span>XGS Series</span></div>
+<div class="ly" style="background:#0d9488"><span>Software</span><span>على x86 Server</span></div>
+<div class="ly" style="background:#7c3aed"><span>Virtual</span><span>VMware • Hyper-V • KVM • Citrix/Nutanix</span></div>
+<div class="ly" style="background:#db2777"><span>Cloud</span><span>AWS • Azure • (Marketplace)</span></div>
+<div class="ly" style="background:#ca8a04"><span>Home Edition</span><span>مجاني، للتعلّم والاستخدام المنزلي</span></div></div></div>
+<ul>
+<li>اختيار الحجم يعتمد على: عدد المستخدمين، الـ Throughput المطلوب مع تفعيل الحماية (<span class="en">Firewall vs IPS vs NGFW vs SSL inspection throughput</span>)، وعدد الاتصالات المتزامنة (<span class="en">Concurrent connections</span>). ملاحظة: أرقام الـ Datasheet بتختلف كتير بين "Firewall فقط" و"مع كل الحمايات".</li>
+<li>الـ <span class="en">Home Edition</span> مناسبة جدًا للتعلّم، لكن فيها قيود على الموارد والميزات (وبتتغير)، فراجعها قبل ما تعتمد عليها في Lab معين (مثلاً الـ HA).</li></ul>
+
+<h3>1.5 التراخيص <span class="en">Licensing</span></h3>
+<table>
+<tr><th>الترخيص</th><th>بيفعّل إيه (تقريبًا)</th></tr>
+<tr><td class="l">Base Firewall</td><td>Firewall, NAT, Routing, VPN, User auth, Logging الأساسي (بدون اشتراك)</td></tr>
+<tr><td class="l">Network Protection</td><td>IPS, ATP, Security Heartbeat, Clientless VPN, SD-RED...</td></tr>
+<tr><td class="l">Web Protection</td><td>Web filtering/Content filtering, App Control, Web policies, Reporting على الويب</td></tr>
+<tr><td class="l">Zero-Day Protection</td><td>Sandboxing لملفات مشبوهة + Threat Intelligence</td></tr>
+<tr><td class="l">Email Protection</td><td>Anti-spam, DLP, Encryption للإيميل (حسب الإصدار)</td></tr>
+<tr><td class="l">Web Server Protection</td><td>WAF / Reverse proxy</td></tr>
+<tr><td class="l">Central Orchestration</td><td>إدارة وتنسيق SD-WAN من Central</td></tr>
+<tr><td class="l">Enhanced Support / Xstream Protection</td><td>الدعم والباقات المجمّعة</td></tr></table>
+<div class="note">أسماء ومكوّنات الباقات (Standard / Xstream Protection Bundle) بتتغير مع الوقت. المطلوب في الامتحان والشغل: <b>تعرف الميزة محتاجة أنهي Subscription</b> وإن انتهاء الاشتراك بيعطّل الميزة (مش الـ Firewall نفسه).</div>
+
+<h3>1.6 أهم مفاهيم Sophos Firewall</h3>
+<table>
+<tr><th>المصطلح</th><th>الشرح</th></tr>
+<tr><td class="l">Zone</td><td>تجميع منطقي للـ Interfaces (LAN, WAN, DMZ, VPN, WiFi) وبتتحدد عليه قواعد الأمان.</td></tr>
+<tr><td class="l">Firewall Rule</td><td>القاعدة اللي بتسمح/تمنع الترافيك + بتحدد الحمايات المطبّقة (Web, App, IPS...).</td></tr>
+<tr><td class="l">NAT Rule</td><td>قاعدة منفصلة للـ SNAT/DNAT (من v18+).</td></tr>
+<tr><td class="l">Xstream Architecture</td><td>معمارية معالجة الترافيك: TLS Inspection, DPI Engine, Network Flow FastPath.</td></tr>
+<tr><td class="l">Security Heartbeat</td><td>قناة بين الـ Endpoint والـ Firewall لتبادل الحالة (Green/Yellow/Red).</td></tr>
+<tr><td class="l">Synchronized Application Control</td><td>الـ Endpoint بيعرّف الـ Firewall باسم التطبيق الحقيقي اللي بيولّد الترافيك.</td></tr>
+<tr><td class="l">Sophos Central</td><td>منصة الإدارة السحابية لكل منتجات Sophos.</td></tr>
+<tr><td class="l">Control Center</td><td>الصفحة الرئيسية في الـ WebAdmin (Widgets لحالة الجهاز والحماية).</td></tr>
+<tr><td class="l">Active Threat Response / MDR</td><td>الاستجابة التلقائية والخدمة المُدارة للتهديدات.</td></tr></table>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) إيه الفرق بين SFOS و XGS؟</summary>SFOS نظام التشغيل (Firmware). XGS جيل أجهزة الـ Hardware.</details>
+<details><summary>2) إيه اللي بيربط الـ Endpoint بالـ Firewall في Synchronized Security؟</summary>Security Heartbeat (وSynchronized Application Control).</details>
+<details><summary>3) لو انتهى اشتراك Web Protection، إيه اللي يحصل؟</summary>الـ Firewall يفضل شغال، لكن ميزات الاشتراك (Web filtering/App control...) بتتعطّل أو تتحدد حسب الترخيص.</details>
+<details><summary>4) فين بتدير الـ Firewall؟</summary>محليًا بالـ WebAdmin (HTTPS على 4444 افتراضيًا) أو مركزيًا من Sophos Central.</details>
+</div>
+</section>
+<section class="module" id="s2">
+<h2>Module 2 — المعمارية وتدفق الـ Packet</h2>
+
+<h3>2.1 مكونات الـ WebAdmin</h3>
+<p>القائمة الرئيسية في SFOS مقسّمة لأقسام (التسمية ممكن تختلف شوية بين الإصدارات):</p>
+<table>
+<tr><th>القسم</th><th>بيحتوي على</th></tr>
+<tr><td class="l">Monitor &amp; analyze</td><td>Control center, Current activities, Reports, Diagnostics, Log viewer</td></tr>
+<tr><td class="l">Configure</td><td>Network, Routing, VPN, Authentication, System services, Zones...</td></tr>
+<tr><td class="l">Protect</td><td>Rules and policies, Intrusion prevention, Web, Applications, Wireless, Email, Web server, Advanced protection</td></tr>
+<tr><td class="l">System</td><td>Profiles, Administration, Backup &amp; firmware, Certificates, Sophos Central</td></tr></table>
+
+<h3>2.2 تدفق الـ Packet <span class="en">Packet Flow</span> — أهم موضوع في المعمارية</h3>
+<p>فهم الترتيب ده بيحل 80% من مشاكل "ليه الـ Rule مش بتشتغل". الترتيب المبسّط (Conceptually):</p>
+<div class="stack"><div>
+<div class="ly" style="background:#ca8a04"><span>1 Ingress</span><span>الـ Packet يدخل Interface</span></div>
+<div class="ly" style="background:#16a34a"><span>2 Pre-checks</span><span>DoS / Spoof / Connection tracking</span></div>
+<div class="ly" style="background:#0d9488"><span>3 DNAT</span><span>(Destination NAT / Port forward)</span></div>
+<div class="ly" style="background:#2563eb"><span>4 Routing decision</span><span>(Policy route / SD-WAN / Static...)</span></div>
+<div class="ly" style="background:#7c3aed"><span>5 Firewall rule match</span><span>Zone + Net + Service + User</span></div>
+<div class="ly" style="background:#db2777"><span>6 Security (DPI/Proxy)</span><span>Web/App/IPS/ATP/TLS</span></div>
+<div class="ly" style="background:#0d9488"><span>7 SNAT / Masquerade</span><span>(Source NAT)</span></div>
+<div class="ly" style="background:#ca8a04"><span>8 Egress</span><span>الـ Packet يخرج</span></div></div></div>
+<div class="note"><b>النقطة الحرجة:</b> الـ <span class="en">DNAT</span> بيحصل <b>قبل</b> الـ Firewall rule. فالـ Rule اللي بتسمح بالـ Port-forward لازم تتكتب على <b>الـ Destination بعد الترجمة (الـ IP الداخلي)</b> مش الـ Public IP (وده سبب أشهر خطأ في الـ DNAT). والـ SNAT بيحصل <b>بعد</b> الـ Rule.</div>
+
+<div class="seq">{"a":["Client (LAN)","Sophos Firewall","Web Server (Internet)"],"m":[[0,1,"1) SYN → 203.0.113.50:443"],[1,1,"2) Rule match + TLS/Web/App/IPS"],[1,2,"3) SNAT: src = WAN IP → SYN"],[2,1,"4) SYN-ACK → WAN IP"],[1,0,"5) Reverse NAT → Client"]]}</div>
+
+<h3>2.3 أنماط معالجة الترافيك <span class="en">Processing Modes</span></h3>
+<table>
+<tr><th>النمط</th><th>الشرح</th><th>الاستخدام</th></tr>
+<tr><td class="l">Network Flow FastPath</td><td>ترافيك موثوق بيتحوّل مباشرة عن طريق Hardware/Fast engine بدون فحص عميق بعد ما يتأكد أول جزء منه.</td><td>تسريع Trusted traffic (مثلاً SD-WAN، Office 365 / SaaS موثوق)</td></tr>
+<tr><td class="l">DPI Engine (Streaming)</td><td>فحص <b>Stream-based</b> في Kernel (أسرع): IPS + AV + Web filter + App control + TLS inspection في مرور واحد.</td><td>الافتراضي لمعظم الترافيك لو الـ Rule شغّلت Scan HTTP/SSL</td></tr>
+<tr><td class="l">Web Proxy (Legacy)</td><td>Proxy كامل (Connection termination) لخدمات معينة: Web filter كامل، AV Dual engine، Email MTA.</td><td>بعض الحالات (Authentication, Web policy كامل, WAF)</td></tr></table>
+<ul>
+<li>الـ <span class="en">Xstream</span> يعني: <b>TLS inspection</b> + <b>DPI engine</b> + <b>FastPath</b> + <b>SD-WAN Orchestration</b>.</li>
+<li>في الـ Rule، اختيار <span class="en">Use web proxy instead of DPI engine</span> بيحوّل الـ Web لـ Proxy (مطلوب لميزات معينة).</li>
+<li>الأجهزة الأعلى فيها <span class="en">Xstream Flow Processors (FPGA/Network Processor)</span> لتسريع FastPath وTLS.</li></ul>
+
+<h3>2.4 المناطق <span class="en">Zones</span></h3>
+<table>
+<tr><th>Zone</th><th>النوع</th><th>الاستخدام</th></tr>
+<tr><td class="l">LAN</td><td>Trusted</td><td>الشبكة الداخلية</td></tr>
+<tr><td class="l">WAN</td><td>Untrusted</td><td>الإنترنت (خارجي)</td></tr>
+<tr><td class="l">DMZ</td><td>Semi-trusted</td><td>سيرفرات بتتعرض للإنترنت</td></tr>
+<tr><td class="l">VPN</td><td>System zone</td><td>مستخدمو SSL VPN/IPsec Remote Access</td></tr>
+<tr><td class="l">WiFi</td><td>System zone</td><td>الشبكات اللاسلكية المُدارة</td></tr>
+<tr><td class="l">Custom zones</td><td>LAN-type / DMZ-type</td><td>مثلاً GUEST, SERVERS, IOT</td></tr></table>
+<p>كل Interface لازم يتبع Zone. ومفيش ترافيك بيعدي بين Zones إلا لو فيه <b>Firewall rule</b> بتسمح. الترافيك <b>داخل نفس الـ Zone</b> بيتحكم فيه إعداد منفصل (<span class="en">Zone → Allow intra-zone traffic</span>/Rules).</p>
+
+<h3>2.5 الوصول للإدارة <span class="en">Management Access</span></h3>
+<table>
+<tr><th>الخدمة</th><th>الـ Port الافتراضي</th><th>ملاحظات</th></tr>
+<tr><td class="l">WebAdmin (HTTPS)</td><td>TCP 4444</td><td>لوحة إدارة الـ Firewall</td></tr>
+<tr><td class="l">User Portal</td><td>TCP 4443</td><td>للمستخدمين (OTP, Downloads, Quarantine). <b>متاخدش تعرضه على الـ WAN</b></td></tr>
+<tr><td class="l">VPN Portal</td><td>TCP 443</td><td>تحميل Sophos Connect والـ Configs و Clientless</td></tr>
+<tr><td class="l">Captive Portal</td><td>TCP 8090</td><td>Login للمستخدمين لربط الترافيك بيهم</td></tr>
+<tr><td class="l">SSH</td><td>TCP 22</td><td>CLI (الـ Console menu)</td></tr>
+<tr><td class="l">SSL VPN</td><td>TCP 8443 (قابل للتغيير)</td><td>Remote access (بيتأثر بإعداد الـ VPN)</td></tr>
+<tr><td class="l">Ping / SNMP / DNS...</td><td>—</td><td>بتتفعّل لكل Zone من <span class="en">Administration → Device access</span></td></tr></table>
+<ul>
+<li><b>Device access</b> (<span class="en">System → Administration → Device access</span>): بتحدد مين من كل Zone يقدر يوصل لـ HTTPS/SSH/Ping/SNMP/DNS/Web proxy... على الـ Firewall نفسه. <b>أمنيًا: افتح الـ WebAdmin و SSH على LAN/Mgmt بس، مش WAN.</b></li>
+<li><span class="en">Admin profiles</span>: صلاحيات مخصصة (Read-only, Audit admin, Crypto admin...).</li>
+<li><span class="en">Admin authentication</span>: تقدر تدخل بـ AD/Radius، وتفعّل <span class="en">OTP/MFA</span> للـ Admins.</li></ul>
+
+<h3>2.6 الـ Console و الـ CLI</h3>
+<p>بتدخل عليه من الـ <span class="en">VM console</span> أو SSH، وبتظهر قائمة أرقام:</p>
+<pre class="code">Main Menu
+    1. Network Configuration
+    2. System Configuration
+    3. Route Configuration
+    4. Device Console
+    5. Device Management
+    6. VPN Management
+    7. Shutdown/Reboot Device
+    0. Exit
+</pre>
+<ul>
+<li><b>1</b>: ضبط Interfaces وIPs (مفيد لو اتقفلت برّه الـ WebAdmin) • <b>2</b>: System (Reset admin password, Reset to factory...) • <b>3</b>: Routes • <b>4</b>: <span class="en">Device Console</span> (أوامر CLI الرسمية) • <b>5</b>: Device Management (Advanced Shell، Reboot services) • <b>6</b>: VPN.</li>
+<li>الـ <span class="en">Advanced Shell</span> (من 5 ثم 3) فيه Linux shell. استخدمه للـ Diagnostics، ولا تعدّل ملفات النظام إلا بتوجيه من Support.</li></ul>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) الـ DNAT بيحصل قبل ولا بعد الـ Firewall rule؟ وإيه اللي بينتج؟</summary>قبل. فالـ Rule لازم تتكتب على الـ Internal IP (بعد الترجمة) في الـ Destination.</details>
+<details><summary>2) الـ Port الافتراضي للـ WebAdmin و User Portal؟</summary>4444 و 4443.</details>
+<details><summary>3) إيه الفرق بين DPI Engine و Web Proxy؟</summary>DPI Stream-based في Kernel وأسرع، والـ Proxy بيعمل Termination ومطلوب لميزات معينة.</details>
+<details><summary>4) ليه ما نفتحش User Portal على WAN؟</summary>سطح هجوم؛ Sophos نفسها بتوصي إنه ما يبقاش reachable من الـ WAN.</details>
+</div>
+</section>
+<section class="module" id="s3">
+<h2>Module 3 — التنصيب والإعداد الأولي</h2>
+
+<h3>3.1 خطوات التنصيب (Virtual)</h3>
+<ol>
+<li>نزّل الـ Image من موقع Sophos (Home Edition أو Trial) المناسب لـ Hypervisor بتاعك (OVA/VMX/VHD أو ISO).</li>
+<li>أنشئ VM بـ <b>4 vCPU</b> تقريبًا و <b>6 GB RAM</b> أو حسب الـ Edition، وديسك حسب الصورة/الترخيص، و<b>أكتر من Network adapter</b>: واحد لـ LAN، وواحد لـ WAN، (وواحد لـ DMZ لو محتاج).</li>
+<li>شغّل الـ VM: لو ISO، هتلاقي معالج تنصيب بيحدد الديسك. بعد الإقلاع هتظهر شاشة الـ Console.</li>
+<li>الـ Interface الأول (<span class="en">Port1</span>) هو الـ LAN وعليه IP افتراضي <span class="en">172.16.16.16/24</span> وفي بعض الإصدارات بيتغيّر عن طريق الـ Console. الـ <span class="en">Port2</span> غالبًا WAN بـ DHCP.</li>
+<li>من جهاز Client في نفس الشبكة افتح: <span class="en">https://172.16.16.16:4444</span> لتبدأ الـ <span class="en">Setup Wizard</span>.</li></ol>
+<div class="note">لو الـ Client مش على نفس الـ Subnet: ظبط له IP ثابت <span class="en">172.16.16.x/24</span> مؤقتًا، أو غيّر IP الـ LAN من الـ Console (<span class="en">1. Network Configuration</span>).</div>
+
+<h3>3.2 الـ Initial Setup Wizard</h3>
+<table>
+<tr><th>الخطوة</th><th>القرارات</th></tr>
+<tr><td>1) Admin password</td><td>باسورد قوي للـ admin + بياخد Hostname/Timezone</td></tr>
+<tr><td>2) Network (Interfaces)</td><td>مراجعة LAN/WAN وطريقة الـ WAN (DHCP/Static IP/PPPoE)</td></tr>
+<tr><td>3) Internet / DNS</td><td>DNS servers وتجربة الاتصال</td></tr>
+<tr><td>4) Time / NTP</td><td>Time zone + NTP (ضروري للـ Certificates/Logs/VPN)</td></tr>
+<tr><td>5) Licensing</td><td>تفعيل Serial number/Trial أو Home Edition (محتاج SophosID)</td></tr>
+<tr><td>6) Protection / Firewall policy defaults</td><td>تفعيل Default network rules (LAN→WAN) وحمايات أساسية</td></tr>
+<tr><td>7) Register / Central</td><td>اختياري: ربط الجهاز بـ Sophos Central</td></tr></table>
+<ul>
+<li>بعد الـ Wizard، الـ WebAdmin بيروح على الـ <span class="en">Control Center</span>.</li>
+<li><b>أول حاجة تعملها بعد الإعداد:</b> غيّر الـ Admin password للافتراضي، حدّد Device access، فعّل Backup، وحدّث الـ Firmware (<span class="en">System → Backup &amp; firmware → Firmware</span>).</li></ul>
+
+<h3>3.3 الإعدادات الافتراضية الجاهزة</h3>
+<table>
+<tr><th>العنصر</th><th>الوضع الافتراضي (تقريبي)</th></tr>
+<tr><td class="l">Zones</td><td>LAN, WAN, DMZ, VPN, WiFi</td></tr>
+<tr><td class="l">Default rule</td><td><span class="en">#Default_Network_Policy</span>: LAN → Any مسموح (مع حمايات أساسية)</td></tr>
+<tr><td class="l">DHCP Server</td><td>على الـ LAN (حسب الـ Wizard)</td></tr>
+<tr><td class="l">NAT</td><td>Masquerade تلقائي للـ LAN→WAN (من خلال Default NAT rule)</td></tr>
+<tr><td class="l">IPS / Web / App</td><td>Policies افتراضية جاهزة (مثل <span class="en">LAN to WAN</span> IPS policy)</td></tr></table>
+<div class="warn">الـ Default rule سمحة جدًا لأغراض البدء. في البيئة الحقيقية: عدّلها أو أنشئ Rules محددة، وفعّل Logging.</div>
+
+<h3>3.4 تحديث الـ Firmware وعمل Backup</h3>
+<ul>
+<li><span class="en">System → Backup &amp; firmware → Firmware</span>: Check for updates، Upload، Boot (فيه <b>Active</b> و <b>Backup</b> firmware — نظام <b>Dual boot partitions</b> للـ Rollback).</li>
+<li><b>Hot-fixes</b>: تحديثات سريعة من Sophos بتتنزل تلقائيًا (<span class="en">Pattern updates</span> للـ IPS/AV/App signatures كمان).</li>
+<li><span class="en">Backup</span>: Local / Mail / FTP / Sophos Central (Cloud backup). خد Backup <b>قبل</b> أي ترقية، وبعد أي تعديل كبير. الـ Backup بيحتفظ بكل الإعدادات (يمكن تشفيره بباسورد).</li>
+<li><b>Restore</b> على نفس الموديل (أو أحدث) — في بعض الحالات بيحتاج نفس الإصدار أو أقدم.</li></ul>
+
+<h3>3.5 إعادة الضبط <span class="en">Reset</span></h3>
+<ul>
+<li><b>Reset admin password:</b> من الـ Console: <span class="en">2. System Configuration → Reset admin password</span> (ما يتطلبش الباسورد القديم لكن بيحتاج Console access).</li>
+<li><b>Reset to factory defaults:</b> من الـ Console (<span class="en">System Configuration → Reset to factory defaults</span>) أو زر Reset الفيزيائي على الأجهزة. بيمسح كل شيء.</li></ul>
+
+<div class="lab">
+<h3>Lab 1 — تنصيب أول Sophos Firewall وربط شبكة الـ LAB <span class="tag">سهل</span></h3>
+<div class="topo">{"w":680,"h":260,"n":[["NET","cloud",80,120,"Internet|(NAT)"],["FW","fw",290,120,"Sophos Firewall|WAN: DHCP"],["SW","switch",470,120,"Virtual LAN"],["C1","pc",620,60,"Client1|172.16.16.50"],["C2","server",620,180,"Server1|172.16.16.100"]],"l":[["NET","FW","","Port2 WAN","#d97706"],["FW","SW","Port1 LAN 172.16.16.16","","#16a34a"],["SW","C1"],["SW","C2"]]}</div>
+<table>
+<tr><th>الجهاز</th><th>Network adapter</th><th>IP</th></tr>
+<tr><td>Sophos VM — Port1 (LAN)</td><td>Host-only/Internal "LAN"</td><td class="l">172.16.16.16/24</td></tr>
+<tr><td>Sophos VM — Port2 (WAN)</td><td>NAT أو Bridged</td><td class="l">DHCP</td></tr>
+<tr><td>Client1</td><td>نفس الـ LAN</td><td class="l">172.16.16.50/24 • GW 172.16.16.16 • DNS 172.16.16.16</td></tr></table>
+<ol>
+<li>أنشئ VM الـ Sophos بالمواصفات في 3.1 (adapter 1 = LAN، adapter 2 = WAN) وشغّله.</li>
+<li>أنشئ Client1 على نفس شبكة الـ LAN وظبط IP ثابت كالجدول.</li>
+<li>من Client1 افتح <span class="en">https://172.16.16.16:4444</span> (اقبل تحذير الـ Certificate) وكمّل الـ Setup Wizard: حدّد باسورد قوي واسم Hostname (مثلاً <span class="en">SFW-LAB</span>)، و Timezone <span class="en">Africa/Cairo</span> و NTP.</li>
+<li>اتأكد من الإنترنت: <span class="en">Diagnostics → Tools → Ping</span> على <span class="en">8.8.8.8</span> ثم <span class="en">Name lookup</span> لـ <span class="en">www.sophos.com</span>.</li>
+<li>من Client1: افتح موقع ويب. لو اشتغل، فالـ Default rule + NAT شغالين.</li>
+<li>راجع الـ <span class="en">Control Center</span> (Widgets) و <span class="en">Monitor &amp; analyze → Log viewer</span> وشوف Log الاتصال.</li>
+<li>سجّل الـ Licensing/Home Edition وحدّث الـ Firmware. وبعدها خد <b>Backup</b> (<span class="en">System → Backup &amp; firmware → Backup</span>) واحتفظ به.</li>
+<li><b>تحدّي:</b> من الـ Console (Console menu → 1. Network Configuration) غيّر IP الـ LAN لـ <span class="en">192.168.1.1/24</span> ثم ارجع للـ WebAdmin بالعنوان الجديد، وظبط الـ Client بالتالي.</li></ol>
+</div>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) إزاي توصل للـ WebAdmin لأول مرة؟</summary>من جهاز على الـ LAN: https://[LAN IP]:4444 (الافتراضي 172.16.16.16).</details>
+<details><summary>2) نسيت الباسورد. الحل؟</summary>من الـ Console: System Configuration → Reset admin password.</details>
+<details><summary>3) إيه فايدة وجود Active وBackup firmware؟</summary>تقدر ترجع للإصدار السابق لو الترقية سببت مشاكل (Boot من Backup).</details>
+<details><summary>4) ليه NTP مهم؟</summary>للـ Certificates والـ VPN والـ Logs والـ Reports (الوقت الغلط بيعطّل IPsec/TLS).</details>
+</div>
+</section>
+<section class="module" id="s4">
+<h2>Module 4 — الشبكة: Interfaces / Zones / VLAN / DHCP / DNS</h2>
+
+<h3>4.1 أنواع الـ Interfaces</h3>
+<table>
+<tr><th>النوع</th><th>الشرح</th><th>المسار</th></tr>
+<tr><td class="l">Physical (PortX)</td><td>بورتات الـ Hardware/Virtual (Port1, Port2...)</td><td class="l">Configure → Network → Interfaces</td></tr>
+<tr><td class="l">VLAN</td><td>Sub-interface بـ 802.1Q tag على Physical أو LAG</td><td>Add interface → VLAN</td></tr>
+<tr><td class="l">Alias</td><td>IP إضافي على نفس الـ Interface</td><td>Add alias</td></tr>
+<tr><td class="l">Bridge</td><td>تجميع بورتات في Layer 2 bridge (Transparent mode) أو Bridge ports</td><td>Add bridge</td></tr>
+<tr><td class="l">LAG</td><td>Link Aggregation (LACP 802.3ad أو Static) لزيادة الـ Bandwidth/Redundancy</td><td>Add LAG</td></tr>
+<tr><td class="l">TAP</td><td>للـ Transparent mode/نسخ الترافيك (Mirror) لتحليل (IDS)</td><td>TAP mode</td></tr>
+<tr><td class="l">Wireless / RED</td><td>Interfaces خاصة (للـ APs وأجهزة RED)</td><td>Wireless / RED</td></tr>
+<tr><td class="l">IPsec (xfrm) / SSL</td><td>Interfaces للـ Route-based VPN</td><td>VPN</td></tr></table>
+
+<h3>4.2 تكوين Interface</h3>
+<ul>
+<li><b>Name / Zone / IPv4 config:</b> <span class="en">Static / DHCP / PPPoE</span> • Gateway (للـ WAN) • <span class="en">Gateway name, Gateway detail</span>.</li>
+<li><b>MTU / MAC</b> (Override MAC لو الـ ISP بيربط على MAC معين) • <b>Speed/Duplex</b> • <b>Reconnect/Failover</b>.</li>
+<li><b>Network → Interfaces → WAN:</b> يظهر كمان <span class="en">Gateway monitoring</span> و <span class="en">Failover</span>.</li>
+<li>تأكد إن كل Interface Zone-assigned. وتجنّب عناوين متداخلة بين Interfaces.</li></ul>
+<pre class="code"><i># مثال على التصميم (مش أوامر CLI):</i>
+Port1  LAN   172.16.16.16/24       <i># Management + Clients</i>
+Port2  WAN   DHCP / Static ISP IP
+Port3  DMZ   172.16.50.1/24        <i># Servers</i>
+Port1.10 VLAN10 LAN-type 192.168.10.1/24   <i># Sales</i>
+Port1.20 VLAN20 LAN-type 192.168.20.1/24   <i># IT</i></pre>
+
+<h3>4.3 الـ VLANs على Sophos</h3>
+<div class="topo">{"w":680,"h":280,"n":[["FW","fw",340,50,"Sophos Firewall|Port1 (Trunk)"],["SW","switch",340,140,"Managed Switch|(Trunk)"],["P10","pc",150,230,"PC-Sales|VLAN 10"],["P20","pc",340,230,"PC-IT|VLAN 20"],["P30","pc",530,230,"PC-Guest|VLAN 30"]],"l":[["FW","SW","Port1.10/.20/.30","G0/1","#dc2626"],["SW","P10"],["SW","P20"],["SW","P30"]],"t":[[520,95,"802.1Q Trunk: VLAN 10,20,30",12,"#dc2626"]]}</div>
+<ol>
+<li>الـ Interface الأصلي (<span class="en">Port1</span>) بيتحوّل لـ Trunk (بدون IP) أو بيفضل Native/Untagged لو محتاج.</li>
+<li>أضف VLAN interfaces: <span class="en">Add interface → VLAN</span> (Physical interface = Port1، VLAN ID = 10، Zone = LAN، IP = 192.168.10.1/24).</li>
+<li>على الـ Switch: Trunk للـ VLANs المطلوبة وAccess ports للأجهزة.</li>
+<li>كل VLAN ممكن تتحط في Zone مختلفة (مثلاً GUEST Zone) لتطبيق Rules مختلفة.</li></ol>
+
+<h3>4.4 DHCP</h3>
+<table>
+<tr><th>المكوّن</th><th>الشرح</th><th>المسار</th></tr>
+<tr><td class="l">DHCP Server</td><td>Scope (Start/End) + Lease + Gateway + DNS + Static reservations (MAC→IP)</td><td class="l">Configure → Network → DHCP</td></tr>
+<tr><td class="l">DHCP Relay</td><td>بيحوّل Requests لسيرفر DHCP خارجي (Windows DHCP)</td><td>Relay</td></tr>
+<tr><td class="l">Lease table</td><td>مين أخد إيه</td><td>Leases</td></tr></table>
+<ul><li>الـ <span class="en">DHCP Server</span> بيشتغل على Interface واحد لكل Scope. ولازم تتأكد إن مفيش DHCP Server تاني على نفس الشبكة (Rogue/Conflict).</li><li>DHCP Options: <span class="en">NTP, Domain name, WINS, Option 66/67 (PXE)</span> وغيرها.</li></ul>
+
+<h3>4.5 DNS</h3>
+<ul>
+<li><b>DNS Forwarders:</b> <span class="en">Configure → Network → DNS</span>: من DHCP/PPPoE أو Static (مثلاً 8.8.8.8 و 1.1.1.1). ممكن تضيف <span class="en">Conditional forwarding</span> لدومين داخلي.</li>
+<li><b>DNS Host entries</b> (Local DNS): Hostname→IP للنظام الداخلي.</li>
+<li>الـ Firewall نفسه بيعمل <span class="en">DNS proxy</span> للـ Clients (لازم تفتح DNS في <span class="en">Device access</span> لـ LAN).</li>
+<li>الـ <span class="en">DNS Protection</span>/<span class="en">Secure DNS</span> وحماية DNS مفيدة (DNS filtering جزء من Web protection).</li>
+<li><b>Dynamic DNS (DDNS):</b> لتحديث اسم Domain تلقائيًا لما الـ WAN IP يتغيّر (<span class="en">Configure → Network → Dynamic DNS</span>).</li></ul>
+
+<h3>4.6 ARP و IPv6 و Neighbors</h3>
+<ul>
+<li><b>ARP / Neighbors:</b> <span class="en">Network → Neighbors</span> (ARP table + Static entries و<span class="en">ARP flooding</span>).</li>
+<li><b>IPv6:</b> تفعيل Dual-stack بتحدد Prefix وRouter Advertisement (SLAAC/DHCPv6) + <span class="en">IPv6 firewall rules</span> (نفس الـ Rules لكن مع Source/Destination IPv6).</li>
+<li>الـ <span class="en">Tunnel (6in4, 6to4)</span> لتوصيل IPv6 فوق IPv4.</li></ul>
+
+<h3>4.7 الأجسام <span class="en">Hosts &amp; Services</span></h3>
+<p>بتعمل Objects عشان تستخدمها في Rules/NAT/Routing: <span class="en">Hosts and services</span> → <b>IP host</b> (IP, Network, Range, List)، <b>FQDN host</b>، <b>MAC host</b>، <b>Country group</b> (GeoIP)، <b>Service</b> (TCP/UDP/ICMP/IP protocol + Ports) و<b>Service group</b>. استخدم أسماء واضحة وبادئة موحّدة (مثلاً <span class="en">H_Web01</span>, <span class="en">N_Branch</span>).</p>
+
+<div class="lab">
+<h3>Lab 2 — VLANs + DHCP + DMZ + Alias <span class="tag">متوسط</span></h3>
+<div class="topo">{"w":720,"h":300,"n":[["NET","cloud",90,150,"Internet"],["FW","fw",300,150,"Sophos FW"],["SW","switch",500,90,"Switch"],["PC10","pc",620,40,"Sales .10.x"],["PC20","pc",620,140,"IT .20.x"],["DMZ","server",500,230,"Web-DMZ|172.16.50.10"]],"l":[["NET","FW","","Port2 WAN","#d97706"],["FW","SW","Port1 trunk","","#dc2626"],["SW","PC10"],["SW","PC20"],["FW","DMZ","Port3 DMZ","","#16a34a"]]}</div>
+<table>
+<tr><th>الشبكة</th><th>الإعداد</th></tr>
+<tr><td>VLAN 10 (Sales)</td><td class="l">Port1.10 • Zone LAN • 192.168.10.1/24 • DHCP .100–.200</td></tr>
+<tr><td>VLAN 20 (IT)</td><td class="l">Port1.20 • Zone LAN • 192.168.20.1/24 • DHCP .100–.200</td></tr>
+<tr><td>DMZ</td><td class="l">Port3 • Zone DMZ • 172.16.50.1/24 • Web-DMZ = .10 (Static)</td></tr></table>
+<ol>
+<li>أضف Adapter 3 للـ Sophos VM (DMZ internal network)، وActive.</li>
+<li><span class="en">Configure → Network → Interfaces</span>: <b>Add interface → VLAN</b> مرتين (10 و20) على Port1 بالـ IPs أعلاه. وPort3: Zone DMZ + IP 172.16.50.1/24.</li>
+<li><span class="en">Configure → Network → DHCP</span>: أنشئ Server لكل VLAN (Scope .100–.200، Gateway = IP الـ VLAN interface، DNS = نفس الـ IP).</li>
+<li>ارفع <b>Client VM</b> على VLAN 10 (لو hypervisor يدعم VLAN tagging على الـ adapter، أو استخدم Switch افتراضي). تأكد إنه أخد IP من الـ DHCP.</li>
+<li>أنشئ <b>Firewall rules</b> (هنتعلمها في Module 6): Sales → WAN، IT → WAN و IT → DMZ، وامنع Sales → DMZ. اختبر.</li>
+<li>أضف <b>Alias</b> على Port2 (WAN) أو Port1.10: IP إضافي. وراجع <span class="en">Neighbors</span> و<span class="en">Dynamic DNS</span> (اختياري).</li>
+<li><b>تحدّي:</b> أنشئ Host objects (<span class="en">H_Web-DMZ</span>) و Service group (<span class="en">SG_Web = HTTP + HTTPS</span>) واستخدمهم في Rules.</li></ol>
+</div>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) إزاي تعمل Inter-VLAN على Sophos؟</summary>أنشئ VLAN interfaces على الـ Firewall (كل VLAN Subnet وGateway)، والـ Routing بيتم تلقائيًا بشرط Firewall rules تسمح.</details>
+<details><summary>2) الفرق بين Alias و Secondary IP؟</summary>Alias = IP إضافي على نفس الـ Interface (بنفس الـ Zone).</details>
+<details><summary>3) لازم تفتح إيه في Device access لتشغيل DNS للـ LAN؟</summary>DNS service لـ LAN zone.</details>
+<details><summary>4) استخدام LAG؟</summary>Bandwidth أعلى وRedundancy (LACP) بين الـ Firewall والـ Switch.</details>
+</div>
+</section>
+<section class="module" id="s5">
+<h2>Module 5 — Routing و SD-WAN و Multi-WAN</h2>
+
+<h3>5.1 ترتيب قرار الـ Routing</h3>
+<p>ترتيب الأولوية في SFOS (مبسّط): <b>SD-WAN policy routes</b> ← <b>Static/Policy routes</b> ← <b>Dynamic/Connected/Default routes</b> (حسب الـ Longest prefix وAD). الـ <span class="en">VPN routes</span> (IPsec) بتدخل بدورها حسب النوع (Policy-based أو Route-based).</p>
+<table>
+<tr><th>نوع الـ Route</th><th>الشرح</th><th>المسار</th></tr>
+<tr><td class="l">Connected</td><td>الشبكات على Interfaces</td><td>تلقائي</td></tr>
+<tr><td class="l">Static unicast</td><td>Destination + Gateway/Interface + Distance + Metric</td><td class="l">Configure → Routing → Static routes</td></tr>
+<tr><td class="l">Default route</td><td>0.0.0.0/0 عبر Gateway الـ WAN</td><td>Gateways</td></tr>
+<tr><td class="l">Policy-based route (PBR)</td><td>بتختار Gateway حسب Source/Destination/Service/User (قبل الـ Routing العادي)</td><td class="l">Routing → Policy routes (SD-WAN routes في v18+)</td></tr>
+<tr><td class="l">SD-WAN route</td><td>PBR مع Profile + Link selection + Failover</td><td class="l">Routing → SD-WAN policy routing</td></tr>
+<tr><td class="l">Dynamic</td><td>RIP, OSPF (v2/v3), BGP (v4/v6)</td><td>Information / OSPF / BGP</td></tr>
+<tr><td class="l">Multicast</td><td>Static multicast + PIM-SM (Sparse mode)</td><td>Multicast</td></tr></table>
+
+<h3>5.2 الـ Gateways والـ Failover</h3>
+<ul>
+<li>كل WAN interface عنده <b>Gateway</b> بـ: <span class="en">Weight</span> (للـ Load-balancing) • <span class="en">Failover rule</span> (Ping/TCP/DNS check عنوان معين: مثلاً <span class="en">8.8.8.8</span> على كل Interval) • <span class="en">Active/Backup</span>.</li>
+<li><b>Multi-link / Load balancing:</b> Active-Active (Weighted) بين ISPs أو Active-Backup.</li>
+<li>الـ Failover بيعتمد على <span class="en">Gateway monitoring</span> الصحيح: افحص عنوان حقيقي (مش الـ Gateway نفسه فقط) لأن الـ ISP ممكن يكون Router شغال لكن بدون إنترنت.</li></ul>
+<div class="topo">{"w":640,"h":240,"n":[["ISP1","cloud",110,60,"ISP-1 (Primary)"],["ISP2","cloud",110,180,"ISP-2 (Backup)"],["FW","fw",330,120,"Sophos FW"],["LAN","switch",530,120,"LAN"]],"l":[["ISP1","FW","","Port2 WAN1","#16a34a"],["ISP2","FW","","Port3 WAN2","#d97706",1],["FW","LAN","Port1"]],"t":[[210,100,"Monitoring: ping 8.8.8.8",11,"#16a34a"]]}</div>
+
+<h3>5.3 SD-WAN <span class="en">Software-Defined WAN</span></h3>
+<p>بيختار أفضل Link لكل تطبيق بناءً على جودته: <span class="en">Latency, Jitter, Packet loss</span>.</p>
+<table>
+<tr><th>المكوّن</th><th>الشرح</th></tr>
+<tr><td class="l">SD-WAN profile</td><td>سياسة لاختيار الـ Link: <span class="en">Strategy</span> (Primary/Backup، Load balance...) + <span class="en">Link selection</span> + Performance SLA (thresholds).</td></tr>
+<tr><td class="l">SD-WAN route (policy)</td><td>بتطابق (Source/Destination/Service/Application/User) وتطبّق Profile.</td></tr>
+<tr><td class="l">Link monitoring</td><td>قياس Latency/Jitter/Loss على Interfaces أو VPN tunnels (SD-WAN over IPsec).</td></tr>
+<tr><td class="l">Synchronized SD-WAN</td><td>الـ Endpoint بيعرّف الـ Firewall باسم التطبيق (Application ID) → توجيه أدق.</td></tr>
+<tr><td class="l">SD-RED</td><td>أجهزة RED (Remote Ethernet) لربط فرع صغير بـ Zero-touch وSD-WAN مدمج.</td></tr>
+<tr><td class="l">SD-WAN Orchestration</td><td>إنشاء Overlay تلقائي (Hub-and-spoke / Full mesh) من Sophos Central.</td></tr></table>
+<ul>
+<li>استخدم SD-WAN لـ: توجيه Voice/Teams عبر أفضل Link، تحويل Business-critical على MPLS/Primary وباقي الترافيك على Broadband.</li></ul>
+
+<h3>5.4 Dynamic Routing</h3>
+<table>
+<tr><th>البروتوكول</th><th>أهم الإعدادات</th></tr>
+<tr><td class="l">RIP v1/v2</td><td>Networks، Version، Authentication (مستحسن v2 + Password)</td></tr>
+<tr><td class="l">OSPF v2 (IPv4) / v3 (IPv6)</td><td>Router ID، Areas، Networks، Interface (Cost, Priority, Hello/Dead)، Authentication، Redistribution (Connected, Static, RIP, BGP)</td></tr>
+<tr><td class="l">BGP v4/v6</td><td>Local AS، Router ID، Neighbors (Remote AS, Password, Multi-hop)، Networks، Route-maps/Filters</td></tr></table>
+<div class="note">الـ <span class="en">Routing protocols</span> مضبوطة من الـ WebAdmin تحت <span class="en">Configure → Routing</span> وأيضًا من الـ CLI (<span class="en">Device console → Dynamic routing</span> في بعض الإصدارات/الصفحات). تأكد إن الـ Firewall rule بتسمح بالـ Routing protocol traffic (يتم افتراضيًا على Zone معينة، ومع الـ Device access لو لزم).</div>
+
+<h3>5.5 أدوات فحص الـ Routing</h3>
+<ul>
+<li><span class="en">Diagnostics → Routing information</span>: عرض الـ Routing table (Unicast/Multicast/IPv6 + OSPF/BGP/RIP info).</li>
+<li><span class="en">Diagnostics → Tools → Route lookup</span>: سؤال "الـ Packet لـ X هيروح فين؟".</li>
+<li><span class="en">Diagnostics → Tools → Ping / Traceroute / TCP test</span>: اختبار من الـ Firewall نفسه (اختار الـ Source interface).</li></ul>
+
+<div class="lab">
+<h3>Lab 3 — Multi-WAN Failover + Policy Route <span class="tag">متوسط</span></h3>
+<div class="topo">{"w":680,"h":260,"n":[["I1","cloud",90,60,"ISP-1|NAT net 1"],["I2","cloud",90,190,"ISP-2|NAT net 2"],["FW","fw",320,125,"Sophos FW"],["C","pc",560,125,"Client|172.16.16.50"]],"l":[["I1","FW","","Port2 WAN1","#16a34a"],["I2","FW","","Port3 WAN2","#d97706"],["FW","C","Port1 LAN"]]}</div>
+<ol>
+<li>أضف Adapter ثالث للـ VM (WAN2: شبكة NAT تانية) وظبط Port3 كـ WAN بـ DHCP أو Static.</li>
+<li><span class="en">Configure → Routing → Gateways</span>: افتح Gateway الـ WAN1 → <b>Failover rule</b>: Ping <span class="en">8.8.8.8</span> كل 10 ثواني، Failure after 3. اعمل نفس الشيء لـ WAN2 (Ping <span class="en">1.1.1.1</span>).</li>
+<li>خلي WAN1 <b>Active</b> و WAN2 <b>Backup</b>.</li>
+<li>من الـ Client: <span class="en">ping -t 8.8.8.8</span> مستمر.</li>
+<li>افصل Adapter الـ WAN1 (Disconnect cable في الـ VM). راقب إن Backup اشتغل وكام Ping ضاع. شوف <span class="en">Monitor → Current activities</span> و Event log.</li>
+<li><b>Policy route:</b> <span class="en">Routing → SD-WAN policy routing</span> (أو Policy routes) Add: Source = Client IP، Destination = Any/FQDN الشركة، Service = HTTPS، Primary gateway = WAN2. اختبر <span class="en">Route lookup</span> وتأكد إن الترافيك الخاص خرج من WAN2.</li>
+<li>جرّب تفعيل <b>Load balancing</b> (Active-Active) بوزن 2:1 وراقب توزيع الاتصالات.</li></ol>
+</div>
+
+<div class="lab">
+<h3>Lab 4 — OSPF بين Sophos و Router <span class="tag">متقدم</span></h3>
+<p>الفكرة: وصّل Sophos مع Router (FRRouting/pfSense/VM آخر/Router حقيقي) واعمل OSPF Area 0.</p>
+<ol>
+<li>وصّل شبكة وسيطة <span class="en">10.0.0.0/30</span> بين Sophos (Port3 = 10.0.0.1) والراوتر (10.0.0.2). الراوتر عنده LAN تانية <span class="en">192.168.50.0/24</span>.</li>
+<li>على Sophos: <span class="en">Configure → Routing → OSPF</span>: Router ID = 1.1.1.1 • Add Area 0 • Add Network 10.0.0.0/30 و 172.16.16.0/24 • Interface Hello/Dead الافتراضية.</li>
+<li>على الراوتر: OSPF Area 0 بنفس الـ Subnet.</li>
+<li>اتحقق: <span class="en">Diagnostics → Routing information → OSPF</span> (Neighbor = Full) وتأكد إن Route الـ 192.168.50.0/24 ظهر في Routing table.</li>
+<li>أنشئ <b>Firewall rules</b> تسمح بالـ Traffic بين Zones الشبكات (اختبر Ping من Client لـ 192.168.50.x). لو رسايل OSPF بتتحجب راجع Device access وAdvanced settings.</li></ol>
+</div>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) إيه الفرق بين Policy route و SD-WAN route؟</summary>الـ SD-WAN route هو PBR + Profile (اختيار Link حسب الجودة) وتحديد Primary/Backup.</details>
+<details><summary>2) ليه تراقب عنوان خارجي في الـ Failover؟</summary>عشان الـ Gateway ممكن يرد وهو من غير إنترنت فعلي.</details>
+<details><summary>3) أمر/أداة معرفة المسار؟</summary>Diagnostics → Tools → Route lookup + Routing information.</details>
+<details><summary>4) إيه البروتوكولات اللي بتدعمها Sophos للـ Dynamic Routing؟</summary>RIP و OSPF (v2/v3) و BGP.</details>
+</div>
+</section>
+<section class="module" id="s6">
+<h2>Module 6 — Firewall Rules (قواعد الحماية)</h2>
+
+<h3>6.1 أنواع القواعد</h3>
+<table>
+<tr><th>النوع</th><th>الاستخدام</th></tr>
+<tr><td class="l">User/network rule</td><td>القاعدة العامة: ترافيك بين Zones/Networks/Users/Services (الأكثر استخدامًا).</td></tr>
+<tr><td class="l">Business application rule</td><td>لنشر تطبيقات داخلية للإنترنت: <b>DNAT + WAF</b> (Web server protection) أو Load balancing (Web Server Protection / Email).</td></tr>
+<tr><td class="l">NAT rule (منفصلة)</td><td>SNAT/DNAT/Loopback/Reflexive. بتتعمل من <span class="en">Rules and policies → NAT rules</span>.</td></tr>
+<tr><td class="l">SSL/TLS inspection rule</td><td>تحدد مين يتفك تشفيره ومين يتعدى (Module 8).</td></tr>
+<tr><td class="l">Decryption/Exclusion lists</td><td>استثناءات (بنوك، تحديثات...).</td></tr></table>
+
+<h3>6.2 تشريح الـ Rule</h3>
+<div class="stack"><div>
+<div class="ly" style="background:#2563eb"><span>Rule name / Position</span><span>#ID • Group</span></div>
+<div class="ly" style="background:#0d9488"><span>Action</span><span>Accept / Drop / Reject</span></div>
+<div class="ly" style="background:#16a34a"><span>Source</span><span>Zones • Networks • Devices</span></div>
+<div class="ly" style="background:#7c3aed"><span>Users (Match known users)</span><span>User/Group</span></div>
+<div class="ly" style="background:#db2777"><span>Destination</span><span>Zones • Networks (FQDN, Country)</span></div>
+<div class="ly" style="background:#ca8a04"><span>Service</span><span>Ports • Time schedule</span></div>
+<div class="ly" style="background:#dc2626"><span>Security features</span><span>Web • App • IPS • ATP • Heartbeat • TLS</span></div>
+<div class="ly" style="background:#334155"><span>Logging</span><span>Log firewall traffic</span></div></div></div>
+<ul>
+<li><b>Action:</b> <span class="en">Accept</span> (سماح) • <span class="en">Drop</span> (رمي بصمت) • <span class="en">Reject</span> (رمي مع رسالة رفض ICMP/TCP RST). <b>Drop</b> للإنترنت (إخفاء)، و<b>Reject</b> للـ LAN (تجربة مستخدم أفضل).</li>
+<li><b>Match known users:</b> الـ Rule بتطابق على مستخدمين معروفين فقط (محتاج Authentication). بدونها بتطابق على أي مستخدم.</li>
+<li><b>Source/Destination Networks:</b> IP host, Network, Range, FQDN, Country group, MAC host, Device type.</li>
+<li><b>Services:</b> Any أو Service/Group محدد. <b>Schedule:</b> وقت تفعيل الـ Rule.</li>
+<li><b>Security features:</b> داخل نفس الـ Rule تطبّق: <span class="en">Web policy, Application control, IPS, Advanced threat protection, Sandstorm/Zero-day, Security Heartbeat, Scan HTTP/HTTPS/FTP/SMTP... , Use web proxy instead of DPI engine, Decrypt HTTPS during web proxy filtering</span>.</li>
+<li><b>Other:</b> <span class="en">Rewrite source address (Masquerade) / NAT rule association</span> (في v18+ بتربط الـ NAT من خلال Linked NAT).</li></ul>
+
+<h3>6.3 ترتيب القواعد وأفضل الممارسات</h3>
+<div class="warn">القواعد بتتقرأ <b>من فوق لتحت</b> وأول تطابق ينفّذ (مثل ACL). ممنوع تحط قاعدة عامة (Any → Any) فوق قواعد محددة. والقاعدة الافتراضية في الآخر <span class="en">#Default_Network_Policy</span> (حسب الإصدار/الـ Config) — راجعها.</div>
+<ul>
+<li>رتّب: <b>1) Deny/Block rules المهمة</b> ← <b>2) Allow rules المحددة (Specific)</b> ← <b>3) Allow العامة</b> ← <b>4) Cleanup/Drop-all + Logging</b>.</li>
+<li>استخدم <span class="en">Rule groups</span> (مثلاً Group لكل Zone-to-Zone) وأسماء واضحة (<span class="en">LAN-to-WAN-Web</span>).</li>
+<li>فعّل <b>Log firewall traffic</b> على Rules المهمة (Drop/Accept حساسة). الـ Logging الكتير بيستهلك مساحة.</li>
+<li>راقب <span class="en">Hit count</span> (عدد مرات المطابقة) لتنضيف Rules غير المستخدمة.</li>
+<li>استخدم <span class="en">Disable</span> بدل الحذف أثناء الاختبار، وسجّل Description للتغيير.</li></ul>
+
+<h3>6.4 الـ Rules الخاصة بالنظام</h3>
+<ul>
+<li><b>Traffic to the firewall itself (Local services):</b> بتتحكم بـ <span class="en">Device access</span> (مش بالـ Rules) — سماح WebAdmin/SSH/Ping/DNS/SNMP/VPN portal لكل Zone.</li>
+<li><b>Auto-added rules:</b> بتتضاف تلقائيًا (VPN، Email MTA، Web proxy الداخلي...) وبتظهر بعلامة مميزة؛ لا تعدّلها إلا لو ضروري.</li>
+<li><b>Loopback/Reflexive:</b> بتتعمل من NAT rules (Module 7).</li></ul>
+
+<h3>6.5 اختبار وتتبّع القواعد</h3>
+<ul>
+<li><span class="en">Monitor &amp; analyze → Log viewer → Firewall</span>: فلتر على Source/Destination/Rule ID. الـ <b>Log</b> بيقول أنهي Rule طابقت، والـ Action، والـ Security feature اللي منعت (<span class="en">Web filter / App / IPS</span>).</li>
+<li><span class="en">Monitor → Current activities → Live connections</span>: الاتصالات الحالية بتفاصيل الـ Rule والـ NAT.</li>
+<li><span class="en">Diagnostics → Packet capture</span>: التقاط Packets مع Firewall rule info و<span class="en">Drop packet capture</span> لعرض ما تم رميه.</li>
+<li>الـ <span class="en">Firewall → Rule ID</span> في الـ Log هو أول حاجة تدوّر عليها في أي مشكلة "ليه بيتمنع؟".</li></ul>
+
+<div class="lab">
+<h3>Lab 5 — بناء سياسة Firewall متدرّجة (LAN / DMZ / Guest) <span class="tag">متوسط</span></h3>
+<div class="topo">{"w":740,"h":300,"n":[["NET","cloud",90,150,"Internet"],["FW","fw",330,150,"Sophos FW"],["LAN","pc",580,50,"LAN Clients|172.16.16.0/24"],["GST","laptop",580,150,"GUEST Zone|192.168.30.0/24"],["DMZ","server",580,250,"Web-DMZ|172.16.50.10"]],"l":[["NET","FW","","WAN","#d97706"],["FW","LAN","","LAN","#16a34a"],["FW","GST","","GUEST","#dc2626"],["FW","DMZ","","DMZ","#7c3aed"]]}</div>
+<p><b>السياسة المطلوبة:</b> (1) LAN يوصل للإنترنت (Web/DNS/Email) بس. (2) LAN يوصل لـ DMZ على HTTP/HTTPS/RDP للأدمن فقط. (3) GUEST للإنترنت فقط (Web/DNS) ويتمنع من LAN و DMZ. (4) DMZ ممنوع يبدأ اتصال لأي حاجة داخلية. (5) Cleanup rule بـ Log.</p>
+<ol>
+<li>أنشئ Zone اسمها <span class="en">GUEST</span> (LAN-type) وInterface (VLAN 30 أو Port4) بـ 192.168.30.1/24 + DHCP.</li>
+<li>أنشئ Objects: <span class="en">H_Web-DMZ = 172.16.50.10</span> • <span class="en">SG_Web = HTTP+HTTPS</span> • <span class="en">SG_Basic = DNS+HTTP+HTTPS+SMTP</span>.</li>
+<li><span class="en">Protect → Rules and policies → Add firewall rule → New firewall rule</span>:
+<table>
+<tr><th>#</th><th>Name</th><th>Src → Dst</th><th>Service</th><th>Action</th></tr>
+<tr><td>1</td><td>GUEST-block-internal</td><td>GUEST → LAN,DMZ</td><td>Any</td><td>Drop (Log)</td></tr>
+<tr><td>2</td><td>GUEST-to-WAN</td><td>GUEST → WAN</td><td>SG_Basic</td><td>Accept</td></tr>
+<tr><td>3</td><td>LAN-to-DMZ-Web</td><td>LAN → DMZ (H_Web-DMZ)</td><td>SG_Web</td><td>Accept</td></tr>
+<tr><td>4</td><td>DMZ-block-out</td><td>DMZ → LAN</td><td>Any</td><td>Drop (Log)</td></tr>
+<tr><td>5</td><td>LAN-to-WAN</td><td>LAN → WAN</td><td>SG_Basic</td><td>Accept</td></tr>
+<tr><td>99</td><td>Cleanup-DropAll</td><td>Any → Any</td><td>Any</td><td>Drop (Log)</td></tr></table></li>
+<li>اختبر من كل Zone: GUEST → Web (✔)، GUEST → 172.16.16.x (✘)، LAN → H_Web-DMZ:80 (✔)، DMZ → LAN (✘).</li>
+<li>في <span class="en">Log viewer</span> شوف Rule ID لكل محاولة، وزوّد <span class="en">Hit counts</span>. جرّب تحرك Rule 5 فوق Rule 1 وشوف إزاي بتتغير النتيجة (اتأثر ترتيب المطابقة).</li>
+<li><b>تحدّي:</b> أضف <b>Schedule</b> لـ LAN-to-WAN (ساعات العمل فقط) وجرّب الاختبار خارج الميعاد.</li></ol>
+</div>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) إيه الفرق بين Drop و Reject؟</summary>Drop يرمي بصمت (إخفاء)، Reject يرد برسالة رفض (Reset/ICMP).</details>
+<details><summary>2) فيه Rule Allow عامة فوق Rule Drop محددة. النتيجة؟</summary>الـ Allow هي اللي تتطابق أولاً ويتم السماح؛ الـ Drop لن تُنفّذ. لازم تتحرك لفوق.</details>
+<details><summary>3) أنهي أداة تعرف منها الـ Rule اللي طابقت؟</summary>Log viewer (Rule ID) أو Live connections.</details>
+<details><summary>4) إمتى تستخدم Business application rule؟</summary>لنشر Web/Email servers للإنترنت مع WAF/Reverse proxy.</details>
+</div>
+</section>
+<section class="module" id="s7">
+<h2>Module 7 — NAT (ترجمة العناوين)</h2>
+
+<h3>7.1 أنواع NAT في Sophos Firewall</h3>
+<table>
+<tr><th>النوع</th><th>الاتجاه</th><th>الاستخدام</th></tr>
+<tr><td class="l">SNAT (Masquerading)</td><td>Source NAT: LAN → WAN</td><td>خروج الـ LAN للإنترنت بـ IP الـ WAN (أو IP محدد).</td></tr>
+<tr><td class="l">DNAT (Port forwarding / Destination NAT)</td><td>WAN → LAN/DMZ</td><td>نشر خدمة داخلية للإنترنت (Web, RDP, SSH...).</td></tr>
+<tr><td class="l">Full NAT</td><td>Source + Destination معًا</td><td>تغيير الاتنين في نفس القاعدة (حالات خاصة/Overlapping networks).</td></tr>
+<tr><td class="l">Loopback (Hairpin NAT)</td><td>LAN → Public IP → LAN Server</td><td>مستخدم داخلي بيدخل على السيرفر بالـ Public IP/Domain.</td></tr>
+<tr><td class="l">Reflexive</td><td>Reply traffic mirror</td><td>إنشاء قاعدة عكسية تلقائية للـ NAT (مفيدة مع Static NAT).</td></tr>
+<tr><td class="l">Linked NAT</td><td>NAT مرتبط بقاعدة Firewall</td><td>NAT تنشأ تلقائيًا من DNAT/WAF (Business app rule).</td></tr>
+<tr><td class="l">Static 1:1 NAT</td><td>Public IP ↔ Private IP</td><td>جهاز واحد بعنوان Public مخصص.</td></tr></table>
+
+<h3>7.2 أين تُنشأ؟</h3>
+<ul>
+<li><span class="en">Protect → Rules and policies → NAT rules</span>: قواعد مستقلة (من v18+). كل Rule فيها: <b>Original source/destination/service</b> ← <b>Translated source/destination/service</b> + <b>Inbound/Outbound interface</b> + Load balancing اختياري.</li>
+<li><b>Default NAT:</b> <span class="en">Default SNAT IPv4 Internet traffic</span> (Masquerade) للـ LAN→WAN.</li>
+<li>الـ <span class="en">Translated source</span> = <b>MASQ</b> (IP الـ Outbound interface) أو IP محدد (Alias).</li>
+<li><b>Load-balancing DNAT:</b> توزيع على أكتر من Server (Round robin / Weighted / Failover).</li></ul>
+
+<h3>7.3 مثال DNAT (Port Forward لـ Web server) — الخطوات الكاملة</h3>
+<div class="topo">{"w":680,"h":240,"n":[["USR","laptop",80,120,"Internet User|203.0.113.7"],["FW","fw",290,120,"Sophos FW|WAN 198.51.100.10"],["WEB","server",530,120,"Web-DMZ|172.16.50.10"]],"l":[["USR","FW","","WAN","#d97706"],["FW","WEB","","DMZ","#16a34a"]],"t":[[170,80,"dst 198.51.100.10:443",11,"#d97706"],[420,80,"dst 172.16.50.10:443",11,"#16a34a"]]}</div>
+<ol>
+<li>أنشئ <b>IP host</b> للسيرفر: <span class="en">H_Web-DMZ = 172.16.50.10</span>.</li>
+<li><b>NAT rule:</b> Original source = Any • Original destination = <span class="en">#PortB</span> (IP الـ WAN) • Original service = HTTPS • Translated destination = <span class="en">H_Web-DMZ</span> • Inbound = WAN. (الـ Sophos بيعرض خيار "Create linked firewall rule").</li>
+<li><b>Firewall rule:</b> Source = WAN/Any • Destination = <b>DMZ / H_Web-DMZ</b> (<b>مش الـ Public IP</b>) • Service = HTTPS • Action = Accept. فعّل الحمايات المناسبة (IPS, ATP, Web server protection لو WAF).</li>
+<li>اختبر من برّه (أو من شبكة مختلفة): <span class="en">https://198.51.100.10</span>. وراقب Log viewer: الـ Rule وNAT rule.</li></ol>
+<div class="warn">أشهر خطأ: كتابة الـ Public IP في الـ Destination بتاع الـ Firewall rule. الـ DNAT بيحصل قبل الـ Rule، فالـ Packet عند الـ Rule وجهته بقت الـ IP الداخلي.</div>
+
+<h3>7.4 مثال Loopback (Hairpin)</h3>
+<p>مستخدم داخلي بيفتح <span class="en">https://shop.example.com</span> اللي بيحل لـ Public IP، لكن السيرفر داخلي. محتاج: (1) DNAT rule (زي فوق) تشمل <span class="en">Inbound = Any/LAN</span>، (2) SNAT للـ Return traffic عشان السيرفر ما يردش مباشرة للـ Client (Asymmetric). Sophos بتعمل ده بخيار <span class="en">Create loopback policy</span> من الـ Linked NAT/DNAT.</p>
+
+<h3>7.5 نصايح وتتبّع</h3>
+<ul>
+<li>NAT rules بتتقرأ <b>من فوق لتحت</b> وأول تطابق ينفّذ (زي Firewall rules). الأخص فوق.</li>
+<li><span class="en">Monitor → Current activities → Live connections</span> بيعرض الـ Original و Translated.</li>
+<li><span class="en">Log viewer → Firewall</span>: يظهر <span class="en">NAT rule ID</span> بجانب Rule ID.</li>
+<li>لو الـ Server بياخد ترافيك لكن مفيش رد: تأكد إن الـ Default gateway للـ Server هو الـ Sophos (وإلا يحصل Asymmetric routing).</li>
+<li>تجنب نشر RDP/SSH مباشرة للإنترنت؛ استخدم VPN أو ZTNA أو (على الأقل) تقييد الـ Source بـ Country/IP.</li></ul>
+
+<div class="lab">
+<h3>Lab 6 — نشر Web Server من الـ DMZ (DNAT) + Loopback <span class="tag">متوسط</span></h3>
+<div class="topo">{"w":720,"h":280,"n":[["EXT","laptop",90,140,"Ext Client|(Bridged / Host)"],["FW","fw",320,140,"Sophos FW|WAN (DHCP)"],["WEB","server",580,60,"Web-DMZ|172.16.50.10"],["LAN","pc",580,220,"LAN Client|172.16.16.50"]],"l":[["EXT","FW","","WAN","#d97706"],["FW","WEB","","DMZ","#7c3aed"],["FW","LAN","","LAN","#16a34a"]]}</div>
+<ol>
+<li>على Web-DMZ (Ubuntu): <span class="en">sudo apt install apache2</span> (أو nginx) وظبط IP ثابت 172.16.50.10/24 • GW 172.16.50.1.</li>
+<li>أنشئ IP host + NAT rule + Firewall rule حسب القسم 7.3 (استخدم HTTP 80 للتبسيط).</li>
+<li>اختبر من Ext Client: <span class="en">http://[WAN IP]</span> ← لازم تظهر صفحة Apache.</li>
+<li>راجع <span class="en">Log viewer</span> وشوف الـ NAT rule. وبعدين شوف <span class="en">Live connections</span> (Original vs Translated).</li>
+<li><b>Loopback:</b> من LAN Client افتح <span class="en">http://[WAN IP]</span>. لو فشل: فعّل Loopback/Hairpin (أنشئ NAT rule: Source = LAN، Dest = WAN IP، Translated Dest = Web server، وSNAT للـ Source = MASQ/IP الـ Interface).</li>
+<li><b>تحدّي:</b> أضف قاعدة <span class="en">SNAT</span> تخلّي Server الـ DMZ يخرج للإنترنت بـ Alias IP مخصص بدل MASQ. وجرّب <span class="en">Load-balancing</span> بين 2 Web servers.</li></ol>
+</div>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) في DNAT، الـ Destination في الـ Firewall rule إيه؟</summary>الـ IP الداخلي (بعد الترجمة) أو الـ Zone/Host الخاص بالسيرفر، مش الـ Public IP.</details>
+<details><summary>2) إيه فايدة Loopback NAT؟</summary>يسمح للمستخدمين الداخليين بالوصول للسيرفر المنشور عبر الـ Public IP/Domain.</details>
+<details><summary>3) إمتى يظهر Asymmetric routing؟</summary>لما الـ Server ما يكونش Gateway بتاعه هو الـ Sophos، فالرد يخرج من طريق مختلف.</details>
+<details><summary>4) الفرق بين Masquerade و SNAT بـ IP محدد؟</summary>Masquerade بياخد IP الـ Interface تلقائيًا (مناسب لـ DHCP)، SNAT بـ IP محدد بيختار عنوان ثابت (Alias).</details>
+</div>
+</section>
+<section class="module" id="s8">
+<h2>Module 8 — Web Protection, Application Control & TLS Inspection</h2>
+
+<h3>8.1 الصورة الكاملة</h3>
+<div class="topo">{"w":720,"h":230,"n":[["U","pc",70,110,"User|(Known / Unknown)"],["FW","fw",290,110,"Sophos FW|Rule + Web policy + App control + TLS"],["NET","cloud",530,110,"Internet"],["CAT","server",650,50,"SophosLabs|URL DB / App sigs"]],"l":[["U","FW","","LAN","#16a34a"],["FW","NET","","WAN","#d97706"],["FW","CAT","","","#7c3aed",1]],"t":[[360,180,"فك التشفير (TLS) ← فحص (Web/App/AV) ← إعادة تشفير",12,"#2563eb"]]}</div>
+<table>
+<tr><th>الميزة</th><th>بتعمل إيه</th><th>المسار</th></tr>
+<tr><td class="l">Web policy</td><td>تصنيف المواقع (Categories) والسماح/المنع/التحذير حسب User/Group/Time</td><td class="l">Protect → Web → Policies</td></tr>
+<tr><td class="l">Application control</td><td>تحديد التطبيقات (Facebook, TeamViewer, Torrent...) بغض النظر عن Port</td><td class="l">Protect → Applications</td></tr>
+<tr><td class="l">TLS inspection</td><td>فك تشفير HTTPS لفحصه</td><td class="l">Protect → Rules and policies → SSL/TLS inspection rules</td></tr>
+<tr><td class="l">Web content filter/File type</td><td>منع أنواع ملفات، Keywords، Safe search، YouTube restrictions</td><td>Web → Policies/Filters</td></tr>
+<tr><td class="l">Anti-malware</td><td>فحص التحميلات بمحرك AV (+ Zero-day cloud lookups)</td><td>في الـ Rule (Scan HTTP)</td></tr>
+<tr><td class="l">Surfing quota / Traffic shaping</td><td>حصص تصفح (Time/Data) وتحديد النطاق</td><td>Web → Surfing quotas / Profiles → Traffic shaping</td></tr></table>
+
+<h3>8.2 الـ Web Policy</h3>
+<ul>
+<li><b>Policy</b> = مجموعة <b>Rules</b> (ترتيب مهم) كل واحدة: Users/Groups ← Activities/Categories ← Action (Allow/Block/Warn/Don't scan) ← Time.</li>
+<li><b>Categories:</b> مصنّفة من SophosLabs (Social, Streaming, Adult, Gambling, Malware hosting, Phishing...). وفي <span class="en">Web category</span> تقدر تغيّر التصنيف لموقع معين (Override) وتعمل <span class="en">Local category</span>.</li>
+<li><b>Exceptions:</b> <span class="en">Protect → Web → Exceptions</span> لتجاوز الفحص لـ Domain/IP/URL معينة (مثلاً تحديثات Windows).</li>
+<li><b>Safe search</b> و <b>YouTube restricted mode</b> و <b>Google Apps domain restriction</b> (منع Gmail الشخصي).</li>
+<li><b>Policy tester:</b> أداة لتجربة Policy على User/URL وتعرف النتيجة قبل التطبيق.</li>
+<li>تطبّق الـ Web policy من خلال الـ Firewall rule (<span class="en">Web policy = اسم Policy</span>) مع تفعيل <span class="en">Scan HTTP</span> وغالبًا مع <span class="en">Decrypt HTTPS</span>.</li></ul>
+
+<h3>8.3 Application Control</h3>
+<table>
+<tr><th>العنصر</th><th>الشرح</th></tr>
+<tr><td class="l">Application filter</td><td>مجموعة Rules: Category/Characteristics (مثل Risk level, Productivity) ← Action (Allow/Deny) + Traffic shaping.</td></tr>
+<tr><td class="l">Categories</td><td>P2P, Proxy/Tunnel, Social networking, Streaming media, Remote access...</td></tr>
+<tr><td class="l">Synchronized Application Control</td><td>الـ Endpoint بيعرّف الـ Firewall بالتطبيقات الـ Unclassified/Custom (اسم Process) فتتصنّف تلقائيًا.</td></tr>
+<tr><td class="l">Cloud Application Visibility</td><td>Widget/Report بيظهر استخدام SaaS (Shadow IT) وبيربط بالـ Heartbeat.</td></tr></table>
+<ul><li>بيعتمد على <span class="en">Application signatures</span> (بتتحدث من SophosLabs)، وبيشتغل مع DPI engine.</li><li>للتطبيقات المشفّرة، الـ TLS inspection بيساعد تحديد التطبيق (أو بيتعرّف بالـ SNI/Certificate).</li></ul>
+
+<h3>8.4 SSL/TLS Inspection</h3>
+<table>
+<tr><th>المكوّن</th><th>الشرح</th></tr>
+<tr><td class="l">Decryption profile</td><td>إعدادات التشفير المقبولة (TLS versions, Cipher), التعامل مع Certificate errors (Expired/Untrusted)، وإن كانت Block أو Allow أو Re-sign.</td></tr>
+<tr><td class="l">Re-signing CA</td><td>شهادة CA الخاصة بالـ Sophos بتوقّع الـ Certificates المولّدة (Man-in-the-Middle شرعي). <b>لازم تتثبّت (Trust) على كل Client</b> (GPO/MDM).</td></tr>
+<tr><td class="l">Decrypt rules</td><td>مين (Source/Destination/Category/Service) يتفك: <span class="en">Decrypt</span> أو <span class="en">Don't decrypt</span>.</td></tr>
+<tr><td class="l">Exclusions</td><td>مواقع حساسة (بنوك، صحة)، وتطبيقات Pinned certificates (مثلاً بعض Apps/Updates).</td></tr>
+<tr><td class="l">Local TLS exclusion list</td><td>قائمة بالـ Domains/Categories اللي مش بتتفك أبدًا.</td></tr></table>
+<div class="warn"><b>اعتبارات قانونية/خصوصية:</b> فك التشفير بيعرّض بيانات المستخدمين. استخدم <span class="en">Do not decrypt</span> للبنوك/الصحة، واتبع سياسة الشركة والقانون المحلي، وخبّر المستخدمين.</div>
+<ul>
+<li>من غير TLS inspection الـ Web filter شغال بالـ <b>Category via SNI/IP/Certificate</b> بس (بدون URL path وبدون فحص الملفات).</li>
+<li>تثبيت الـ CA: <span class="en">Protect → Rules and policies → SSL/TLS inspection → Download certificate</span> وبتوزعها على Clients.</li></ul>
+
+<div class="lab">
+<h3>Lab 7 — Web filtering + Application control <span class="tag">متوسط</span></h3>
+<ol>
+<li>من <span class="en">Protect → Web → Policies</span> أنشئ Policy باسم <span class="en">POL-Staff</span>: Block (Adult, Gambling, Malware hosting, Phishing, P2P)، Warn (Social networking)، Allow الباقي. فعّل <span class="en">Safe search</span>.</li>
+<li><span class="en">Protect → Applications</span> أنشئ <span class="en">App filter</span> يمنع: Proxy/Tunnel + P2P + Remote access (مع استثناء Remote desktop للـ IT).</li>
+<li>عدّل Rule <span class="en">LAN-to-WAN</span>: Web policy = POL-Staff • Application control = الفلتر • Scan HTTP. اتأكد إن <span class="en">Log firewall traffic</span> شغال.</li>
+<li>من Client: جرّب موقع Social (هيظهر Warning) وموقع Gambling (Block). جرّب تحميل ملف <span class="en">EICAR test file</span> (من eicar.org) وتشوف AV بيمنعه.</li>
+<li>شوف <span class="en">Log viewer → Web filter / Applications</span> و<span class="en">Reports → Web activity / Applications</span>.</li>
+<li><b>Policy tester:</b> اختبر URL معين مع User وشوف ليه اتمنع.</li></ol>
+</div>
+
+<div class="lab">
+<h3>Lab 8 — TLS inspection + استثناء بنك <span class="tag">متقدم</span></h3>
+<ol>
+<li><span class="en">Protect → Rules and policies → SSL/TLS inspection rules</span>: أنشئ Rule: Source LAN → Destination Any • Action Decrypt • Decryption profile = <span class="en">Maximum compatibility</span> (أو Default) • Re-sign with Sophos CA.</li>
+<li>أضف Rule فوقها: Destination categories = <span class="en">Banking / Health</span> → <span class="en">Don't decrypt</span>.</li>
+<li>نزّل شهادة الـ CA وثبّتها في <span class="en">Trusted Root Certification Authorities</span> على الـ Client (Windows: certmgr.msc أو GPO).</li>
+<li>افتح <span class="en">https://example.com</span> وراجع الـ Certificate في المتصفح: الـ Issuer = Sophos CA. وافتح موقع بنك وتأكد إن الشهادة أصلية (Not decrypted).</li>
+<li>جرّب موقع بشهادة Self-signed/Expired وشوف رد فعل الـ Profile. وشوف <span class="en">TLS inspection</span> Widget في Control Center.</li>
+<li><b>تحدّي:</b> اعمل Exclusion لتطبيق معين بيستخدم Certificate pinning (مثلاً تحديث ما)، وراقب Log لما يفشل.</li></ol>
+</div>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) ليه لازم تثبّت Sophos CA على الـ Clients؟</summary>عشان المتصفح يثق بالشهادات اللي بتتولّد وقت فك التشفير، وإلا هتظهر تحذيرات.</details>
+<details><summary>2) إيه مميزات فك التشفير؟</summary>فحص المحتوى (AV/URL path/App control) داخل HTTPS.</details>
+<details><summary>3) Synchronized App Control بيحل إيه؟</summary>تصنيف تطبيقات غير معروفة بالاعتماد على معلومة الـ Endpoint.</details>
+<details><summary>4) إزاي تتأكد إن Policy هتحجب موقع؟</summary>Policy tester أو Log viewer بعد التطبيق.</details>
+</div>
+</section>
+<section class="module" id="s9">
+<h2>Module 9 — IPS و ATP و DoS Protection و Zero-Day</h2>
+
+<h3>9.1 طبقات الحماية</h3>
+<div class="stack"><div>
+<div class="ly" style="background:#16a34a"><span>DoS / Spoof protection</span><span>إغراق + انتحال IP</span></div>
+<div class="ly" style="background:#0d9488"><span>IPS</span><span>هجمات على الثغرات (Signatures)</span></div>
+<div class="ly" style="background:#2563eb"><span>ATP</span><span>Botnet / C2 / Malicious DNS-IP</span></div>
+<div class="ly" style="background:#7c3aed"><span>Anti-malware (AV)</span><span>فحص الملفات والـ Downloads</span></div>
+<div class="ly" style="background:#db2777"><span>Zero-Day (Sandbox)</span><span>تفجير الملف المشبوه في Cloud sandbox</span></div>
+<div class="ly" style="background:#ca8a04"><span>Heartbeat / ATR</span><span>الـ Endpoint المصاب يُعزل/يُحجب</span></div></div></div>
+
+<h3>9.2 الـ IPS <span class="en">Intrusion Prevention System</span></h3>
+<ul>
+<li>بيفحص الترافيك مقابل <b>Signatures</b> لثغرات وهجمات معروفة (Exploits, Scans, Brute force, Malware C2...). وبيتحدث تلقائيًا من SophosLabs.</li>
+<li><b>IPS policy:</b> مجموعة Rules: بتختار Signatures حسب <span class="en">Category</span> (Browser, DNS, Database, FTP, Mail, Windows...) و<span class="en">Severity</span> و<span class="en">Platform</span> و<span class="en">Target (Client/Server)</span> وActions: <span class="en">Allow / Drop packet / Reset</span>.</li>
+<li>الـ Policy بتتطبق على الـ Firewall rule (<span class="en">Intrusion prevention = اسم Policy</span>). في سياسات جاهزة: <span class="en">LAN to WAN</span>, <span class="en">WAN to LAN</span>, <span class="en">DMZ to LAN</span>, <span class="en">Generalpolicy</span>, <span class="en">Dmzpolicy</span>...</li>
+<li><b>Custom IPS signatures:</b> تكتب Signature خاصة بـ Syntax (Snort-like) لحالات خاصة.</li>
+<li><b>False positives:</b> لو Signature منعت ترافيك شرعي: اعمل <span class="en">Exception</span> على الـ Signature أو عدّل الـ Action لـ Allow لحالة معينة. راجع <span class="en">Log viewer → IPS</span> (Signature ID).</li>
+<li>الأداء: IPS ثقيل. فعّله على Rules الأكثر أهمية (Inbound/DMZ) واختار Policy مناسبة بدل "كل Signatures".</li></ul>
+
+<h3>9.3 الـ ATP <span class="en">Advanced Threat Protection</span></h3>
+<ul>
+<li>بيكتشف <b>Botnets</b> والـ <b>Command &amp; Control (C2)</b> عن طريق: Threat intelligence من SophosLabs (قوائم IP/Domain/URL خبيثة) + DNS inspection + Web + IP reputation.</li>
+<li>الـ Actions: <span class="en">Log only</span> أو <span class="en">Log and drop</span>. وبيظهر الـ Source (الـ Host المصاب) في <span class="en">Control Center → ATP</span> و <span class="en">Log viewer → ATP</span>.</li>
+<li>مرتبط بالـ <span class="en">Security Heartbeat</span>: لو Host مصاب، الـ Firewall بيعمل Alert/Action (لو الـ Endpoint متسجل) أو يستخدم Active Threat Response.</li></ul>
+
+<h3>9.4 Zero-Day Protection <span class="en">(Sandstorm سابقًا)</span></h3>
+<ul>
+<li>الملفات المشبوهة (Executables, Office docs with macros, PDFs, Archives...) بتتبعت لـ <b>Cloud sandbox</b> وتتنفّذ فيها، ويتولّد Report (Static + Behavior). الـ Client بيستنى (<span class="en">Hold</span>) أو ينزّل بعدين حسب الإعداد.</li>
+<li>لازم ترخيص <span class="en">Zero-Day Protection</span> وتفعيل الميزة في Rule (<span class="en">Sandstorm</span>/<span class="en">Zero-day protection</span>) وتفعيل <span class="en">Scan HTTP/HTTPS (مع Decrypt)</span> عشان يشوف الملفات.</li>
+<li>الإعدادات: <span class="en">Protect → Advanced protection → Zero-day protection</span> (أنواع الملفات، الحجم الأقصى، Exclusions).</li></ul>
+
+<h3>9.5 DoS و Spoof و Advanced Protection</h3>
+<table>
+<tr><th>الميزة</th><th>الشرح</th></tr>
+<tr><td class="l">DoS &amp; spoof protection</td><td>حدود للـ Packets/sec (SYN/UDP/TCP/ICMP flood) لكل Source/Destination + <span class="en">Spoof prevention</span> (IP spoofing, MAC filtering, IP-MAC pair).</td></tr>
+<tr><td class="l">Strict policy / Fragment protection</td><td>رفض Packets غير سليمة (TCP state errors, Fragments).</td></tr>
+<tr><td class="l">Country blocking (GeoIP)</td><td>حجب ترافيك من/إلى دول (عبر Country groups في Rules).</td></tr>
+<tr><td class="l">Port scan protection</td><td>اكتشاف Scans (Reconnaissance) وحجب المصدر.</td></tr>
+<tr><td class="l">Advanced firewall settings (CLI)</td><td>إعدادات TCP/IP متقدمة (State inspection, Bypass stateful) — بحذر.</td></tr></table>
+<ul>
+<li>مسار: <span class="en">Protect → Intrusion prevention → DoS &amp; spoof protection</span>. فعّل <span class="en">Log</span> أولاً وحدد الـ Thresholds بالمراقبة (Burst/Rate) قبل ما تبقى Drop.</li>
+<li>تجنب "منع كل حاجة": DoS thresholds منخفضة جدًا بتعطّل الاستخدام الشرعي.</li></ul>
+
+<h3>9.6 Active Threat Response و Heartbeat actions</h3>
+<ul>
+<li><span class="en">Security Heartbeat</span>: Firewall rule ممكن تشترط حد أدنى لحالة الـ Endpoint: <span class="en">Require Heartbeat Green</span> أو <span class="en">Yellow</span> للوصول لشبكة معينة (Servers). والـ Endpoints الحمراء بتتحجب (Lateral movement protection).</li>
+<li><span class="en">Active Threat Response</span> (إصدارات حديثة): بيطبّق Block تلقائي عند وجود Indicators من Sophos MDR/Threat feeds.</li>
+<li>تفاصيل Heartbeat في Module 15.</li></ul>
+
+<div class="lab">
+<h3>Lab 9 — IPS + ATP + DoS (اختبار آمن) <span class="tag">متقدم</span></h3>
+<div class="warn">اختبر <b>على الـ Lab بتاعك فقط</b>. ممنوع تعمل Scans أو Attacks على شبكات أو أجهزة مش بتاعتك.</div>
+<ol>
+<li><span class="en">Protect → Intrusion prevention → IPS policies</span>: اعمل Policy باسم <span class="en">POL-LAN-WAN</span> (Platforms: Windows/Linux، Severity: Critical/High/Medium، Action: Drop).</li>
+<li>اربطها بـ Rule <span class="en">LAN-to-WAN</span> (Intrusion prevention = POL-LAN-WAN)، وفعّل Log.</li>
+<li>من جهاز Kali/Linux داخل الـ Lab: <span class="en">nmap -sS 172.16.50.10</span> (على Web-DMZ بتاعك) ← راقب <span class="en">Log viewer → IPS</span> أو Firewall (Scan detection).</li>
+<li>اختبر Signature بسيطة بإرسال Request فيه SQLi أو Path traversal على Web-DMZ بتاعك (<span class="en">curl "http://172.16.50.10/?id=1' OR '1'='1"</span>)، وراجع: هل حجبته Policy؟ بأنهي Signature ID؟</li>
+<li><b>DoS:</b> فعّل <span class="en">DoS protection</span> بعتبات منخفضة لـ ICMP (مثلاً 5 packets/sec) واختبر <span class="en">ping -f</span>/flood من جهازك داخل الـ Lab لـ Web-DMZ، وراقب Drop في Log وتأثير الـ Thresholds. ارجع للقيم المنطقية بعد التجربة.</li>
+<li><b>ATP:</b> جرّب تفتح من Client دومين اختبار ATP (SophosLabs بتوفر مواقع اختبار في وثائقها) أو اعمل DNS lookup لـ Domain خبيث معروف/Test، وراقب Log → ATP والـ Widget.</li>
+<li><b>Zero-day:</b> فعّل Zero-day protection (لو عندك Trial)، ونزّل ملف Office/EXE تجريبي آمن، وراجع Report الـ Sandbox.</li></ol>
+</div>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) الفرق بين IPS و ATP؟</summary>IPS Signatures على Exploits/Attacks، ATP بيكتشف اتصالات Botnet/C2 بقوائم Threat intelligence وDNS/IP.</details>
+<details><summary>2) Signature عطّلت تطبيق شرعي. تعمل إيه؟</summary>تحدّد الـ Signature ID من الـ Log وتعمل Exception أو تغيّر Action، مع توثيق السبب.</details>
+<details><summary>3) إيه شرط فعالية Zero-day على HTTPS؟</summary>Scan HTTPS مع TLS inspection (Decrypt).</details>
+<details><summary>4) ليه الـ DoS thresholds حساسة؟</summary>المنخفضة بتحجب ترافيك شرعي، والعالية ما بتحميش.</details>
+</div>
+</section>
+<section class="module" id="s10">
+<h2>Module 10 — Authentication, Users & Groups</h2>
+
+<h3>10.1 ليه المستخدمين؟</h3>
+<p>بدل ما الـ Rules تبنى على IP، بنبنيها على <b>User/Group</b> فيتبع المستخدم لأي جهاز. ده بيدّي: Rules/Policies حسب الدور، <span class="en">Reports</span> باسم المستخدم، وLogs أوضح.</p>
+
+<h3>10.2 مصادر الـ Authentication <span class="en">Authentication Servers</span></h3>
+<table>
+<tr><th>المصدر</th><th>الاستخدام</th><th>المسار</th></tr>
+<tr><td class="l">Local users</td><td>مستخدمين معرّفين على الـ Firewall نفسه (Admin, Guest, VPN)</td><td class="l">Configure → Authentication → Users</td></tr>
+<tr><td class="l">Active Directory (AD)</td><td>التكامل مع Windows AD (Kerberos/LDAP) + استيراد Groups</td><td class="l">Servers → Add → Active Directory</td></tr>
+<tr><td class="l">LDAP / eDirectory</td><td>أي LDAP Directory</td><td>Servers</td></tr>
+<tr><td class="l">RADIUS / TACACS+</td><td>Authentication خارجية (مع MFA/NPS)</td><td>Servers</td></tr>
+<tr><td class="l">Azure AD / Entra (SAML) <span class="en">(حسب الإصدار)</span></td><td>Cloud identity للـ User Portal/VPN</td><td>SAML/Entra settings</td></tr>
+<tr><td class="l">Google/Others (SSO)</td><td>حسب الإصدار</td><td>—</td></tr></table>
+<ul>
+<li>ضبط AD: Server IP/FQDN، Port (389/636 LDAPS)، Bind DN (Service account)، Base DN، <span class="en">Domain name</span>، وتجربة الاتصال (<span class="en">Test connection</span>) ثم <span class="en">Import groups</span> (بتبقى Groups في SFOS).</li>
+<li>الأفضل: Service account بصلاحيات قراءة فقط + LDAPS + أكتر من DC.</li></ul>
+
+<h3>10.3 طرق الـ Authentication للمستخدم</h3>
+<table>
+<tr><th>الطريقة</th><th>إزاي بتشتغل</th><th>ملاحظات</th></tr>
+<tr><td class="l">Captive Portal (Web client)</td><td>المستخدم بيفتح متصفح → يتحول لصفحة Login (Port 8090) → بيتربط IP ← User</td><td>مناسب للـ Guest/BYOD</td></tr>
+<tr><td class="l">STAS (Sophos Transparent Authentication Suite)</td><td>Agent على DC/Collector بيراقب Logon events ويبعتها للـ Firewall → SSO بدون Login</td><td>تجربة SSO في بيئة AD</td></tr>
+<tr><td class="l">SATC (Authentication for Thin Clients)</td><td>للـ Terminal Server/Citrix: بيحدد User لكل Session</td><td>Agent على السيرفر</td></tr>
+<tr><td class="l">Client Authentication Agent (CAA)</td><td>Agent على جهاز المستخدم (قديم)</td><td>Windows</td></tr>
+<tr><td class="l">Synchronized Security / Heartbeat</td><td>الـ Endpoint بيحدد المستخدم والجهاز</td><td>حسب الإصدار</td></tr>
+<tr><td class="l">Kerberos/NTLM (Web proxy)</td><td>Transparent auth في الـ Proxy</td><td>مع Web proxy</td></tr>
+<tr><td class="l">Radius Accounting / SSO</td><td>Logon events من RADIUS (Wi-Fi/VPN)</td><td>—</td></tr></table>
+
+<div class="seq">{"a":["User PC","Domain Controller","STAS Collector","Sophos Firewall"],"m":[[0,1,"1) Windows Logon (Kerberos)"],[1,2,"2) Security Event 4624"],[2,3,"3) STAS: User=ahmed IP=10.1.1.20"],[3,3,"4) Apply Rule/Policy for Group"]]}</div>
+
+<h3>10.4 المستخدمين والمجموعات</h3>
+<ul>
+<li><b>User types:</b> <span class="en">User</span> • <span class="en">Administrator</span> (صلاحيات إدارة) • <span class="en">Guest user</span> (Time-limited).</li>
+<li><b>Group:</b> بتحدد: Web policy, App filter, <span class="en">Quota</span>, Traffic shaping, VPN access, <span class="en">Schedule</span>, Surfing quota... وبتتبع للـ Rules بـ <span class="en">Match known users</span>.</li>
+<li><b>Guest users:</b> <span class="en">Guest user management</span> (Voucher/Self-registration/Time-based) + <span class="en">Guest user groups</span> + طباعة/SMS Voucher.</li>
+<li><b>Authentication settings:</b> <span class="en">Authentication → Services</span> (أي Zone تستخدم Captive portal؟ Web proxy auth؟ SSO؟) و<span class="en">Firewall authentication methods</span> (ترتيب Servers).</li></ul>
+
+<h3>10.5 MFA <span class="en">Multi-Factor Authentication</span></h3>
+<ul>
+<li>الـ Firewall بيدعم <b>OTP (TOTP)</b>: كل مستخدم بيسجّل Authenticator app (Sophos Authenticator / Google/Microsoft Authenticator) من الـ <span class="en">User Portal</span> بمسح QR.</li>
+<li>تفعيل OTP على: WebAdmin, User Portal, SSL VPN, IPsec Remote access (Sophos Connect), SSH, Captive portal... (<span class="en">Authentication → One-time password</span>).</li>
+<li>بديل: RADIUS + MFA Server (مثل Azure NPS Extension / Duo).</li></ul>
+
+<h3>10.6 مبادئ تصميم الصلاحيات</h3>
+<table>
+<tr><th>الدور</th><th>Web policy</th><th>Network access</th></tr>
+<tr><td class="l">Executives</td><td>Allow معظم الفئات</td><td>الشبكات الداخلية + VPN</td></tr>
+<tr><td class="l">Staff</td><td>Block Adult/Gambling/P2P، Warn Social</td><td>الـ LAN + File servers</td></tr>
+<tr><td class="l">IT</td><td>Allow Remote tools</td><td>Servers/Management</td></tr>
+<tr><td class="l">Guest</td><td>Strict + Quota</td><td>إنترنت فقط (Guest zone)</td></tr></table>
+
+<div class="lab">
+<h3>Lab 10 — AD Integration + Captive Portal + OTP <span class="tag">متقدم</span></h3>
+<div class="topo">{"w":720,"h":260,"n":[["DC","server",90,130,"Windows Server|AD DC|172.16.16.10"],["FW","fw",330,130,"Sophos FW|LAN 172.16.16.16"],["W10","pc",600,60,"Win10 Client|domain-joined"],["GST","laptop",600,200,"Guest Laptop"]],"l":[["DC","FW","","LAN","#16a34a"],["FW","W10","","LAN","#16a34a"],["FW","GST","","GUEST","#d97706"]]}</div>
+<ol>
+<li>على Windows Server: ثبّت <b>AD DS</b>، أنشئ دومين <span class="en">lab.local</span>، OUs ومستخدمين (<span class="en">ahmed</span> في Group <span class="en">Staff</span>، <span class="en">sara</span> في <span class="en">IT</span>) وService account <span class="en">svc-sophos</span> (قراءة فقط).</li>
+<li><span class="en">Configure → Authentication → Servers → Add → Active Directory</span>: Server = 172.16.16.10، Bind DN = <span class="en">svc-sophos</span>، Base DN = <span class="en">DC=lab,DC=local</span> ← <b>Test connection</b>. ثم <span class="en">Import groups</span> (Staff, IT).</li>
+<li><span class="en">Authentication → Services</span>: فعّل <b>Captive portal</b> على LAN و GUEST، وفعّل AD كـ Primary server.</li>
+<li>انشئ User Groups على Sophos مربوطة بـ AD Groups وحدد لكل Group Web policy (Staff = POL-Staff، IT = POL-IT).</li>
+<li>عدّل Rule LAN-to-WAN: <b>Match known users</b> + Users = Staff, IT (أو Any known). جرّب من الـ Client: يفتح Captive Portal ← سجّل بـ <span class="en">ahmed</span> ← شوف إن Policy Staff اتطبقت. اتأكد من <span class="en">Monitor → Current activities → Live users</span>.</li>
+<li><b>SSO (STAS):</b> ثبّت STAS على DC (من Sophos)، سجّل الـ Collector في <span class="en">Authentication → STAS</span>، ثم Logon من Client وتأكد إنه ما طلبش Login.</li>
+<li><b>OTP:</b> <span class="en">Authentication → One-time password</span>: فعّل OTP لـ User Portal و VPN. من User Portal (<span class="en">https://172.16.16.16:4443</span>) سجّل الـ Authenticator ومرّر QR.</li>
+<li><b>Guest:</b> أنشئ Guest user group + Voucher (<span class="en">Guest user management</span>) واختبر Login من Guest Laptop.</li></ol>
+</div>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) إيه الفرق بين Captive Portal و STAS؟</summary>Captive Portal بيطلب Login يدوي من المستخدم، STAS بيعمل SSO تلقائي من أحداث الـ Logon على DC.</details>
+<details><summary>2) إيه معنى "Match known users"؟</summary>القاعدة بتطابق على مستخدمين اتعرفوا (Authenticated) فقط ومن ثم تطبّق Policies المرتبطة بالـ Group.</details>
+<details><summary>3) فين المستخدم بيسجّل OTP؟</summary>من User Portal (QR code لـ Authenticator).</details>
+<details><summary>4) ليه نستخدم LDAPS؟</summary>تشفير الاتصال مع AD (Port 636) وحماية Bind credentials.</details>
+</div>
+</section>
+<section class="module" id="s11">
+<h2>Module 11 — VPN (IPsec / SSL VPN / Sophos Connect / L2TP)</h2>
+
+<h3>11.1 أنواع الـ VPN</h3>
+<table>
+<tr><th>النوع</th><th>الاستخدام</th><th>ملاحظات</th></tr>
+<tr><td class="l">IPsec Site-to-Site</td><td>ربط فرعين (Firewall ↔ Firewall)</td><td>Policy-based أو Route-based (XFRM)</td></tr>
+<tr><td class="l">IPsec Remote Access (Sophos Connect)</td><td>موظفين عن بعد (Client)</td><td>IKEv2 / IPsec، Sophos Connect Client</td></tr>
+<tr><td class="l">SSL VPN Remote Access</td><td>موظفين عن بعد (OpenVPN-based)</td><td>Port TCP/UDP 8443 افتراضيًا (قابل للتغيير) + Sophos Connect أو OpenVPN client</td></tr>
+<tr><td class="l">SSL VPN Site-to-Site</td><td>Server ↔ Client بين Sophos Firewalls</td><td>مفيد خلف NAT</td></tr>
+<tr><td class="l">L2TP over IPsec</td><td>Clients مدمجة في OS (Windows/Android/iOS)</td><td>Legacy</td></tr>
+<tr><td class="l">PPTP</td><td>قديم وغير آمن</td><td><b>تجنّبه</b></td></tr>
+<tr><td class="l">Clientless VPN (Bookmarks)</td><td>الدخول لتطبيقات ويب/RDP/SSH من المتصفح عبر VPN portal</td><td>مناسب للـ Contractors</td></tr>
+<tr><td class="l">RED tunnel</td><td>Sophos RED (Module 12)</td><td>Layer 2</td></tr>
+<tr><td class="l">ZTNA (Central)</td><td>وصول بدون VPN لتطبيقات محددة</td><td>Sophos Central</td></tr></table>
+
+<h3>11.2 IPsec — مراحل الاتصال</h3>
+<div class="seq">{"a":["Site A (Sophos)","Site B (Sophos)"],"m":[[0,1,"Phase 1 (IKE SA): Proposal / Auth / DH"],[1,0,"Phase 1: Accept + Auth"],[0,1,"Phase 2 (IPsec SA): Encryption + Networks"],[1,0,"Phase 2: Accept"],[0,1,"ESP encrypted traffic (UDP 4500 لو NAT-T)"]]}</div>
+<ul>
+<li><b>IKE Phase 1:</b> يبني قناة آمنة (Authenticate peers: <span class="en">Pre-shared key</span> أو <span class="en">Certificate</span>) ويتفق على <span class="en">Encryption (AES), Hash (SHA2), DH group</span>. <b>IKEv1</b> أو <b>IKEv2</b> (الأفضل).</li>
+<li><b>IKE Phase 2 (IPsec SA):</b> يحدد الـ Local/Remote subnets والـ ESP encryption/Auth و<span class="en">PFS</span> (Perfect Forward Secrecy).</li>
+<li><span class="en">DPD (Dead Peer Detection)</span> لاكتشاف الـ Peer المقطوع و<span class="en">NAT traversal (NAT-T)</span> على UDP 4500.</li>
+<li><b>Ports:</b> UDP 500 (IKE) و UDP 4500 (NAT-T) + بروتوكول ESP (IP 50).</li>
+<li><b>الـ Profiles:</b> <span class="en">VPN → IPsec policies</span>: IKE (Phase 1) + IPsec (Phase 2) + Lifetimes + DPD. تقدر تستخدم Policy افتراضية (مثل <span class="en">DefaultHeadOffice</span> / <span class="en">DefaultBranchOffice</span>) أو تنشئ Policy مخصصة.</li></ul>
+
+<h3>11.3 Policy-based مقابل Route-based</h3>
+<table>
+<tr><th>النوع</th><th>الشرح</th><th>متى</th></tr>
+<tr><td class="l">Policy-based (Site-to-site)</td><td>الـ Tunnel معرّف بـ Local/Remote subnets. الترافيك بيتحدد بالـ Selector.</td><td>تصميم بسيط 1-1</td></tr>
+<tr><td class="l">Route-based (Tunnel interface / XFRM)</td><td>الـ Tunnel Interface (xfrm) والـ Routing (Static/OSPF/BGP) هو اللي يقرر الترافيك. Firewall rules بتطابق Zone = VPN.</td><td>شبكات معقّدة، Dynamic routing، SD-WAN</td></tr></table>
+<div class="note">في كل الأحوال محتاج <b>Firewall rules</b> بتسمح بالترافيك بين Zone الـ LAN و Zone الـ VPN (في الاتجاهين). VPN اشتغل لكن مفيش ترافيك؟ غالبًا الـ Rule أو الـ Route ناقص.</div>
+
+<h3>11.4 SSL VPN و Sophos Connect</h3>
+<ul>
+<li><b>SSL VPN policy:</b> <span class="en">Remote access VPN → SSL VPN policies</span>: Users/Groups + Permitted network resources (أي Networks تتوصل) + Idle timeout + Full tunnel أو Split tunnel (Use as default gateway).</li>
+<li><b>SSL VPN global settings:</b> Protocol (TCP/UDP) • Port • Override hostname/WAN IP • Address range (IPs للـ Clients) • DNS/WINS • Encryption/Auth/Key size • <span class="en">Disconnect idle clients</span>.</li>
+<li><b>Sophos Connect Client:</b> بنزّله المستخدم من <span class="en">VPN Portal</span> (<span class="en">https://FW:443</span> حسب الإعداد) أو توزّع الـ Config <span class="en">.scx / .ovpn</span> مع <span class="en">Provisioning file</span>. بيدعم SSL VPN و IPsec (IKEv2) مع OTP.</li>
+<li><b>Zone VPN:</b> مستخدمو الـ Remote access بيتحطوا في Zone <span class="en">VPN</span>؛ حدّد Rules <span class="en">VPN → LAN</span>.</li>
+<li><b>Hardening:</b> OTP/MFA • Certificates • Limit Source countries • Strong ciphers • Audit logging.</li></ul>
+<div class="topo">{"w":720,"h":260,"n":[["U","laptop",70,130,"Remote User|Sophos Connect"],["NET","cloud",230,130,"Internet"],["FW","fw",420,130,"Sophos FW|SSL VPN :8443"],["LAN","server",620,60,"File Server|172.16.16.100"],["LAN2","pc",620,200,"LAN Users"]],"l":[["U","NET","","","#d97706"],["NET","FW","","WAN","#d97706"],["FW","LAN","","","#16a34a"],["FW","LAN2","","","#16a34a"]],"t":[[240,95,"Encrypted Tunnel",12,"#dc2626"]]}</div>
+
+<h3>11.5 Clientless و L2TP</h3>
+<ul>
+<li><b>Clientless VPN:</b> <span class="en">Remote access VPN → Clientless access</span>: Bookmarks (HTTP/HTTPS/RDP/SSH/Telnet/VNC) لكل User Group، وتظهر في <span class="en">VPN portal</span>. ما يحتاجش Client.</li>
+<li><b>L2TP:</b> <span class="en">Remote access VPN → L2TP</span>: Pool IPs + Users + PSK (Legacy، متنصحش بيه).</li></ul>
+
+<h3>11.6 أوامر وتشخيص الـ VPN</h3>
+<ul>
+<li><span class="en">Monitor &amp; analyze → Current activities → IPsec connections / Remote users</span> و <span class="en">VPN → IPsec connections</span> (Active / Connected).</li>
+<li><span class="en">Log viewer → IPsec/VPN</span> (IKE messages). أخطاء شائعة: <span class="en">NO_PROPOSAL_CHOSEN</span> (Mismatch Phase1/2) • <span class="en">AUTHENTICATION_FAILED</span> (PSK/ID غلط) • <span class="en">TS_UNACCEPTABLE</span> (Subnets مش متطابقة).</li>
+<li>تأكد: الوقت NTP، نفس الـ Lifetimes تقريبًا، نفس الـ PFS group، والـ Local/Remote ID مظبوطين (IP/FQDN/Email).</li></ul>
+
+<div class="lab">
+<h3>Lab 11 — IPsec Site-to-Site بين Sophos HQ و Sophos Branch <span class="tag">متقدم</span></h3>
+<table>
+<tr><th>الموقع</th><th>WAN</th><th>LAN</th></tr>
+<tr><td>HQ</td><td class="l">198.51.100.1 (أو Interface بينهم)</td><td class="l">192.168.10.0/24 (HQ-LAN)</td></tr>
+<tr><td>Branch</td><td class="l">198.51.100.2</td><td class="l">192.168.20.0/24 (BR-LAN)</td></tr></table>
+<div class="topo">{"w":760,"h":260,"n":[["PCH","pc",60,130,"HQ-PC|192.168.10.10"],["HQ","fw",250,130,"Sophos HQ|WAN .1"],["BR","fw",510,130,"Sophos Branch|WAN .2"],["PCB","pc",700,130,"BR-PC|192.168.20.10"]],"l":[["PCH","HQ","","LAN","#16a34a"],["HQ","BR","","","#dc2626"],["BR","PCB","","LAN","#16a34a"]],"t":[[380,100,"IPsec Tunnel (IKEv2 / AES-256 / SHA-256)",12,"#dc2626"]]}</div>
+<ol>
+<li>شغّل Sophos VM تانية (Branch) على نفس شبكة الـ WAN الافتراضية (Internal network "WAN-LAB") مع HQ بعناوين ثابتة 198.51.100.1/.2 /30 (Zones: WAN).</li>
+<li><b>على HQ:</b> <span class="en">Configure → Site-to-site VPN → IPsec</span>: Add → <b>Connection type: Tunnel interface</b> (Route-based) أو Site-to-site. Gateway type = <span class="en">Respond only / Initiate</span> (HQ: Respond only).</li>
+<li>Authentication: <b>Preshared key</b> (<span class="en">LabKey@2026</span>) • Local gateway = Port2 (WAN) • Remote gateway = 198.51.100.2 • Local ID/Remote ID = IP.</li>
+<li>IPsec profile: اختر Policy (مثلاً <span class="en">IKEv2</span>-AES256-SHA256-DH14) <b>متطابق</b> على الطرفين.</li>
+<li>Local subnet = 192.168.10.0/24 • Remote subnet = 192.168.20.0/24. حفظ.</li>
+<li><b>على Branch:</b> نفس الإعدادات بالعكس (Gateway type = <span class="en">Initiate the connection</span>، Local = 192.168.20.0/24).</li>
+<li>أنشئ <b>Firewall rules</b> على الطرفين: LAN → VPN و VPN → LAN (Accept). لو Route-based: أضف Static route للـ Remote subnet عبر xfrm interface.</li>
+<li>Activate (الدائرة الخضرا) → اتأكد من <span class="en">Current activities → IPsec connections</span> (Active).</li>
+<li>اختبر: HQ-PC <span class="en">ping 192.168.20.10</span> و Branch <span class="en">ping 192.168.10.10</span>. شوف Log → IPsec.</li>
+<li><b>تحدّي:</b> غيّر الـ PSK على طرف واحد وشوف رسالة AUTHENTICATION_FAILED. جرّب تغيّر الـ DH group لتحصل على NO_PROPOSAL_CHOSEN.</li></ol>
+</div>
+
+<div class="lab">
+<h3>Lab 12 — SSL VPN Remote Access (Sophos Connect) <span class="tag">متوسط</span></h3>
+<ol>
+<li><span class="en">Remote access VPN → SSL VPN → Global settings</span>: Protocol = TCP • Port = 8443 • IPv4 lease range = <span class="en">10.81.234.5 – 10.81.234.55</span> • DNS = LAN DNS. Override hostname = WAN IP/DDNS.</li>
+<li>أنشئ User <span class="en">vpnuser</span> (أو AD user) وفعّل OTP لو عايز.</li>
+<li><b>SSL VPN policy:</b> Identity = vpnuser/Group • Permitted resources = LAN 172.16.16.0/24 • Use as default gateway = OFF (Split tunnel).</li>
+<li><b>Device access:</b> فعّل <span class="en">SSL VPN</span> و <span class="en">User portal / VPN portal</span> على WAN فقط للضرورة (يفضّل تقيّد بـ Source IPs).</li>
+<li><b>Firewall rule:</b> Source zone = VPN • Destination = LAN • Service = RDP/File/Any (Accept).</li>
+<li>من جهاز Remote (Bridged/Host): افتح VPN Portal، نزّل <b>Sophos Connect</b> + Config، ثبّت واتصل. اتأكد إنك أخدت IP من الـ Range.</li>
+<li>اختبر: ping/RDP لـ 172.16.16.100. راجع <span class="en">Current activities → Live users / Remote users</span>.</li>
+<li><b>تحدّي:</b> فعّل <b>Full tunnel</b> (Use as default gateway) ولاحظ الفرق في <span class="en">route print</span>.</li></ol>
+</div>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) الـ Ports اللي IPsec بيستخدمها؟</summary>UDP 500 (IKE)، UDP 4500 (NAT-T)، ESP (IP protocol 50).</details>
+<details><summary>2) VPN شغال لكن الترافيك مش بيعدّي. أول الأسباب؟</summary>Firewall rules بين LAN و VPN zones ناقصة، أو Route/Subnet مش مظبوطة.</details>
+<details><summary>3) الفرق بين Policy-based و Route-based؟</summary>Policy-based بالـ Selectors (Subnets)، Route-based بـ Tunnel interface و Routing.</details>
+<details><summary>4) إيه Split tunnel؟</summary>ترافيك الشركة فقط يعدّي VPN، والإنترنت يخرج مباشر من جهاز المستخدم.</details>
+</div>
+</section>
+<section class="module" id="s12">
+<h2>Module 12 — RED و Wireless (APX) و Switching</h2>
+
+<h3>12.1 Sophos RED <span class="en">Remote Ethernet Device</span></h3>
+<ul>
+<li>جهاز صغير (RED 15/20/50 أو RED Virtual) بيعمل <b>Layer 2 tunnel</b> مشفّر بين الفرع والـ Firewall المركزي. الفرع مش محتاج Firewall كامل: الـ RED بيطلع لـ Provisioning server وبعدين يتّصل بالـ HQ.</li>
+<li>الترافيك كله بيتفحص على الـ HQ (Web/IPS/AV) كأن الفرع جزء من الـ LAN.</li>
+<li><b>Operation modes:</b> <span class="en">Standard/Unified</span> (كل الترافيك للـ HQ) • <span class="en">Standard/Split</span> (Split tunnel لشبكات محددة) • <span class="en">Transparent/Split</span>.</li>
+<li><b>الخطوات:</b> <span class="en">Configure → Network → RED</span> → Add (Name, RED ID من الجهاز، Tunnel type، Operation mode، Network/Netmask أو Zone لـ LAN الفرع، DHCP) → الجهاز بياخد Provisioning ويتّصل.</li>
+<li><div class="note">RED مرتبط بـ Layer 2 وبيحتاج ترخيص حسب الموديل/الإصدار. للتصميمات الجديدة غالبًا الأفضل IPsec/SD-WAN، لكن RED سهل للفروع الصغيرة.</div></li></ul>
+
+<h3>12.2 Wireless Protection</h3>
+<div class="topo">{"w":720,"h":250,"n":[["FW","fw",360,50,"Sophos FW|Wireless controller"],["SW","switch",360,140,"Switch (PoE)"],["AP1","ap",180,210,"APX 320|Corp"],["AP2","ap",540,210,"APX 320|Guest"]],"l":[["FW","SW","Port3","Gi0/1","#16a34a"],["SW","AP1","Gi0/2","","#16a34a"],["SW","AP2","Gi0/3","","#16a34a"]]}</div>
+<ul>
+<li>الـ Firewall شغال <b>Wireless controller</b>: بيعمل Provision للـ Access Points (سلسلة APX، وAP قديمة) بشكل تلقائي، والـ AP بيكتشف الـ Firewall (بـ DHCP/DNS/Local discovery) وتضيفه بـ <span class="en">Accept</span> في <span class="en">Wireless → Access points</span>.</li>
+<li><b>SSID (Wireless networks):</b> Name • Security (<span class="en">WPA2/WPA3 Personal / Enterprise</span>) • <span class="en">Client traffic</span> = <span class="en">Bridge to AP LAN</span> / <span class="en">Separate Zone</span> (الأفضل للـ Guest) / <span class="en">Bridge to VLAN</span> • Time-based schedule • Hide SSID.</li>
+<li><b>Enterprise (802.1X):</b> RADIUS server (NPS/FreeRADIUS) + EAP-PEAP/EAP-TLS.</li>
+<li><b>Hotspots:</b> Guest portal مع Terms of use / Voucher / Password.</li>
+<li><b>Mesh</b> و<span class="en">Rogue AP detection</span> و<span class="en">Fast roaming</span> و<span class="en">Band steering</span> حسب الموديل.</li>
+<li><b>الاحتياجات:</b> الـ AP محتاج PoE أو Adapter، ويكون في VLAN/Zone للإدارة قادر يوصل للـ Firewall.</li></ul>
+
+<h3>12.3 Sophos Switch (اختياري)</h3>
+<ul><li>سلسلة Sophos Switch (CS) بتتدار من <b>Sophos Central</b> (VLANs, Ports, PoE, Port security). ولو عندك Switches تانية: الـ Firewall بيتعامل معاها عادي بـ VLANs/Trunk (راجع Module 4 + CCNA).</li></ul>
+
+<div class="lab">
+<h3>Lab 13 — Guest Wi-Fi معزول <span class="tag">متوسط</span></h3>
+<div class="note">محتاج AP حقيقي (APX) أو بديل. على Virtualization مفيش Wi-Fi فعلي، فممكن تحاكي بـ Zone/VLAN للـ Guest + Captive portal (Lab 10).</div>
+<ol>
+<li>أنشئ Zone <span class="en">GUEST</span> (Type = LAN) بـ Interface/VLAN 30 وعنوان 172.16.30.1/24 + DHCP.</li>
+<li><span class="en">Wireless → Wireless networks → Add</span>: SSID = <span class="en">Guest-WiFi</span> • WPA2 Personal • Client traffic = Separate zone (GUEST) • Schedule.</li>
+<li>أضف الـ AP (Accept) وتأكد إنه <span class="en">Active</span>.</li>
+<li>Rules: GUEST → WAN (Web policy صارم + App control) و<b>Drop</b> GUEST → LAN/DMZ. فعّل <span class="en">Client isolation</span> بين الأجهزة لو متاح.</li>
+<li>فعّل Captive portal على GUEST + Voucher. اتصل بموبايل وجرّب الوصول للـ LAN (لازم يفشل).</li></ol>
+</div>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) ليه Separate Zone للـ Guest؟</summary>عشان نطبّق Rules مختلفة ونمنع الوصول للشبكة الداخلية.</details>
+<details><summary>2) الفرق بين RED و IPsec؟</summary>RED بيمدّ الـ Layer 2 لفرع بدون Firewall كامل، IPsec بيربط شبكات Layer 3.</details>
+<details><summary>3) إيه اللي بيحوّل الـ Firewall لـ Wireless controller؟</summary>تفعيل Wireless protection وقبول الـ APs وتعريف SSIDs.</details>
+</div>
+</section>
+<section class="module" id="s13">
+<h2>Module 13 — Email Protection و Web Server Protection (WAF)</h2>
+
+<h3>13.1 Email Protection</h3>
+<ul>
+<li>الـ Firewall ممكن يشتغل كـ <b>MTA/Gateway</b> قدام Mail server (Exchange/Postfix/M365 connector): بيستقبل SMTP، يفحص، ويمرّر.</li>
+<li><b>Modes:</b> <span class="en">MTA mode</span> (Store &amp; forward، فيه Quarantine وRouting) أو <span class="en">Legacy/Transparent proxy mode</span> (حسب الإصدار).</li>
+<li><b>الفحص:</b> Anti-spam (Reputation, RBL, SPF/DKIM/DMARC checks, Greylisting, Content) • Anti-malware • Zero-day للمرفقات • <span class="en">Data Control (DLP)</span> • <span class="en">Encryption</span> (TLS/SPX).</li>
+<li><b>Quarantine digest:</b> بيوصل المستخدم تقرير بالإيميلات المحجوزة وممكن يفرج عنها من <span class="en">User Portal</span>.</li>
+<li><b>الخطوات:</b> <span class="en">Protect → Email → General settings</span> (MTA) → <span class="en">Policies and exceptions</span> → Add domain/route (Mail server الداخلي) → DNS: MX يشاور على Public IP + DNAT/Firewall rule لـ SMTP.</li>
+<li>نصايح DNS للبريد: <b>SPF</b> و <b>DKIM</b> و <b>DMARC</b> + <span class="en">PTR</span> للـ Public IP.</li></ul>
+
+<h3>13.2 Web Server Protection <span class="en">(WAF)</span></h3>
+<ul>
+<li>بيحمي تطبيقات الويب المنشورة: <b>Reverse proxy</b> قدام السيرفر ← يفحص (SQLi, XSS, Directory traversal, Bots, Cookie signing...) ويعمل <b>SSL offloading</b> و<b>Load balancing</b>.</li>
+<li><b>المكوّنات:</b> <span class="en">Web servers</span> (Real servers) • <span class="en">Protection policies</span> (Modsec rules / OWASP CRS) • <span class="en">Authentication policies</span> (Form/Basic + Pre-auth) • <span class="en">Site path routing</span> • <span class="en">Business application rule</span> (Protocol HTTP/HTTPS, Domains, Certificate, Listening IP) تنشئ DNAT/Firewall rule تلقائي (<span class="en">Linked</span>).</li>
+<li>مقارنة: <b>DNAT عادي</b> = تمرير بدون فحص تطبيقي. <b>WAF</b> = فحص Layer 7.</li></ul>
+
+<h3>13.3 مقارنة سريعة</h3>
+<table>
+<tr><th>الاحتياج</th><th>الأداة</th></tr>
+<tr><td>حماية موقع/تطبيق ويب منشور</td><td class="l">WAF (Business app rule + Protection policy)</td></tr>
+<tr><td>حماية سيرفر خدمات عادية (SSH/RDP)</td><td class="l">Firewall rule + IPS + VPN</td></tr>
+<tr><td>حماية البريد الوارد/الصادر</td><td class="l">Email protection (MTA)</td></tr>
+<tr><td>حماية المستخدمين أثناء التصفح</td><td class="l">Web policy + TLS inspection</td></tr></table>
+
+<div class="lab">
+<h3>Lab 14 — نشر موقع بـ WAF + شهادة <span class="tag">متقدم</span></h3>
+<ol>
+<li>سيرفر Web-DMZ (172.16.50.10) فيه موقع اختبار (DVWA أو صفحة بسيطة).</li>
+<li><span class="en">Protect → Web server → Web servers</span>: Add Real server = Web-DMZ HTTP 80.</li>
+<li><span class="en">Protection policies</span>: Add (Common threat filter + SQLi/XSS) ← <span class="en">Mode: Block</span> (ابدأ بـ <span class="en">Log only</span> لو عايز تراقب).</li>
+<li>Certificate: ولّد Self-signed أو ارفع شهادة (Let's Encrypt/CA). <span class="en">Business application rule</span>: Protocol HTTPS • Listening IP = WAN • Domain = <span class="en">shop.lab.local</span> • Real server = Web-DMZ • Policy = اللي عملته • <b>Redirect HTTP → HTTPS</b>.</li>
+<li>عدّل Hosts على Client ليشاور <span class="en">shop.lab.local</span> للـ WAN IP، وافتح الموقع. جرّب <span class="en">https://shop.lab.local/?id=1' OR '1'='1</span> وشوف Block + Log viewer → Web server protection.</li>
+<li><b>Email (اختياري):</b> فعّل MTA واضبط Domain + Route لـ Mail server، وأرسل EICAR كمرفق لتتأكد إنه محجوز (Quarantine).</li></ol>
+</div>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) الفرق بين DNAT و WAF؟</summary>DNAT بيمرر الترافيك فقط، WAF بيفحص طلبات HTTP (Layer 7) ويعمل SSL offload.</details>
+<details><summary>2) السجلات DNS اللازمة للبريد؟</summary>MX + SPF + DKIM + DMARC + PTR.</details>
+<details><summary>3) إيه فايدة Log-only في البداية؟</summary>معرفة False positives قبل التفعيل بالحجب.</details>
+</div>
+</section>
+<section class="module" id="s14">
+<h2>Module 14 — HA و الإدارة و Logging و Reporting و API</h2>
+
+<h3>14.1 High Availability <span class="en">HA</span></h3>
+<div class="topo">{"w":720,"h":270,"n":[["PRI","fw",230,70,"Primary|Active"],["AUX","fw",490,70,"Auxiliary|Standby"],["SW1","switch",230,190,"LAN Switch"],["SWW","cloud",490,190,"WAN / ISP"]],"l":[["PRI","AUX","HA link","HA link","#dc2626"],["PRI","SW1","LAN","","#16a34a"],["AUX","SW1","LAN","","#16a34a",1],["PRI","SWW","WAN","","#d97706"],["AUX","SWW","WAN","","#d97706",1]]}</div>
+<table>
+<tr><th>الوضع</th><th>الشرح</th></tr>
+<tr><td class="l">Active-Passive</td><td>Primary شغال والـ Auxiliary Standby + مزامنة Config و Sessions. عند العطل يتحول تلقائي.</td></tr>
+<tr><td class="l">Active-Active (Load balancing)</td><td>الاتنين بيعالجوا ترافيك (حسب الترخيص/الإصدار) والـ Primary بيوزّع.</td></tr></table>
+<ul>
+<li>محتاج: جهازين بنفس الموديل/الترخيص (أو Failover license)، <b>Dedicated HA port</b> (Cable مباشر) و<span class="en">Monitored ports</span>، ونفس الـ Firmware.</li>
+<li><b>Failover triggers:</b> انقطاع Monitored port، عطل Hardware/Service، فقد الـ Heartbeat.</li>
+<li>المسار: <span class="en">System → Administration → Device access / HA</span> (حسب الإصدار: <span class="en">Configure → System services → High availability</span>).</li>
+<li><b>Cluster ID</b> و<span class="en">Node names</span> و<span class="en">Preferred primary</span>. وفي Virtual/Cloud ممكن يكون لازم Interface مخصص.</li></ul>
+
+<h3>14.2 الإدارة <span class="en">Administration</span></h3>
+<table>
+<tr><th>البند</th><th>التفاصيل</th></tr>
+<tr><td class="l">Admin & user settings</td><td>Profiles (Administrator, Audit admin, Crypto admin, Read-only) • Login security (Session timeout, Lockout, <span class="en">Password complexity</span>) • <span class="en">Admin via AD/RADIUS</span> + OTP.</td></tr>
+<tr><td class="l">Device access</td><td>أي Zone تدخل على WebAdmin/SSH/Ping/DNS/User portal... + <b>Local ACL exception rule</b> لتقييد المصدر.</td></tr>
+<tr><td class="l">Time / NTP</td><td>Time zone + NTP servers (مهم للـ VPN والـ Certificates والـ Logs).</td></tr>
+<tr><td class="l">Certificates</td><td>Certificates + CAs + CRL، شهادة الـ WebAdmin، Let's Encrypt (في إصدارات حديثة).</td></tr>
+<tr><td class="l">Notifications</td><td>SMTP server + Notification list (Alerts: Heartbeat, ATP, IPS, Updates, Service down).</td></tr>
+<tr><td class="l">SNMP</td><td>Agent v2c/v3 + Traps → NMS (PRTG/Zabbix/LibreNMS).</td></tr>
+<tr><td class="l">Netflow / sFlow</td><td>إرسال Flow data لـ Collector.</td></tr>
+<tr><td class="l">Central management</td><td>Sophos Central Firewall Management (Group policy + Firewall reporting + Backup).</td></tr></table>
+
+<h3>14.3 Backup / Restore / Firmware</h3>
+<ul>
+<li><span class="en">Backup &amp; firmware → Backup</span>: Local / FTP / Email / <b>Sophos Central</b> (Schedule: Daily/Weekly/Monthly) + <b>Encryption password</b>. خد Backup <b>قبل أي Upgrade</b>.</li>
+<li><b>Restore:</b> رفع الملف (نفس الـ Model/Version غالبًا) وبيعمل Reboot.</li>
+<li><b>Firmware:</b> Hotfixes تلقائيًا + Firmware versions: <span class="en">Active</span> و<span class="en">Backup</span> (Slot) فيمكن الرجوع (<span class="en">Boot with</span>). حمّل من MySophos أو Auto-download.</li></ul>
+
+<h3>14.4 Logging و Reporting</h3>
+<ul>
+<li><b>Log viewer:</b> فلترة بالـ Module (Firewall, IPS, Web, ATP, Event, VPN...) و Log ID و Rule ID.</li>
+<li><b>Syslog:</b> إرسال Logs لـ SIEM/Syslog (Graylog/ELK/Wazuh) من <span class="en">System services → Log settings</span> (اختر Facility وSeverity والـ Log types).</li>
+<li><b>Reports:</b> (Dashboard-based): Applications, Web, Network threats (IPS/ATP), Users, VPN, Compliance (HIPAA/PCI/GLBA) + جدولة وإرسال بالإيميل.</li>
+<li><b>Sophos Central Firewall Reporting / Data Lake:</b> تخزين سحابي أطول مدة ومقارنات بين الأجهزة (حسب الترخيص).</li>
+<li>الـ Logging الزائد يملّا الـ Disk. اضبط الـ Retention واختار Rules تفعّل عليها Log.</li></ul>
+
+<h3>14.5 XML API</h3>
+<ul>
+<li><b>Backup &amp; firmware → API</b> فعّل API configuration وحدد Allowed IPs.</li>
+<li>الـ Endpoint: <span class="en">https://FW:4444/webconsole/APIController?reqxml=...</span> وبيستخدم XML فيه <span class="en">Login (Username/Password)</span> و<span class="en">Get / Set / Remove</span> على Entities (IPHost, FirewallRule, ...).</li></ul>
+<pre class="code">curl -k "https://172.16.16.16:4444/webconsole/APIController" \
+  --data-urlencode 'reqxml=&lt;Request&gt;
+  &lt;Login&gt;&lt;Username&gt;apiuser&lt;/Username&gt;&lt;Password&gt;P@ssw0rd&lt;/Password&gt;&lt;/Login&gt;
+  &lt;Get&gt;&lt;IPHost&gt;&lt;/IPHost&gt;&lt;/Get&gt;
+&lt;/Request&gt;'</pre>
+<div class="note">الأسماء والـ Schema الدقيقة للـ Entities بتختلف حسب الإصدار؛ راجع وثائق <span class="en">Sophos Firewall API</span> الخاصة بإصدارك. استخدم Account API مخصص ومقيّد بـ IP.</div>
+
+<h3>14.6 Hardening سريع</h3>
+<ul>
+<li>اقفل WebAdmin/SSH عن الـ WAN (أو قيّد بـ IP/VPN) • غيّر Port الافتراضي لو مناسب • OTP للـ Admins • Admin accounts مسماة (لا تستخدم admin المشترك).</li>
+<li>فعّل Auto-update (Pattern + Firmware notifications) • Backup مجدول • NTP • Syslog خارجي • اقفل Services غير مستخدمة (Ping/DNS/SNMP على WAN).</li></ul>
+
+<div class="lab">
+<h3>Lab 15 — Admin hardening + Backup + Syslog + SNMP <span class="tag">متوسط</span></h3>
+<ol>
+<li>أنشئ Admin profile <span class="en">Read-only</span> وحساب <span class="en">auditor</span>. وفعّل OTP لحساب admin.</li>
+<li><span class="en">Device access</span>: اقفل WebAdmin/SSH على WAN، وأضف Local ACL exception يسمح بالإدارة من IP الـ Admin فقط.</li>
+<li><span class="en">Login security</span>: Lockout بعد 5 محاولات + Password complexity.</li>
+<li>Backup يدوي مشفّر (احفظه برا الجهاز) + جدولة Weekly. جرّب Restore على VM تانية (لو متاح).</li>
+<li>أضف Syslog server (Linux فيه rsyslog/Graylog) وراقب وصول الـ Logs: <span class="en">tail -f /var/log/syslog</span>.</li>
+<li>فعّل SNMP v3 واختبر من جهاز: <span class="en">snmpwalk -v3 -u user -l authPriv ... 172.16.16.16</span>.</li>
+<li>اطلب Dashboard Report وجدول إرسال أسبوعي بالإيميل.</li>
+<li><b>HA (اختياري):</b> شغّل VM تانية واضبط Active-Passive بـ Interface مخصص للـ HA، وأعمل Reboot للـ Primary وراقب الـ Failover.</li></ol>
+</div>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) إيه المطلوب لعمل HA؟</summary>جهازين متماثلين، منفذ HA مخصص، Monitored ports، نفس Firmware/ترخيص.</details>
+<details><summary>2) فين تقيّد وصول الـ Admin؟</summary>Device access + Local ACL exception rule.</details>
+<details><summary>3) ليه NTP مهم؟</summary>VPN/Certificates/Logs بتعتمد على وقت صحيح.</details>
+<details><summary>4) متى تاخد Backup؟</summary>قبل أي Upgrade/تغيير كبير وبشكل مجدول.</details>
+</div>
+</section>
+<section class="module" id="s15">
+<h2>Module 15 — Sophos Central و Intercept X و Synchronized Security</h2>
+
+<h3>15.1 Sophos Central</h3>
+<p><b>Sophos Central</b> = منصة إدارة سحابية موحّدة (<span class="en">central.sophos.com</span>) لكل منتجات Sophos: Endpoint، Server، Firewall، Email، Mobile، Wireless، Switch، Cloud Optix، ZTNA، MDR/XDR.</p>
+<div class="topo">{"w":760,"h":300,"n":[["CEN","cloud",380,50,"Sophos Central|Policies / Alerts / XDR"],["FW","fw",150,170,"Sophos Firewall"],["EP1","laptop",330,250,"Endpoint|Intercept X"],["EP2","pc",480,250,"Server|Intercept X Server"],["AP","ap",640,170,"APX / Switch"]],"l":[["CEN","FW","","","#2563eb"],["CEN","EP1","","","#2563eb"],["CEN","EP2","","","#2563eb"],["CEN","AP","","","#2563eb"],["FW","EP1","Heartbeat","","#dc2626"]]}</div>
+<ul>
+<li><b>Tenants:</b> Account واحد أو <span class="en">Sophos Central Partner / Enterprise</span> (Multi-tenant للـ MSP/المجموعات).</li>
+<li><b>Admin roles:</b> Super Admin • Admin • Help Desk • Read-only (+ MFA إجباري).</li>
+<li><b>Main sections:</b> Overview • Alerts • Devices • Users • Global Settings • Endpoint Protection (Policies/Threat Analysis Center) • Server • Firewall Management • Email • Reports • XDR/MDR.</li></ul>
+
+<h3>15.2 Intercept X Endpoint</h3>
+<table>
+<tr><th>الطبقة</th><th>الوظيفة</th></tr>
+<tr><td class="l">Anti-malware / Web control</td><td>Signature + ML + Web filtering + Download reputation.</td></tr>
+<tr><td class="l">Exploit prevention</td><td>تقنيات مقاومة Exploits (ROP, Stack pivot, Heap spray...).</td></tr>
+<tr><td class="l">CryptoGuard / Anti-ransomware</td><td>اكتشاف التشفير الخبيث ورجوع الملفات (Rollback).</td></tr>
+<tr><td class="l">Behavior / Runtime protection</td><td>مراقبة السلوك الخبيث (Credential theft, Process hollowing...).</td></tr>
+<tr><td class="l">Adaptive Active Adversary</td><td>تشديد الحماية تلقائيًا لما ملاحظ نشاط مهاجم.</td></tr>
+<tr><td class="l">Device control / Application control</td><td>USB/Bluetooth + منع تطبيقات.</td></tr>
+<tr><td class="l">Data loss prevention (DLP)</td><td>قواعد على المحتوى الحساس.</td></tr>
+<tr><td class="l">Tamper protection</td><td>منع إيقاف/حذف الـ Agent بدون Password.</td></tr>
+<tr><td class="l">EDR / XDR</td><td>Threat hunting، Live Discover (SQL queries)، Isolate، Remote terminal، Data Lake.</td></tr></table>
+<ul>
+<li><b>Policies:</b> بتتطبق على Users/Devices/Groups: Threat Protection • Peripheral control • Application control • Web control • Update management • Exclusions • DLP • Windows Firewall.</li>
+<li><b>Threat Analysis Center:</b> Threat Graph (Root cause analysis) • Detections • Live Discover • Isolation.</li>
+<li><b>Deployment:</b> Installer من Central (Download from <span class="en">Protect devices</span>) • GPO/SCCM/Intune • <span class="en">Sophos Endpoint Advisor</span> • Linux/Mac installers • Server: <span class="en">Server Protection</span>.</li>
+<li><b>الاستثناءات:</b> ضيف Exclusions بحذر (Path/Process/Web) وفقط للضرورة.</li></ul>
+
+<h3>15.3 Synchronized Security و Security Heartbeat</h3>
+<div class="seq">{"a":["Endpoint (Intercept X)","Sophos Firewall","Sophos Central"],"m":[[0,1,"Heartbeat: Status Green/Yellow/Red + Process info"],[0,0,"Threat detected → Status = Red"],[0,1,"Heartbeat: RED + Threat details"],[1,1,"Rule: Block RED endpoints (Isolate)"],[1,2,"Alert + Telemetry"],[2,0,"Cleanup / Policy update"]]}</div>
+<table>
+<tr><th>الحالة</th><th>المعنى</th><th>تصرّف الـ Firewall عادةً</th></tr>
+<tr><td>🟢 Green</td><td>سليم</td><td>Allow</td></tr>
+<tr><td>🟡 Yellow</td><td>تحذير (PUA، Unhealthy، Warning)</td><td>Allow حسب الـ Rule</td></tr>
+<tr><td>🔴 Red</td><td>مصاب/Compromised</td><td>Block/Isolate (Lateral movement protection)</td></tr>
+<tr><td>⚪ Missing</td><td>الـ Heartbeat غير موجود</td><td>حسب الـ Rule (Require / Not require)</td></tr></table>
+<ul>
+<li><b>الاستخدامات:</b> <span class="en">Lateral Movement Protection</span> (Endpoints تعزل Endpoint مصاب في الـ LAN)، Rule شرط <span class="en">Minimum Heartbeat = Green/Yellow</span> للسيرفرات، <span class="en">Synchronized App Control</span>، <span class="en">Destination Heartbeat</span> (التحقق من حالة السيرفر الوجهة).</li>
+<li><b>التسجيل:</b> Firewall → <span class="en">Sophos Central services → Register</span> بحساب Central ← Heartbeat ON (Port UDP 8347 للـ Heartbeat من/إلى الـ Endpoint، وTCP 8347 لبعض العمليات). تأكد من الـ Ports حسب Docs.</li></ul>
+
+<h3>15.4 XDR / MDR / ZTNA</h3>
+<ul>
+<li><b>XDR:</b> دمج Telemetry من Endpoint + Firewall + Email + Cloud في <span class="en">Data Lake</span> وصيد التهديدات بـ Queries.</li>
+<li><b>MDR (Managed Detection &amp; Response):</b> فريق Sophos بيراقب ويتصرف 24/7 (Complete / Essentials).</li>
+<li><b>ZTNA:</b> وصول Zero Trust للتطبيقات بدل VPN كامل (Agent + Gateway + Policies على Identity وحالة الجهاز).</li>
+<li><b>Cloud Optix / Cloud Native Security:</b> إدارة وضع الأمان في AWS/Azure/GCP.</li>
+<li><b>Email Advanced، Phish Threat، Mobile، Encryption:</b> وحدات إضافية داخل Central.</li></ul>
+
+<div class="lab">
+<h3>Lab 16 — Central + Endpoint + Heartbeat <span class="tag">متقدم</span></h3>
+<div class="note">محتاج حساب Trial على Sophos Central (Intercept X + Firewall). تفاصيل الـ Trials والمدة بتتغير؛ شوف صفحة Sophos الرسمية.</div>
+<ol>
+<li>سجّل Trial وادخل <span class="en">Sophos Central Admin</span>. فعّل <b>MFA</b> لحسابك.</li>
+<li><span class="en">Protect devices</span> → نزّل Installer على Windows 10 VM (Intercept X). تأكد إنه ظهر في <span class="en">Devices</span> بحالة Green.</li>
+<li><span class="en">Endpoint → Policies</span>: اعمل Policy باسم <span class="en">POL-Lab</span> (Threat Protection كامل + Tamper protection) وطبّقها على الجهاز.</li>
+<li><b>على الـ Firewall:</b> <span class="en">Sophos Central services</span> → Register (Central account) ثم فعّل <b>Security Heartbeat</b>. اتأكد إن الـ Endpoint بيظهر في <span class="en">Heartbeat</span> status.</li>
+<li>أنشئ Rule للوصول لـ Server: <span class="en">Source Heartbeat: Require Green</span>. اختبر: الـ Client الأخضر يوصل ✔.</li>
+<li><b>اختبار آمن:</b> نزّل EICAR على الـ Client (الحماية هتكتشفه). شوف تغيّر حالة الـ Heartbeat وتنبيه Central. (استخدم EICAR فقط؛ <b>لا تشغّل Malware حقيقي</b>.)</li>
+<li>افتح <span class="en">Threat Analysis Center</span> → شوف الـ Detection و<span class="en">Live Discover</span> (Query بسيطة مثل Processes). جرّب <b>Isolate device</b> ثم <b>Un-isolate</b>.</li>
+<li>راجع <span class="en">Reports</span> و Alerts، وجرّب إرسال Alert بالإيميل.</li></ol>
+</div>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) إيه هو Security Heartbeat؟</summary>قناة بين Endpoint والـ Firewall بتنقل حالة الصحة (Green/Yellow/Red) لتطبيق Rules وعزل المصاب.</details>
+<details><summary>2) فايدة Tamper protection؟</summary>منع المهاجم أو المستخدم من إيقاف أو إزالة الـ Agent.</details>
+<details><summary>3) الفرق بين EDR و XDR؟</summary>EDR على Endpoint فقط، XDR بيدمج مصادر متعددة (Firewall/Email/Cloud).</details>
+<details><summary>4) الفرق بين MDR و XDR؟</summary>XDR تقنية/منصة، MDR خدمة بشرية بتراقب وتستجيب.</details>
+</div>
+</section>
+<section class="module" id="s16">
+<h2>Module 16 — Troubleshooting و Best Practices و Capstone</h2>
+
+<h3>16.1 منهجية التشخيص</h3>
+<ol>
+<li><b>حدّد الأعراض:</b> مين؟ إيه الخدمة؟ من فين لفين؟ إمتى بدأ؟</li>
+<li><b>Log viewer:</b> فلتر بالـ Source IP/Destination → شوف Rule ID / Action / Reason (<span class="en">Denied by rule / IPS / Web filter / Invalid traffic</span>).</li>
+<li><b>Live connections</b> (Monitor): هل فيه Connection؟ و NAT متترجم؟</li>
+<li><b>Packet capture</b> (<span class="en">Diagnostics → Packet capture</span>) على الـ Interface وفلتر Host/Port.</li>
+<li><b>Connection/Policy test:</b> <span class="en">Diagnostics → Tools → Ping / Traceroute / DNS lookup</span> + <span class="en">Policy tester</span> + <span class="en">Name lookup</span>.</li>
+<li>فكّر <b>طبقيًا</b>: Physical/Link → IP/Route → Zone/Rule → NAT → Proxies (Web/TLS/IPS) → App.</li></ol>
+
+<h3>16.2 أعطال شائعة وحلها</h3>
+<table>
+<tr><th>العرض</th><th>السبب المحتمل</th><th>الحل</th></tr>
+<tr><td>مفيش إنترنت من الـ LAN</td><td>مفيش Rule/SNAT • Gateway/DNS غلط • WAN Down</td><td class="l">راجع Rule + Default SNAT + Gateway status + DNS lookup</td></tr>
+<tr><td>إنترنت بالـ IP بس (مفيش Names)</td><td>DNS مش مظبوط / Rule بتمنع DNS</td><td class="l">Network → DNS + DHCP DNS + Device access (DNS)</td></tr>
+<tr><td>HTTPS Sites بتديني Certificate warnings</td><td>Sophos CA مش Trusted</td><td>ثبّت CA (GPO) أو استثني الموقع من الـ Decrypt</td></tr>
+<tr><td>موقع داخلي شغال برا ومش جوه</td><td>مفيش Loopback</td><td>Hairpin NAT (Module 7)</td></tr>
+<tr><td>DNAT مش شغال</td><td>Rule بـ Public IP / Gateway السيرفر مش الـ Sophos / Rule ناقص</td><td>اضبط Destination = IP الداخلي + Gateway السيرفر</td></tr>
+<tr><td>VPN Connected ولا ترافيك</td><td>Firewall rules/Routes ناقصة، Subnets مختلفة</td><td>Rules LAN↔VPN + Static routes</td></tr>
+<tr><td>تطبيق معين بيفشل بعد IPS</td><td>False positive</td><td>Log viewer → Signature ID → Exception</td></tr>
+<tr><td>Captive Portal مش بيظهر</td><td>Authentication service مش مفعّل على الـ Zone / HTTPS sites</td><td>فعّل Captive portal + اختبر بـ HTTP</td></tr>
+<tr><td>CPU/Memory عالي</td><td>IPS/TLS/AV على كل حاجة • Logging زيادة</td><td>خصّص Policies واستثنِ الترافيك الداخلي الضخم، وفكّر في Hardware أقوى</td></tr>
+<tr><td>Heartbeat Missing</td><td>الـ Ports مقفولة / مش Registered</td><td>Register + سماح UDP 8347</td></tr>
+<tr><td>HA Failover غير متوقع</td><td>Monitored port Down / HA link ضعيف</td><td>راجع الـ Cabling والـ Log</td></tr></table>
+
+<h3>16.3 Best Practices</h3>
+<ul>
+<li><b>Rules:</b> Least privilege • Naming convention • Descriptions • ترتيب مدروس • Clean-up Rule للـ Log • مراجعة دورية للـ Unused rules.</li>
+<li><b>Segmentation:</b> LAN / DMZ / GUEST / MGMT / VPN منفصلين.</li>
+<li><b>الحماية:</b> IPS + ATP + AV + Web + App control على Rules الخارجة، وWAF/IPS على المنشور.</li>
+<li><b>الإدارة:</b> MFA، Admins مسماة، Backup مجدول، Syslog، تحديثات منتظمة، تقييد الـ Device access.</li>
+<li><b>التوثيق:</b> Network diagram + جدول Rules + Change log.</li>
+<li><b>التغيير:</b> Backup قبل أي تعديل + نافذة صيانة + خطة Rollback.</li></ul>
+
+<h3>16.4 الشهادات والمسار (تأكد من الموقع الرسمي)</h3>
+<p>Sophos بتقدّم مسارات تدريب وشهادات (Technician / Engineer / Architect حسب المنتج) عبر <span class="en">Sophos Learning Zone / Partner Portal</span>. الأسماء والمتطلبات بتتغير، فراجع الموقع الرسمي قبل التخطيط.</p>
+
+<div class="lab">
+<h3>Capstone Lab — شبكة شركة متكاملة <span class="tag">مشروع</span></h3>
+<div class="topo">{"w":820,"h":380,"n":[["NET","cloud",410,40,"Internet"],["FW","fw",410,140,"Sophos FW|(HA اختياري)"],["SW","l3",410,240,"Core Switch|VLANs"],["WEB","server",120,150,"DMZ Web|WAF"],["AD","server",120,300,"AD / DNS / DHCP"],["PC1","pc",700,150,"Staff PCs|Intercept X"],["GST","laptop",700,310,"Guest Wi-Fi"],["BR","fw",700,40,"Branch FW|IPsec"]],"l":[["NET","FW","","WAN","#d97706"],["FW","SW","","LAN","#16a34a"],["FW","WEB","","DMZ","#7c3aed"],["SW","AD","","VLAN10","#16a34a"],["SW","PC1","","VLAN20","#16a34a"],["SW","GST","","VLAN30","#d97706"],["NET","BR","","","#d97706"],["FW","BR","","IPsec","#dc2626",1]]}</div>
+<p>المطلوب بناء واختبار الآتي (قسّمه على أيام):</p>
+<ol>
+<li><b>الشبكة:</b> Zones (LAN/DMZ/GUEST/MGMT) + VLANs + DHCP + DNS + Multi-WAN (لو متاح).</li>
+<li><b>Rules:</b> LAN→WAN (Web+App+IPS+ATP+AV)، GUEST→WAN فقط، DMZ بدون وصول للـ LAN، Clean-up rule.</li>
+<li><b>NAT:</b> نشر Web عبر WAF + Loopback.</li>
+<li><b>Auth:</b> AD + STAS + Groups (Staff/IT/Guest) + OTP للـ Admins والـ VPN.</li>
+<li><b>VPN:</b> Site-to-site مع الفرع + SSL VPN للـ Remote users (Sophos Connect).</li>
+<li><b>TLS inspection</b> مع استثناء Banking/Health.</li>
+<li><b>Central:</b> Endpoint (Intercept X) + Heartbeat + Rule تشترط Green للـ Servers.</li>
+<li><b>Operations:</b> Backup مجدول، Syslog، SNMP، Reports أسبوعية، Hardening.</li>
+<li><b>الاختبارات:</b> اكتب Test Plan (Pass/Fail) لكل بند + Screenshots + Network diagram نهائي.</li>
+<li><b>Break/Fix:</b> اطلب من زميل يكسر 5 حاجات (Rule، Route، DNS، Cert، Heartbeat) وأنت تشخّص وتصلّح.</li></ol>
+</div>
+
+<div class="q"><h3>أسئلة مراجعة</h3>
+<details><summary>1) أول خطوة تشخيص لمشكلة Connectivity؟</summary>Log viewer بالـ Source/Destination لمعرفة الـ Rule والـ Action.</details>
+<details><summary>2) أداة تشوف بيها الـ Packet فعليًا؟</summary>Packet capture على الـ Interface.</details>
+<details><summary>3) ليه Clean-up rule مهمة؟</summary>لتسجيل الترافيك المرفوض ومعرفة اللي بيحاول يمر.</details>
+</div>
+</section>
+<section class="module" id="appA">
+<h2>Appendix A — Glossary (قاموس المصطلحات)</h2>
+<div class="note">المصطلحات بالإنجليزي كما هي في الواجهة، والشرح بالعربي.</div>
+<table>
+<tr><th>المصطلح</th><th>الشرح</th></tr>
+<tr><td class="l">SFOS</td><td>Sophos Firewall Operating System، نظام تشغيل الـ Firewall (الإصدار الحالي في الكورس v22).</td></tr>
+<tr><td class="l">XG / XGS</td><td>أسماء عائلات أجهزة Sophos Firewall (XGS هي الجيل الأحدث بمعالج Xstream).</td></tr>
+<tr><td class="l">Xstream</td><td>معمارية SFOS: TLS inspection، DPI engine، FastPath.</td></tr>
+<tr><td class="l">DPI Engine</td><td>Deep Packet Inspection: فحص عميق للـ Web/AV/IPS/App في Pass واحد.</td></tr>
+<tr><td class="l">FastPath</td><td>تسريع ترافيك موثوق عبر Offload لمعالج الشبكة (Xstream Flow Processor).</td></tr>
+<tr><td class="l">Zone</td><td>تجميع Interfaces بنفس مستوى الثقة: LAN, WAN, DMZ, VPN, WiFi, Custom.</td></tr>
+<tr><td class="l">Firewall rule</td><td>قاعدة تحدد Source/Destination/Service/Action + الحمايات.</td></tr>
+<tr><td class="l">NAT rule</td><td>قاعدة ترجمة عناوين مستقلة (SNAT/DNAT/Full NAT).</td></tr>
+<tr><td class="l">Masquerade (MASQ)</td><td>SNAT بعنوان الـ Outbound interface.</td></tr>
+<tr><td class="l">DNAT</td><td>Destination NAT، نشر خدمة داخلية.</td></tr>
+<tr><td class="l">Loopback / Hairpin</td><td>وصول مستخدم داخلي لسيرفر داخلي بالـ Public IP.</td></tr>
+<tr><td class="l">Gateway</td><td>مسار للإنترنت (WAN) مع Health check (Probe).</td></tr>
+<tr><td class="l">SD-WAN</td><td>اختيار المسار حسب Application/Link quality (Policy routing + Profiles).</td></tr>
+<tr><td class="l">SD-WAN Profile</td><td>تعريف Link selection و Strategy و Failover.</td></tr>
+<tr><td class="l">Web policy</td><td>قواعد تصنيف المواقع والإجراءات.</td></tr>
+<tr><td class="l">Application filter</td><td>قواعد التحكم في التطبيقات.</td></tr>
+<tr><td class="l">TLS inspection</td><td>فك تشفير HTTPS للفحص ثم إعادة التشفير.</td></tr>
+<tr><td class="l">Re-signing CA</td><td>شهادة CA بتوقّع شهادات الـ MITM الشرعي.</td></tr>
+<tr><td class="l">IPS</td><td>Intrusion Prevention System، حجب الهجمات بـ Signatures.</td></tr>
+<tr><td class="l">ATP</td><td>Advanced Threat Protection: اكتشاف Botnets/C2.</td></tr>
+<tr><td class="l">C2 / C&amp;C</td><td>Command and Control، سيرفر المهاجم.</td></tr>
+<tr><td class="l">Zero-Day Protection</td><td>فحص الملفات المشبوهة في Cloud sandbox.</td></tr>
+<tr><td class="l">Sandbox</td><td>بيئة معزولة لتشغيل الملفات ومراقبة سلوكها.</td></tr>
+<tr><td class="l">DoS / DDoS</td><td>هجوم حرمان الخدمة (من مصدر واحد/متعدد).</td></tr>
+<tr><td class="l">Spoofing</td><td>انتحال IP/MAC.</td></tr>
+<tr><td class="l">GeoIP</td><td>تحديد الدولة من الـ IP لاستخدامها في Rules.</td></tr>
+<tr><td class="l">STAS</td><td>Sophos Transparent Authentication Suite، SSO من DC.</td></tr>
+<tr><td class="l">SATC</td><td>Sophos Authentication for Thin Clients.</td></tr>
+<tr><td class="l">Captive Portal</td><td>صفحة Login للمستخدم قبل الوصول (Port 8090).</td></tr>
+<tr><td class="l">OTP / TOTP</td><td>One-time password بزمن محدد (Authenticator app).</td></tr>
+<tr><td class="l">MFA</td><td>مصادقة متعددة العوامل.</td></tr>
+<tr><td class="l">LDAP / LDAPS</td><td>بروتوكول Directory (389) ونسخته المشفرة (636).</td></tr>
+<tr><td class="l">RADIUS</td><td>بروتوكول AAA (1812/1813).</td></tr>
+<tr><td class="l">IPsec</td><td>مجموعة بروتوكولات لـ VPN (IKE + ESP).</td></tr>
+<tr><td class="l">IKE / IKEv2</td><td>Internet Key Exchange لتكوين الـ SAs.</td></tr>
+<tr><td class="l">SA</td><td>Security Association، اتفاق تشفير بين طرفين.</td></tr>
+<tr><td class="l">PFS</td><td>Perfect Forward Secrecy.</td></tr>
+<tr><td class="l">DPD</td><td>Dead Peer Detection.</td></tr>
+<tr><td class="l">NAT-T</td><td>NAT Traversal (UDP 4500).</td></tr>
+<tr><td class="l">XFRM</td><td>Tunnel interface للـ Route-based IPsec.</td></tr>
+<tr><td class="l">Sophos Connect</td><td>VPN client من Sophos (IPsec/SSL).</td></tr>
+<tr><td class="l">Clientless VPN</td><td>وصول لتطبيقات عبر المتصفح بدون Client.</td></tr>
+<tr><td class="l">RED</td><td>Remote Ethernet Device لمد Layer 2 للفروع.</td></tr>
+<tr><td class="l">APX</td><td>سلسلة Access Points من Sophos.</td></tr>
+<tr><td class="l">WAF</td><td>Web Application Firewall (Web server protection).</td></tr>
+<tr><td class="l">MTA</td><td>Mail Transfer Agent، وضع Email protection.</td></tr>
+<tr><td class="l">SPF / DKIM / DMARC</td><td>آليات توثيق مرسل البريد.</td></tr>
+<tr><td class="l">HA</td><td>High Availability: Active-Passive / Active-Active.</td></tr>
+<tr><td class="l">Syslog</td><td>إرسال السجلات لسيرفر خارجي (UDP/TCP 514).</td></tr>
+<tr><td class="l">SNMP</td><td>مراقبة الأجهزة (UDP 161/162).</td></tr>
+<tr><td class="l">Sophos Central</td><td>منصة الإدارة السحابية.</td></tr>
+<tr><td class="l">Intercept X</td><td>حماية Endpoint/Server (Anti-exploit, CryptoGuard, EDR).</td></tr>
+<tr><td class="l">CryptoGuard</td><td>حماية من Ransomware مع Rollback.</td></tr>
+<tr><td class="l">Tamper Protection</td><td>منع تعطيل الـ Agent.</td></tr>
+<tr><td class="l">EDR / XDR / MDR</td><td>Endpoint / Extended Detection &amp; Response / Managed Detection &amp; Response.</td></tr>
+<tr><td class="l">Live Discover</td><td>أداة Queries (SQL) لصيد التهديدات على الـ Endpoints.</td></tr>
+<tr><td class="l">Security Heartbeat</td><td>قناة صحة Endpoint ↔ Firewall (Green/Yellow/Red).</td></tr>
+<tr><td class="l">Synchronized Security</td><td>تبادل المعلومات بين المنتجات للاستجابة التلقائية.</td></tr>
+<tr><td class="l">ZTNA</td><td>Zero Trust Network Access.</td></tr>
+<tr><td class="l">Data Lake</td><td>مخزن Telemetry سحابي للـ XDR.</td></tr>
+<tr><td class="l">Policy tester</td><td>أداة لتجربة Web policy.</td></tr>
+<tr><td class="l">Advanced Shell</td><td>Linux shell على الـ Firewall (Console option 5 → 3).</td></tr>
+<tr><td class="l">Local ACL exception</td><td>قواعد تقيّد الوصول لخدمات الإدارة.</td></tr>
+<tr><td class="l">Linked rule</td><td>Firewall rule مرتبطة بـ NAT/WAF بتتولّد تلقائيًا.</td></tr></table>
+</section>
+<section class="module" id="appB">
+<h2>Appendix B — Ports و Defaults (Cheat Sheet)</h2>
+<div class="warn">القيم دي الافتراضية الشائعة. راجع وثائق الإصدار عندك قبل الاعتماد عليها في Production.</div>
+
+<h3>B.1 الإدارة والخدمات على الـ Firewall</h3>
+<table>
+<tr><th>الخدمة</th><th>Port</th></tr>
+<tr><td class="l">WebAdmin</td><td>TCP 4444</td></tr>
+<tr><td class="l">User Portal</td><td>TCP 4443</td></tr>
+<tr><td class="l">VPN Portal / SSL VPN portal</td><td>TCP 443 (حسب الإعداد)</td></tr>
+<tr><td class="l">Captive Portal</td><td>TCP 8090 (HTTP) / 8091 (HTTPS)</td></tr>
+<tr><td class="l">SSH</td><td>TCP 22</td></tr>
+<tr><td class="l">SSL VPN (default)</td><td>TCP 8443</td></tr>
+<tr><td class="l">IPsec IKE / NAT-T</td><td>UDP 500 / UDP 4500 + ESP (IP 50)</td></tr>
+<tr><td class="l">L2TP</td><td>UDP 1701</td></tr>
+<tr><td class="l">DNS</td><td>TCP/UDP 53</td></tr>
+<tr><td class="l">DHCP</td><td>UDP 67/68</td></tr>
+<tr><td class="l">NTP</td><td>UDP 123</td></tr>
+<tr><td class="l">Syslog</td><td>UDP/TCP 514</td></tr>
+<tr><td class="l">SNMP / Trap</td><td>UDP 161 / 162</td></tr>
+<tr><td class="l">RADIUS Auth / Acct</td><td>UDP 1812 / 1813</td></tr>
+<tr><td class="l">LDAP / LDAPS</td><td>TCP 389 / 636</td></tr>
+<tr><td class="l">TACACS+</td><td>TCP 49</td></tr>
+<tr><td class="l">Heartbeat (Endpoint ↔ FW)</td><td>8347 (UDP/TCP حسب الوظيفة)</td></tr>
+<tr><td class="l">SMTP / IMAPS / POP3S</td><td>25 / 993 / 995</td></tr>
+<tr><td class="l">HA link</td><td>Dedicated port (Multicast/Unicast حسب الوضع)</td></tr></table>
+
+<h3>B.2 Defaults</h3>
+<table>
+<tr><th>البند</th><th>القيمة</th></tr>
+<tr><td class="l">LAN افتراضي (تركيب جديد)</td><td class="l">172.16.16.16/24 (Port1)</td></tr>
+<tr><td class="l">WebAdmin URL</td><td class="l">https://172.16.16.16:4444</td></tr>
+<tr><td class="l">Console login</td><td>Admin account الذي تم إنشاؤه في الـ Setup wizard</td></tr>
+<tr><td class="l">Console menu</td><td>1 Network • 2 System • 3 Route • 4 Device Console • 5 Device Management • 6 VPN • 7 Shutdown/Reboot</td></tr>
+<tr><td class="l">Default zones</td><td>LAN, WAN, DMZ, VPN, WiFi</td></tr>
+<tr><td class="l">Default rules</td><td>Traffic to Internet + Allow all LAN (حسب الإصدار) + Auto-added VPN rules</td></tr>
+<tr><td class="l">Administrative distance (Static)</td><td>Static 1 • Connected 0 • OSPF 110 • RIP 120 • BGP 20/200 (راجع Module 5)</td></tr></table>
+
+<h3>B.3 ترتيب معالجة الـ Packet (ملخص)</h3>
+<pre class="code">Ingress → DoS/Spoof → (Conntrack) → DNAT → Routing decision
+→ Firewall rule → IPS/AV/Web/App (DPI) → SNAT → Egress</pre>
+
+<h3>B.4 أرقام Heartbeat و Central</h3>
+<ul><li>Central بيحتاج HTTPS (443) للـ Cloud. لو في Proxy/Firewall أمامه: افتح الـ URLs الخاصة بـ Sophos Central (قائمة محدثة في Docs).</li>
+<li>مفتاح ترخيص/Serial بيتسجل في MySophos.</li></ul>
+</section>
+<section class="module" id="appC">
+<h2>Appendix C — CLI و Advanced Shell و API Reference</h2>
+<div class="warn">أوامر الـ Shell بتتغير بين الإصدارات. استخدم Advanced Shell للقراءة والتشخيص، ولا تعدّل ملفات النظام إلا بتوجيه من الدعم أو الوثائق. <b>لم أختبر هذه الأوامر على جهاز فعلي</b>؛ جرّبها أولاً في Lab.</div>
+
+<h3>C.1 الدخول</h3>
+<pre class="code"># SSH (مفعّل في Device access)
+ssh admin@172.16.16.16
+# Console Menu
+#   4 = Device Console (CLI تشخيصي: show / set / system ...)
+#   5 = Device Management → 3 Advanced Shell (Linux)</pre>
+
+<h3>C.2 Device Console (Option 4) — أمثلة</h3>
+<pre class="code">console&gt; system diagnostics show version-info
+console&gt; system diagnostics show disk
+console&gt; system diagnostics utilities process-monitor
+console&gt; show network interface
+console&gt; show advanced-firewall
+console&gt; set advanced-firewall fw-bypass-stateful-firewall-sessions ...
+console&gt; system ipsec_route add net 192.168.20.0/24 tunnelname Branch_VPN
+console&gt; system ha show details
+console&gt; service -S                # حالة الخدمات (من Advanced Shell)</pre>
+<div class="note">بعض الأوامر أعلاه حسب الإصدار. استخدم <span class="en">?</span> أو Tab للإكمال التلقائي داخل الـ Console لاكتشاف الأوامر المتاحة.</div>
+
+<h3>C.3 Advanced Shell — تشخيص</h3>
+<pre class="code">service -S                              # قائمة الخدمات وحالتها
+service &lt;name&gt;:restart -ds nosync       # إعادة تشغيل خدمة (مثال: ipsec)
+tcpdump -i Port1 host 172.16.16.50 -nn  # Packet capture
+tcpdump -i any port 53 -nn
+conntrack -L | grep 172.16.16.50        # Connections
+ip route ; ip addr ; ip neigh           # Routing / Interfaces / ARP
+tail -f /log/ipsec.log                  # لوج الـ IPsec (حسب الإصدار)
+free -m ; top                           # ذاكرة و CPU</pre>
+
+<h3>C.4 Packet Capture من الـ GUI</h3>
+<ul><li><span class="en">Diagnostics → Packet capture</span>: اختر Interface + BPF filter (مثل <span class="en">host 172.16.16.50 and port 443</span>) + Packet count، ثم Start/Download (pcap) وافتحه بـ Wireshark.</li>
+<li><span class="en">Diagnostics → Tools</span>: Ping, Traceroute, Name lookup, Route lookup, Connection list, Services status.</li></ul>
+
+<h3>C.5 XML API</h3>
+<pre class="code">curl -k "https://FW:4444/webconsole/APIController" \
+ --data-urlencode 'reqxml=&lt;Request&gt;&lt;Login&gt;&lt;Username&gt;api&lt;/Username&gt;&lt;Password&gt;***&lt;/Password&gt;&lt;/Login&gt;
+ &lt;Set operation="add"&gt;&lt;IPHost&gt;&lt;Name&gt;H_Test&lt;/Name&gt;&lt;IPFamily&gt;IPv4&lt;/IPFamily&gt;
+ &lt;HostType&gt;IP&lt;/HostType&gt;&lt;IPAddress&gt;10.10.10.10&lt;/IPAddress&gt;&lt;/IPHost&gt;&lt;/Set&gt;&lt;/Request&gt;'</pre>
+<ul><li>العمليات: <span class="en">Get / Set (add, update) / Remove</span>.</li>
+<li>الأسماء الدقيقة للـ Tags تختلف حسب الكيان والإصدار: صدّر Config وشوف الـ XML الفعلي (<span class="en">Backup → Export</span>) واستخدمه كمرجع.</li>
+<li>أدوات جاهزة: مكتبة Python <span class="en">sophos-firewall-sdk</span> (مجتمعية)، وسكريبتات PowerShell/Ansible حسب المتاح. تحقق من توافقها مع إصدارك.</li></ul>
+
+<h3>C.6 Sophos Central API</h3>
+<ul><li>Central بيوفّر <b>REST APIs</b> (OAuth2 Client Credentials من <span class="en">Global Settings → API Credentials</span>). تحتاج Tenant ID ثم تنادي Endpoints (Devices, Alerts, Policies...).</li>
+<li>الوثائق: <span class="en">developer.sophos.com</span>.</li></ul>
+</section>
+<section class="module" id="appD">
+<h2>Appendix D — سيناريوهات Troubleshooting (حاول قبل ما تفتح الحل)</h2>
+<div class="note">كل سيناريو: العرض ← فكّر في الخطوات ← افتح الحل. التمرين الحقيقي إنك تحدد <b>أنهي Log/أداة</b> هتبدأ بيها.</div>
+
+<details><summary>1) موظف بيقول "الإنترنت واقف" وباقي المكتب شغال.</summary>
+<b>ابدأ:</b> Log viewer بالـ Source IP. لو مفيش Log أصلاً ← مشكلة L2/DHCP/Zone (الجهاز مش واصل). لو فيه <span class="en">Denied</span> ← شوف Rule ID (غالبًا Group/Policy أو Match known users وهو مش Authenticated). تأكد من <span class="en">Live users</span>.</details>
+
+<details><summary>2) بعد تفعيل TLS inspection، تطبيق بنكي/Update بيفشل.</summary>
+Certificate pinning أو الـ CA مش Trusted. الحل: Rule فوق بـ <span class="en">Don't decrypt</span> للـ Domain/Category، وراجع Log → SSL/TLS.</details>
+
+<details><summary>3) Site-to-Site VPN بيظهر Connected وPing مش شغال.</summary>
+افحص: (1) Firewall rules LAN↔VPN في الاتجاهين. (2) Local/Remote subnets متطابقة (Mirror). (3) Route للـ Remote subnet (Route-based). (4) NAT: ضيف <span class="en">NAT exemption</span> لو الـ Masquerade بيترجم ترافيك الـ VPN.</details>
+
+<details><summary>4) نشرت Web server بـ DNAT، شغال من برا ومش من الداخل.</summary>
+Loopback/Hairpin مش معمول. أنشئ NAT rule (Source LAN → Dest Public IP → Translate Dest للسيرفر + SNAT) أو استخدم DNS داخلي يرجع IP السيرفر (Split-DNS) — الحل الأنظف.</details>
+
+<details><summary>5) DNAT معمول وصح، لكن الـ Server بيستقبل ومفيش رد.</summary>
+Asymmetric routing: Gateway السيرفر مش الـ Sophos. صحّح الـ Default gateway. تأكد بـ Packet capture من الاتجاهين.</details>
+
+<details><summary>6) Multi-WAN Failover مش بيحصل لما ISP الأول يقع.</summary>
+Gateway probe بيعمل Ping لـ IP الـ ISP نفسه (اللي لسه حي) بدل IP على الإنترنت. غيّر الـ Probe لـ IP بعيد (مثل 1.1.1.1) أو تحقق بـ HTTP/TCP. وشوف الـ Failover rule و Gateway weights.</details>
+
+<details><summary>7) CPU عالي ومستخدمين بيشتكوا من البطء.</summary>
+راجع: Rules اللي فيها IPS + AV + TLS على ترافيك داخلي ضخم (Backup/Replication). استثنِ الترافيك الداخلي، فعّل FastPath لما يكون مناسب، خفّض Logging، وراجع <span class="en">Live connections</span> لأعلى استهلاك.</details>
+
+<details><summary>8) Heartbeat بيظهر Missing على Endpoint سليم.</summary>
+الجهاز مش مسجّل بنفس Central tenant، أو الـ Port 8347 مقفول بين الـ Endpoint والـ Firewall، أو Zone/Rule بتمنع. تأكد من التسجيل والـ Rule.</details>
+
+<details><summary>9) Captive Portal مش بيظهر على HTTPS sites.</summary>
+طبيعي: المتصفح مش هيحوّل HTTPS بدون تحذير. اختبر بـ HTTP أو افتح الـ Portal مباشرة (<span class="en">https://FW:8091</span>).</details>
+
+<details><summary>10) مستخدم AD بيتعرف بـ STAS لكن Group Policy مش بتتطبق.</summary>
+الـ Groups مش مستوردة أو الـ Mapping بين AD Group واسم Group على Sophos غير مظبوط. راجع <span class="en">Live users</span> وانتماء الـ Group.</details>
+
+<details><summary>11) IPS حجب Application شرعي بعد Update.</summary>
+Log → IPS → Signature ID → Exception (أو غيّر Action). وثّق السبب. راجع إعداد الـ Policy (Platform/Target) لتقليل False positives.</details>
+
+<details><summary>12) إيميلات بتتأخر / ما بتوصلش بعد تفعيل MTA.</summary>
+تحقق: MX/DNS • Route للـ Mail server • Port 25 مفتوح • Quarantine • Mail log (Log viewer → Email) • SPF/Reverse DNS لو بتتحجب عند المستقبل.</details>
+
+<details><summary>13) HA بيعمل Failover كل شوية.</summary>
+Monitored port بيرجّ/يقع، أو الـ HA link فيه مشكلة، أو Resources عالية. افحص Cabling وLog الـ HA.</details>
+
+<details><summary>14) Backup Restore فشل.</summary>
+Version/Model مختلف، أو الـ Backup مشفّر بباسورد غلط. استخدم نفس الـ Firmware ثم Restore.</details>
+
+<details><summary>15) Sophos Connect متصل لكن مفيش Internal DNS.</summary>
+SSL VPN global settings → DNS = LAN DNS + Suffix. وتأكد من Rule VPN→LAN تسمح بـ DNS (UDP/TCP 53).</details>
+</section>
+<section class="module" id="appE">
+<h2>Appendix E — بنك أسئلة (50 سؤال)</h2>
+<div class="note">اضغط على السؤال لإظهار الإجابة. الأسئلة من تأليفي للتدريب وليست أسئلة امتحان رسمي لـ Sophos.</div>
+<div id="qbank">
+
+<h3>الأساسيات والمعمارية</h3>
+<details><summary>1) إيه Port الـ WebAdmin؟<br><span class="en">A) 443  B) 4443  C) 4444  D) 8443</span></summary><b>C</b> — 4444. (4443 للـ User Portal.)</details>
+<details><summary>2) الـ IP الافتراضي للـ LAN في تركيب جديد؟<br><span class="en">A) 192.168.1.1  B) 172.16.16.16  C) 10.0.0.1  D) 192.168.0.1</span></summary><b>B</b>.</details>
+<details><summary>3) أي ميزة بتفك التشفير لفحص HTTPS؟<br><span class="en">A) IPS  B) TLS inspection  C) ATP  D) SD-WAN</span></summary><b>B</b>.</details>
+<details><summary>4) الـ Zone اللي بتحط فيها السيرفرات المنشورة للإنترنت؟<br><span class="en">A) LAN  B) DMZ  C) VPN  D) WiFi</span></summary><b>B</b>.</details>
+<details><summary>5) مين بيتنفذ الأول: DNAT ولا Firewall rule؟<br><span class="en">A) Firewall rule  B) DNAT  C) SNAT  D) مفيش فرق</span></summary><b>B</b> — DNAT قبل الـ Rule، SNAT بعدها.</details>
+<details><summary>6) أي Option في الـ Console بيفتح Advanced Shell؟<br><span class="en">A) 3  B) 4  C) 5  D) 6</span></summary><b>C</b> — 5 Device Management ثم Advanced Shell.</details>
+<details><summary>7) الـ Rules بتتقرأ؟<br><span class="en">A) من تحت لفوق  B) من فوق لتحت وأول تطابق  C) كلها تتنفذ  D) عشوائي</span></summary><b>B</b>.</details>
+<details><summary>8) أنهي ميزة هي Web Application Firewall؟<br><span class="en">A) Web policy  B) Web server protection  C) App control  D) ATP</span></summary><b>B</b>.</details>
+
+<h3>الشبكة والـ Routing</h3>
+<details><summary>9) أنهي Route بيتفضّل لو فيه أكتر من واحد مطابق؟<br><span class="en">A) الأقل Prefix  B) الأطول Prefix (Longest match)  C) الأحدث  D) الأقدم</span></summary><b>B</b>.</details>
+<details><summary>10) الـ Gateway probe الأفضل؟<br><span class="en">A) IP الـ ISP نفسه  B) IP بعيد على الإنترنت  C) IP الـ LAN  D) Broadcast</span></summary><b>B</b> — عشان يكتشف عطل أبعد من الـ ISP.</details>
+<details><summary>11) الـ SD-WAN في Sophos بيعتمد على؟<br><span class="en">A) Application/Link quality  B) MAC فقط  C) VLAN فقط  D) DNS</span></summary><b>A</b>.</details>
+<details><summary>12) DHCP Relay بيستخدم لما؟<br><span class="en">A) DHCP على نفس الـ Subnet  B) DHCP Server على Subnet تاني  C) تعطيل DHCP  D) NAT</span></summary><b>B</b>.</details>
+<details><summary>13) ليه نستخدم VLANs؟<br><span class="en">A) تسريع الـ Internet  B) عزل Broadcast Domains  C) زيادة IPs  D) إلغاء الـ Router</span></summary><b>B</b>.</details>
+<details><summary>14) OSPF على Sophos بيحتاج؟<br><span class="en">A) Area وNetworks وNeighbors  B) VLAN فقط  C) Proxy  D) DNS</span></summary><b>A</b>.</details>
+
+<h3>Firewall Rules و NAT</h3>
+<details><summary>15) في DNAT، الـ Destination في الـ Firewall rule؟<br><span class="en">A) Public IP  B) IP الداخلي/Zone السيرفر  C) Any فقط  D) Broadcast</span></summary><b>B</b>.</details>
+<details><summary>16) Masquerade بيستخدم؟<br><span class="en">A) IP الـ Outbound interface  B) IP عشوائي  C) MAC  D) IP الـ LAN</span></summary><b>A</b>.</details>
+<details><summary>17) Loopback NAT بيحل؟<br><span class="en">A) مشكلة الـ DNS  B) وصول الداخلي للسيرفر بالـ Public IP  C) سرعة VPN  D) IPS</span></summary><b>B</b>.</details>
+<details><summary>18) Clean-up rule الغرض؟<br><span class="en">A) تسريع  B) تسجيل/حجب ما لم يتطابق  C) NAT  D) VPN</span></summary><b>B</b>.</details>
+<details><summary>19) أفضل Practice للـ Rules؟<br><span class="en">A) Any-Any-Any  B) Least privilege + أسماء ووصف  C) بدون Logs  D) كلها Allow</span></summary><b>B</b>.</details>
+<details><summary>20) Linked NAT rule بتتولّد من؟<br><span class="en">A) DNAT/WAF Business rule  B) DHCP  C) DNS  D) VPN فقط</span></summary><b>A</b>.</details>
+
+<h3>الحماية</h3>
+<details><summary>21) IPS بيعتمد على؟<br><span class="en">A) Signatures  B) DNS فقط  C) MAC  D) ARP</span></summary><b>A</b>.</details>
+<details><summary>22) ATP بيكتشف؟<br><span class="en">A) Botnet/C2  B) VLAN errors  C) STP loops  D) DHCP</span></summary><b>A</b>.</details>
+<details><summary>23) Zero-day protection بتشغّل الملف في؟<br><span class="en">A) الـ PC  B) Cloud sandbox  C) الـ Switch  D) الـ AP</span></summary><b>B</b>.</details>
+<details><summary>24) Signature عطّلت تطبيق، أول خطوة؟<br><span class="en">A) تعطيل IPS  B) تحديد Signature ID من Log  C) Reboot  D) Reset</span></summary><b>B</b>.</details>
+<details><summary>25) DoS thresholds منخفضة جدًا تسبب؟<br><span class="en">A) حجب ترافيك شرعي  B) تحسين الأداء  C) لا شيء  D) VPN أسرع</span></summary><b>A</b>.</details>
+<details><summary>26) الـ CA اللي بيوقّع شهادات TLS inspection لازم؟<br><span class="en">A) تتثبت Trusted على Clients  B) تتخفى  C) تتمسح  D) تتبعت للـ ISP</span></summary><b>A</b>.</details>
+<details><summary>27) نستثني مين من فك التشفير؟<br><span class="en">A) بنوك/صحة وتطبيقات pinned  B) كل المواقع  C) لا أحد  D) الـ DNS</span></summary><b>A</b>.</details>
+<details><summary>28) Synchronized Application Control بيعتمد على؟<br><span class="en">A) معلومة من Endpoint  B) ARP  C) VLAN  D) DNS</span></summary><b>A</b>.</details>
+
+<h3>Authentication</h3>
+<details><summary>29) STAS بيعمل؟<br><span class="en">A) SSO بمراقبة Logon events  B) VPN  C) NAT  D) IPS</span></summary><b>A</b>.</details>
+<details><summary>30) بورت LDAPS؟<br><span class="en">A) 389  B) 636  C) 88  D) 53</span></summary><b>B</b>.</details>
+<details><summary>31) Captive Portal بيستخدم؟<br><span class="en">A) Login يدوي  B) SSO تلقائي فقط  C) MAC  D) ARP</span></summary><b>A</b>.</details>
+<details><summary>32) فين المستخدم بيسجل OTP؟<br><span class="en">A) User Portal  B) Console  C) DHCP  D) ARP</span></summary><b>A</b>.</details>
+<details><summary>33) "Match known users" معناها؟<br><span class="en">A) مستخدمين اتعرفوا فقط  B) أي حد  C) Guests فقط  D) Admins فقط</span></summary><b>A</b>.</details>
+
+<h3>VPN</h3>
+<details><summary>34) Ports الـ IPsec؟<br><span class="en">A) UDP 500/4500 + ESP  B) TCP 80  C) TCP 22  D) UDP 53</span></summary><b>A</b>.</details>
+<details><summary>35) IKEv2 أفضل من IKEv1 في؟<br><span class="en">A) الاستقرار والكفاءة  B) قديم  C) مفيش فرق  D) بدون تشفير</span></summary><b>A</b>.</details>
+<details><summary>36) NO_PROPOSAL_CHOSEN معناها؟<br><span class="en">A) Mismatch في Proposals  B) PSK صح  C) DNS  D) DHCP</span></summary><b>A</b>.</details>
+<details><summary>37) Split tunnel؟<br><span class="en">A) ترافيك الشركة فقط عبر VPN  B) كل الترافيك  C) بدون تشفير  D) L2</span></summary><b>A</b>.</details>
+<details><summary>38) Route-based VPN بيستخدم؟<br><span class="en">A) Tunnel interface (XFRM)  B) VLAN  C) STP  D) ARP</span></summary><b>A</b>.</details>
+<details><summary>39) VPN شغال وPing فاشل، أول شيء؟<br><span class="en">A) Firewall rules/Routes  B) تغيير ISP  C) Reset  D) تغيير الـ AP</span></summary><b>A</b>.</details>
+<details><summary>40) أنهي VPN غير آمن ويجب تجنبه؟<br><span class="en">A) PPTP  B) IPsec IKEv2  C) SSL VPN  D) WireGuard-like</span></summary><b>A</b>.</details>
+
+<h3>Wireless, Email, WAF, HA, Central</h3>
+<details><summary>41) أفضل Client traffic للـ Guest SSID؟<br><span class="en">A) Bridge to LAN  B) Separate Zone  C) Disabled  D) Mesh</span></summary><b>B</b>.</details>
+<details><summary>42) RED بيمدّ؟<br><span class="en">A) Layer 2 لفرع  B) DNS  C) DHCP فقط  D) NTP</span></summary><b>A</b>.</details>
+<details><summary>43) سجلات DNS للبريد؟<br><span class="en">A) MX/SPF/DKIM/DMARC  B) A فقط  C) NS فقط  D) SOA</span></summary><b>A</b>.</details>
+<details><summary>44) WAF بيفحص؟<br><span class="en">A) HTTP requests (L7)  B) ARP  C) STP  D) CDP</span></summary><b>A</b>.</details>
+<details><summary>45) HA Active-Passive معناه؟<br><span class="en">A) جهاز Standby  B) الاتنين Active دايمًا  C) مفيش مزامنة  D) VPN فقط</span></summary><b>A</b>.</details>
+<details><summary>46) Heartbeat Red معناه؟<br><span class="en">A) Endpoint مصاب/Compromised  B) سليم  C) غير موجود  D) تحديث</span></summary><b>A</b>.</details>
+<details><summary>47) Tamper Protection؟<br><span class="en">A) يمنع إيقاف الـ Agent  B) VPN  C) NAT  D) DNS</span></summary><b>A</b>.</details>
+<details><summary>48) CryptoGuard؟<br><span class="en">A) حماية Ransomware + Rollback  B) VPN  C) Proxy  D) DHCP</span></summary><b>A</b>.</details>
+<details><summary>49) MDR؟<br><span class="en">A) خدمة بشرية Managed  B) أداة Switch  C) Cable  D) DNS</span></summary><b>A</b>.</details>
+<details><summary>50) أفضل توقيت لأخذ Backup؟<br><span class="en">A) قبل أي Upgrade/تغيير كبير + مجدول  B) بعد الكارثة  C) أبدًا  D) سنويًا</span></summary><b>A</b>.</details>
+</div>
+</section>
+<section class="module" id="appF">
+<h2>Appendix F — خطة دراسة، Lab Setup، شهادات، ومصادر</h2>
+
+<h3>F.1 خطة 8 أسابيع</h3>
+<table>
+<tr><th>الأسبوع</th><th>المحتوى</th><th>الهدف</th></tr>
+<tr><td>1</td><td>Modules 1–3</td><td>فهم المعمارية + تركيب Lab + Setup wizard</td></tr>
+<tr><td>2</td><td>Modules 4–5</td><td>Interfaces/VLANs/DHCP + Routing + Multi-WAN</td></tr>
+<tr><td>3</td><td>Modules 6–7</td><td>Rules + NAT (DNAT/Loopback)</td></tr>
+<tr><td>4</td><td>Module 8</td><td>Web/App/TLS</td></tr>
+<tr><td>5</td><td>Modules 9–10</td><td>IPS/ATP + Authentication</td></tr>
+<tr><td>6</td><td>Module 11–12</td><td>VPN + Wireless/RED</td></tr>
+<tr><td>7</td><td>Modules 13–14</td><td>Email/WAF + HA/Admin/Logging</td></tr>
+<tr><td>8</td><td>Modules 15–16 + Capstone</td><td>Central/Endpoint + مشروع نهائي + بنك الأسئلة</td></tr></table>
+<div class="note">لو بتذاكر ساعة يوميًا، ضاعف المدة. الأهم: <b>نفّذ كل Lab بإيدك</b>.</div>
+
+<h3>F.2 بيئة الـ Lab الموصى بها</h3>
+<table>
+<tr><th>المكوّن</th><th>التفاصيل</th></tr>
+<tr><td>Hypervisor</td><td>VMware Workstation / VirtualBox / Proxmox / EVE-NG (يدعم Sophos image حسب توفره)</td></tr>
+<tr><td>Sophos Firewall</td><td>Virtual appliance (Trial 30 يوم أو Home Edition — راجع شروطه وحدوده الحالية على موقع Sophos)</td></tr>
+<tr><td>Resources</td><td>2+ vCPU، 4–6 GB RAM، 2+ NICs (WAN + LAN + DMZ اختياري)</td></tr>
+<tr><td>Clients</td><td>Windows 10/11، Ubuntu Server (Web)، Kali (اختبارات آمنة داخل الـ Lab)</td></tr>
+<tr><td>Windows Server</td><td>AD/DNS/DHCP (Evaluation Edition)</td></tr>
+<tr><td>Central</td><td>Trial لـ Intercept X + Firewall</td></tr></table>
+<div class="warn">Packet Tracer مفيهوش Sophos. الـ Labs هنا عملية على Virtual appliance. ولم أجرّب الخطوات على جهاز فعلي، فالمسارات في الواجهة ممكن تختلف قليلًا حسب الإصدار.</div>
+
+<h3>F.3 الشهادات (راجع الموقع الرسمي)</h3>
+<ul>
+<li>Sophos بتقدم تدريب وشهادات عبر <span class="en">Sophos Learning Zone / Partner Portal</span> بمستويات عادة: Technician → Engineer → Architect، لمنتجات Firewall و Endpoint و Central.</li>
+<li>الأسماء والمتطلبات وصلاحية الشهادة بتتغير. تأكد من الصفحة الرسمية قبل الحجز.</li>
+<li>خلفيتك في CCNA + Linux بتساعد جدًا: مفاهيم Routing/NAT/VPN هي نفسها، والإضافة هي تعلم واجهة Sophos وخصائصها.</li></ul>
+
+<h3>F.4 مصادر</h3>
+<ul>
+<li>Sophos Firewall Documentation: <span class="en">docs.sophos.com</span> (Release notes + Admin guide).</li>
+<li>Sophos Community: <span class="en">community.sophos.com</span> (حلول عملية + Recommended Reads).</li>
+<li>Sophos Firewall Learning (Learning Zone) و YouTube channel الرسمي.</li>
+<li>Sophos Central Help و API: <span class="en">developer.sophos.com</span>.</li>
+<li>Sophos Support Knowledge Base للـ Known issues.</li></ul>
+
+<h3>F.5 Checklist قبل Production</h3>
+<ul>
+<li>☐ Firmware محدث + Backup مجدول + NTP</li>
+<li>☐ Admins مسماة + MFA + Device access مقيّد</li>
+<li>☐ Zones + Rules Least privilege + Clean-up rule</li>
+<li>☐ IPS/ATP/AV/Web على الـ Rules المناسبة</li>
+<li>☐ TLS inspection مع CA موزعة + Exclusions</li>
+<li>☐ VPN (MFA + Strong crypto) + اختبار Failover</li>
+<li>☐ Syslog + Reports + Alerts + SNMP</li>
+<li>☐ HA (لو مطلوب) + اختبار Failover</li>
+<li>☐ Central + Heartbeat + Policies للـ Endpoints</li>
+<li>☐ توثيق Network + Rules + Change log + Rollback plan</li></ul>
+</section>
+</main>
+<script>
+/* ---------- Topology renderer ---------- */
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function nodeSVG(n){
+  const {t,x,y}=n, lines=String(n.l).split('|');
+  let s='';
+  const c={router:'#2563eb',switch:'#16a34a',l3:'#0d9488',pc:'#64748b',server:'#7c3aed',cloud:'#94a3b8',ap:'#f59e0b',fw:'#dc2626',laptop:'#64748b',wlc:'#db2777'}[t]||'#64748b';
+  if(t==='router')s+=`<circle cx="${x}" cy="${y}" r="21" fill="${c}"/><text x="${x}" y="${y+6}" text-anchor="middle" font-size="16" font-weight="700" style="fill:#fff">R</text>`;
+  else if(t==='switch')s+=`<rect x="${x-26}" y="${y-13}" width="52" height="26" rx="4" fill="${c}"/><text x="${x}" y="${y+5}" text-anchor="middle" font-size="13" font-weight="700" style="fill:#fff">SW</text>`;
+  else if(t==='l3')s+=`<rect x="${x-26}" y="${y-13}" width="52" height="26" rx="4" fill="${c}"/><text x="${x}" y="${y+5}" text-anchor="middle" font-size="13" font-weight="700" style="fill:#fff">L3 SW</text>`;
+  else if(t==='pc'||t==='laptop')s+=`<rect x="${x-17}" y="${y-14}" width="34" height="24" rx="3" fill="${c}"/><rect x="${x-12}" y="${y-10}" width="24" height="16" fill="#cbd5e1"/><rect x="${x-9}" y="${y+10}" width="18" height="4" fill="${c}"/>`;
+  else if(t==='server')s+=`<rect x="${x-15}" y="${y-20}" width="30" height="40" rx="3" fill="${c}"/><line x1="${x-10}" y1="${y-8}" x2="${x+10}" y2="${y-8}" stroke="#fff"/><line x1="${x-10}" y1="${y+2}" x2="${x+10}" y2="${y+2}" stroke="#fff"/><circle cx="${x}" cy="${y+12}" r="2" fill="#4ade80"/>`;
+  else if(t==='cloud')s+=`<ellipse cx="${x}" cy="${y}" rx="38" ry="22" fill="${c}"/><text x="${x}" y="${y+5}" text-anchor="middle" font-size="13" font-weight="700" style="fill:#fff">Cloud</text>`;
+  else if(t==='ap')s+=`<circle cx="${x}" cy="${y}" r="17" fill="${c}"/><path d="M${x-9} ${y+2} q9 -12 18 0 M${x-5} ${y+6} q5 -6 10 0" stroke="#fff" fill="none" stroke-width="2"/>`;
+  else if(t==='fw')s+=`<rect x="${x-22}" y="${y-16}" width="44" height="32" rx="3" fill="${c}"/><text x="${x}" y="${y+5}" text-anchor="middle" font-size="13" font-weight="700" style="fill:#fff">FW</text>`;
+  else if(t==='wlc')s+=`<rect x="${x-24}" y="${y-14}" width="48" height="28" rx="4" fill="${c}"/><text x="${x}" y="${y+5}" text-anchor="middle" font-size="13" font-weight="700" style="fill:#fff">WLC</text>`;
+  lines.forEach((ln,i)=>{s+=`<text x="${x}" y="${y+36+i*14}" text-anchor="middle" font-size="${i?11:13}" ${i?'opacity=".8"':'font-weight="700"'}>${esc(ln)}</text>`});
+  return s;
+}
+function fit(el){const s=el.querySelector('svg');if(!s)return;try{const b=s.getBBox(),v=s.viewBox.baseVal;const x0=Math.min(v.x,b.x-12),y0=Math.min(v.y,b.y-12),x1=Math.max(v.x+v.width,b.x+b.width+12),y1=Math.max(v.y+v.height,b.y+b.height+12);s.setAttribute('viewBox',x0+' '+y0+' '+(x1-x0)+' '+(y1-y0));s.setAttribute('width',x1-x0);s.style.overflow='visible'}catch(e){}}
+function topo(el){
+  let d;try{d=JSON.parse(el.textContent)}catch(e){el.textContent='diagram error: '+e.message;return}
+  const N={};d.n.forEach(a=>N[a[0]]={t:a[1],x:a[2],y:a[3],l:a[4]!==undefined?a[4]:a[0]});
+  let s=`<svg viewBox="0 0 ${d.w} ${d.h}" width="${d.w}" xmlns="http://www.w3.org/2000/svg">`;
+  d.l.forEach(l=>{const a=N[l[0]],b=N[l[1]];if(!a||!b){return}
+    const col=l[4]||'#64748b',dash=l[5]?'stroke-dasharray="6 4"':'';
+    s+=`<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="${col}" stroke-width="2.5" ${dash}/>`;
+    const p=(f)=>[a.x+(b.x-a.x)*f,a.y+(b.y-a.y)*f];
+    if(l[2]){const q=p(.2);s+=`<text x="${q[0]}" y="${q[1]-5}" text-anchor="middle" font-size="10.5" style="fill:#d97706">${esc(l[2])}</text>`}
+    if(l[3]){const q=p(.8);s+=`<text x="${q[0]}" y="${q[1]-5}" text-anchor="middle" font-size="10.5" style="fill:#d97706">${esc(l[3])}</text>`}
+  });
+  Object.values(N).forEach(n=>s+=nodeSVG(n));
+  (d.t||[]).forEach(t=>{s+=`<text x="${t[0]}" y="${t[1]}" font-size="${t[3]||12}" text-anchor="middle" font-weight="700" style="fill:${t[4]||'#2563eb'}">${esc(t[2])}</text>`});
+  (d.b||[]).forEach(b=>{s+=`<rect x="${b[0]}" y="${b[1]}" width="${b[2]}" height="${b[3]}" rx="10" fill="none" stroke="${b[5]||'#94a3b8'}" stroke-dasharray="5 4"/><text x="${b[0]+8}" y="${b[1]+14}" font-size="11" style="fill:${b[5]||'#94a3b8'}">${esc(b[4]||'')}</text>`});
+  el.innerHTML=s+'</svg>';
+}
+/* ---------- Sequence diagram ---------- */
+function seq(el){
+  let d;try{d=JSON.parse(el.textContent)}catch(e){el.textContent='seq error: '+e.message;return}
+  const n=d.a.length,W=Math.max(560,n*220),gap=W/n,H=70+d.m.length*42;
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2563eb"/></marker></defs>`;
+  const X=i=>gap*i+gap/2;
+  d.a.forEach((a,i)=>{s+=`<rect x="${X(i)-55}" y="8" width="110" height="28" rx="6" fill="#2563eb"/><text x="${X(i)}" y="27" text-anchor="middle" font-size="13" font-weight="700" style="fill:#fff">${esc(a)}</text><line x1="${X(i)}" y1="36" x2="${X(i)}" y2="${H-8}" stroke="#94a3b8" stroke-dasharray="4 4"/>`});
+  d.m.forEach((m,k)=>{const y=70+k*42,x1=X(m[0]),x2=X(m[1]);
+    s+=`<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="#2563eb" stroke-width="2" marker-end="url(#ar)"/><text x="${(x1+x2)/2}" y="${y-7}" text-anchor="middle" font-size="12.5">${esc(m[2])}</text>`});
+  el.innerHTML=s+'</svg>';
+}
+document.querySelectorAll('.topo').forEach(e=>{topo(e);fit(e)});
+document.querySelectorAll('.seq').forEach(e=>{seq(e);fit(e)});
+/* ---------- TOC ---------- */
+const toc=document.getElementById('toc');
+document.querySelectorAll('section.module').forEach(s=>{
+  const h=s.querySelector('h2');if(!h)return;
+  const a=document.createElement('a');a.href='#'+s.id;a.textContent=h.textContent;
+  a.onclick=()=>document.getElementById('side').classList.remove('open');toc.appendChild(a);
+});
+const links=[...toc.querySelectorAll('a')];
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle('on',l.getAttribute('href')==='#'+e.target.id))}}),{rootMargin:'-20% 0px -70% 0px'});
+document.querySelectorAll('section.module').forEach(s=>io.observe(s));
+/* ---------- Copy buttons ---------- */
+document.querySelectorAll('pre.code').forEach(p=>{
+  const b=document.createElement('button');b.className='cp';b.textContent='Copy';
+  b.onclick=()=>{const t=p.cloneNode(true);t.querySelector('.cp').remove();
+    const txt=t.textContent.replace(/^\s*!.*$/gm,m=>m);navigator.clipboard&&navigator.clipboard.writeText(txt).then(()=>{b.textContent='✓';setTimeout(()=>b.textContent='Copy',1200)})};
+  p.appendChild(b);
+});
+/* ---------- Search ---------- */
+(function(){
+const q=document.getElementById('q'),info=document.getElementById('qinfo');let hits=[],cur=-1,tm;
+function clear(){document.querySelectorAll('mark.hit').forEach(m=>{const p=m.parentNode;p.replaceChild(document.createTextNode(m.textContent),m);p.normalize()});hits=[];cur=-1}
+function go(i){if(!hits.length)return;if(hits[cur])hits[cur].classList.remove('cur');cur=(i+hits.length)%hits.length;const m=hits[cur];m.classList.add('cur');let d=m.parentElement;while(d){if(d.tagName==='DETAILS')d.open=true;d=d.parentElement}m.scrollIntoView({block:'center'});info.textContent=(cur+1)+' / '+hits.length}
+function run(){clear();const v=q.value.trim();if(v.length<2){info.textContent='';return}
+ const re=new RegExp(v.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi');
+ const w=document.createTreeWalker(document.querySelector('main'),NodeFilter.SHOW_TEXT,{acceptNode:n=>(n.parentElement.closest('script,style,button,.cp')||!n.nodeValue.trim())?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT});
+ const nodes=[];while(w.nextNode())nodes.push(w.currentNode);
+ nodes.forEach(n=>{const s=n.nodeValue;re.lastIndex=0;if(!re.test(s))return;re.lastIndex=0;const f=document.createDocumentFragment();let last=0,m;
+  while((m=re.exec(s))){if(m.index>last)f.appendChild(document.createTextNode(s.slice(last,m.index)));const k=document.createElement('mark');k.className='hit';k.textContent=m[0];f.appendChild(k);hits.push(k);last=m.index+m[0].length;if(m[0].length===0)re.lastIndex++}
+  if(last<s.length)f.appendChild(document.createTextNode(s.slice(last)));n.parentNode.replaceChild(f,n)});
+ info.textContent=hits.length?'':'لا نتائج';if(hits.length)go(0)}
+q.addEventListener('input',()=>{clearTimeout(tm);tm=setTimeout(run,250)});
+q.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();go(cur+(e.shiftKey?-1:1))}if(e.key==='Escape'){q.value='';clear();info.textContent=''}});
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();document.getElementById('side').classList.add('open');q.focus();q.select()}});
+})();
+</script>
+</body>
+</html>

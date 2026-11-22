@@ -25,15 +25,23 @@ section.module{background:var(--card);border:1px solid var(--bd);border-radius:1
 section.module>h2{margin-top:0;font-size:26px;color:var(--pri);border-bottom:3px solid var(--pri);padding-bottom:8px}
 h3{color:var(--acc);margin-top:28px;font-size:20px}
 h4{margin:18px 0 6px}
-.en{direction:ltr;unicode-bidi:isolate;display:inline-block;font-family:Consolas,monospace;font-size:.92em;background:rgba(37,99,235,.1);color:var(--pri);padding:0 6px;border-radius:5px}
+.en{direction:ltr;unicode-bidi:isolate;display:inline;font-family:Consolas,monospace;font-size:.92em;background:rgba(37,99,235,.1);color:var(--pri);padding:0 6px;border-radius:5px}
 table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14.5px;display:block;overflow-x:auto}
 th,td{border:1px solid var(--bd);padding:7px 10px;text-align:right;vertical-align:top}
 th{background:rgba(37,99,235,.12)}
 td.l,th.l{direction:ltr;text-align:left}
-pre.code{direction:ltr;text-align:left;background:var(--code);color:var(--codetx);padding:14px 16px;border-radius:10px;overflow-x:auto;font:13.5px/1.6 Consolas,"Courier New",monospace;position:relative;white-space:pre}
+pre.code{direction:ltr;text-align:left;background:var(--code);color:var(--codetx);padding:14px 16px;border-radius:10px;overflow-x:auto;font:13.5px/1.6 Consolas,"Courier New",monospace;white-space:pre;margin:0}
 pre.code b{color:#fbbf24;font-weight:400}
 pre.code i{color:#64748b;font-style:normal}
-.cp{position:absolute;top:6px;left:6px;font-size:11px;background:#1e293b;color:#cbd5e1;border:0;border-radius:6px;padding:3px 8px;cursor:pointer}
+.codewrap{position:relative;margin:12px 0}
+.cp{position:absolute;top:6px;right:10px;left:auto;z-index:2;font-size:11px;background:#334155;color:#e2e8f0;border:0;border-radius:6px;padding:3px 10px;cursor:pointer}
+.cp:hover{background:#475569}
+pre.code{padding-top:34px}
+bdi.lt{unicode-bidi:isolate;direction:ltr}
+.sol{margin:18px 0 6px;border:2px solid #16a34a;border-radius:12px;background:rgba(22,163,74,.06)}
+.sol>summary{cursor:pointer;font-weight:700;padding:10px 16px;color:#15803d}
+.sol .solbody{padding:0 16px 14px}
+.sol h4{color:#15803d;margin-top:16px}
 .note,.warn{border-radius:10px;padding:10px 14px;margin:14px 0;border-right:5px solid}
 .note{background:rgba(37,99,235,.08);border-color:var(--pri)}
 .warn{background:var(--warn);border-color:var(--warnbd)}
@@ -63,7 +71,7 @@ ul,ol{padding-right:22px;padding-left:0}
 <main>
 <div class="hero">
 <h1>CCNA 200-301 — الكورس الكامل</h1>
-<div>19 موديول + 6 ملاحق • شرح عربي + مصطلحات إنجليزي • رسومات توضيحية • 24 Lab على Cisco Packet Tracer • بنك أسئلة • Glossary • Command Reference • بحث (Ctrl+K)</div>
+<div>19 موديول + 6 ملاحق • شرح عربي + مصطلحات إنجليزي • رسومات توضيحية • 24 Lab (+ حل كل Lab) على Cisco Packet Tracer • بنك أسئلة • Glossary • Command Reference • بحث (Ctrl+K)</div>
 </div>
 <section class="module" id="howto">
 <h2>إزاي تذاكر الكورس ده</h2>
@@ -212,6 +220,35 @@ arp -a</pre></li>
 <li>في الـ Simulation: الـ ARP Request بيروح لـ MAC إيه؟ (FFFF.FFFF.FFFF) وبيتوزع على كام بورت؟</li>
 <li>جرب تغيّر IP PC3 لـ 192.168.2.30 وشوف ليه الـ ping بيفشل.</li>
 </ul>
+
+<details class="sol"><summary>🔑 حل الـ Lab</summary><div class="solbody">
+<p>الـ Lab ده من غير Configuration على الـ Switch (Layer 2 شغال Plug &amp; Play). الحل هو إيه اللي لازم تشوفه وإزاي تفسره.</p>
+<h4>1) الإعدادات على الـ PCs</h4>
+<table><tr><th>الجهاز</th><th class="l">IP</th><th class="l">Mask</th><th>الـ Switch Port</th></tr>
+<tr><td>PC1</td><td class="l">192.168.1.10</td><td class="l">255.255.255.0</td><td class="l">Fa0/1</td></tr>
+<tr><td>PC2</td><td class="l">192.168.1.20</td><td class="l">255.255.255.0</td><td class="l">Fa0/2</td></tr>
+<tr><td>PC3</td><td class="l">192.168.1.30</td><td class="l">255.255.255.0</td><td class="l">Fa0/3</td></tr></table>
+<h4>2) النتيجة المتوقعة (من PC1)</h4>
+<pre class="code">C:\&gt; ping 192.168.1.20
+Request timed out.                          <i>! أول Request غالبًا بيضيع (بسبب ARP)</i>
+Reply from 192.168.1.20: bytes=32 time&lt;1ms TTL=128
+Reply from 192.168.1.20: bytes=32 time&lt;1ms TTL=128
+Reply from 192.168.1.20: bytes=32 time&lt;1ms TTL=128
+
+C:\&gt; arp -a
+  Internet Address      Physical Address      Type
+  192.168.1.20          0001.xxxx.xxxx        dynamic
+  192.168.1.30          0002.xxxx.xxxx        dynamic</pre>
+<p>الـ MAC هيختلف عندك. المهم إن الـ Entries اتكتبت تلقائيًا (dynamic).</p>
+<h4>3) اللي بيحصل في Simulation Mode</h4>
+<div class="seq">{"a":["PC1","SW1","PC2","PC3"],"m":[[0,1,"ARP Request (Dst FFFF.FFFF.FFFF)"],[1,2,"Flood"],[1,3,"Flood"],[2,1,"ARP Reply (Unicast)"],[1,0,"ARP Reply"],[0,1,"ICMP Echo Request"],[1,2,"Forward"],[2,0,"ICMP Echo Reply"]]}</div>
+<h4>إجابات الأسئلة</h4>
+<ul>
+<li><b>أول ping بيفشل ليه؟</b> PC1 ما يعرفش MAC بتاع PC2. لازم ARP Request الأول، وأول Echo Request بيستنى الـ ARP فبيضيع (Timeout)، والباقي بينجح.</li>
+<li><b>الـ ARP Request بيروح لـ MAC إيه؟</b> Broadcast <b>FFFF.FFFF.FFFF</b>. الـ Switch بيعمل Flood على كل البورتات ما عدا اللي جه منها، يعني <b>بورتين</b> هنا (Fa0/2 و Fa0/3). PC2 بس هو اللي بيرد لأنه صاحب الـ IP.</li>
+<li><b>PC3 على 192.168.2.30 والـ ping بيفشل ليه؟</b> بقى في Subnet مختلفة، وPC1 ما عندوش Default Gateway. PC1 بيحط إن 192.168.2.30 مش على نفس الشبكة، فمش بيعمل ARP أصلًا وبيرجع <i>Destination host unreachable</i> أو Timeout. محتاج Router.</li></ul>
+<div class="note">لو اللمبة برتقالي: ده STP بيعمل Listening/Learning (حوالي 30 ثانية) قبل ما البورت يبقى Forwarding (أخضر).</div>
+</div></details>
 </div>
 
 <div class="q"><h3>أسئلة مراجعة</h3>
@@ -339,6 +376,62 @@ show interfaces status</pre></li>
 <li>اعمل <span class="en">Reload</span> بعد الحفظ وتأكد إن الإعدادات رجعت.</li>
 </ol>
 <p><b>تحدّي:</b> غيّر سرعة Fa0/2 لـ 10 و Duplex لـ half على SW1 فقط واقرأ الـ <span class="en">show interfaces fa0/2</span> وشوف حالة الـ Link. بعدين رجّعها <span class="en">auto</span>.</p>
+
+<details class="sol"><summary>🔑 حل الـ Lab</summary><div class="solbody">
+<h4>1) Config كامل على SW1</h4>
+<pre class="code">enable
+configure terminal
+hostname SW1
+no ip domain-lookup
+enable secret Cisco@123
+service password-encryption
+banner motd # Authorized Access Only #
+ip domain-name lab.local
+username admin secret Admin@123
+crypto key generate rsa modulus 2048
+ip ssh version 2
+line console 0
+ logging synchronous
+ exec-timeout 10 0
+ login local
+line vty 0 15
+ transport input ssh
+ login local
+interface vlan 1
+ ip address 192.168.1.2 255.255.255.0
+ no shutdown
+end
+copy running-config startup-config</pre>
+<div class="note">الـ <b>crypto key generate rsa</b> بيحتاج Hostname (غير Switch) و Domain-name قبله، وإلا هيطلعلك خطأ.</div>
+<h4>2) الـ PCs</h4>
+<p>PC1 = 192.168.1.10/24، PC2 = 192.168.1.20/24 (من غير Gateway لأن كله على نفس الـ Subnet).</p>
+<h4>3) الاختبار والنتيجة المتوقعة</h4>
+<pre class="code">C:\&gt; ping 192.168.1.2          <i>! ينجح</i>
+C:\&gt; ssh -l admin 192.168.1.2
+Password: Admin@123
+Authorized Access Only
+SW1&gt;                          <i>! دخلت User EXEC</i>
+
+C:\&gt; telnet 192.168.1.2
+% Connection refused by remote host   <i>! بسبب transport input ssh</i></pre>
+<pre class="code">SW1# show ip ssh
+SSH Enabled - version 2.0
+Authentication timeout: 120 secs; Authentication retries: 3
+
+SW1# show users
+    Line       User       Host(s)              Idle       Location
+*  0 con 0                idle                 00:00:00
+  66 vty 0     admin      idle                 00:00:12 192.168.1.10</pre>
+<h4>4) Reload</h4>
+<p>بعد <b>copy running-config startup-config</b> واعمل <b>reload</b>: الإعدادات بترجع. لو نسيت الحفظ هتروح كلها.</p>
+<h4>التحدي (Speed / Duplex)</h4>
+<pre class="code">SW1(config)# interface fa0/2
+SW1(config-if)# speed 10
+SW1(config-if)# duplex half
+SW1# show interfaces fa0/2
+ ... Half-duplex, 10Mb/s ...</pre>
+<p>الجهاز التاني (PC2) فاضل Auto. على أجهزة حقيقية ده بيسبب <b>Duplex Mismatch</b>: الـ Link بيفضل Up لكن بتظهر Collisions و CRC errors وبطء. في Packet Tracer السلوك مبسّط. رجّعها بـ <b>speed auto</b> و <b>duplex auto</b>.</p>
+</div></details>
 </div>
 
 <div class="q"><h3>أسئلة مراجعة</h3>
@@ -461,6 +554,39 @@ PC-A&gt; ping 192.168.10.70    <i>! هيفشل!</i></pre></li>
 </ol>
 <div class="note"><b>ليه بيفشل؟</b> R1 معندوش Route للشبكة 192.168.10.64/27 (مش Connected عليه). الحل: <b>Static Routing</b> أو <span class="en">OSPF</span>، وهنعمله في <b>Lab 8</b>. ارجع للـ Lab ده بعد الموديول 8 وكمّله.</div>
 <p><b>تمرين إضافي:</b> قسّم 172.16.0.0/16 لـ 8 Subnets متساوية وسجّل الـ Network ID و Broadcast لكل واحدة. <i>(الإجابة: /19، Block = 32 في الـ Octet الثالث)</i></p>
+
+<details class="sol"><summary>🔑 حل الـ Lab</summary><div class="solbody">
+<h4>1) تحقق من تصميم الـ VLSM</h4>
+<table><tr><th>الشبكة</th><th>المطلوب</th><th>الـ Mask</th><th class="l">Network</th><th class="l">Range</th><th class="l">Broadcast</th></tr>
+<tr><td>LAN-A</td><td>50 Host</td><td>/26 → 62</td><td class="l">192.168.10.0</td><td class="l">.1 – .62</td><td class="l">.63</td></tr>
+<tr><td>LAN-B</td><td>20 Host</td><td>/27 → 30</td><td class="l">192.168.10.64</td><td class="l">.65 – .94</td><td class="l">.95</td></tr>
+<tr><td>WAN</td><td>2 Host</td><td>/30 → 2</td><td class="l">192.168.10.96</td><td class="l">.97 – .98</td><td class="l">.99</td></tr></table>
+<p>بنبدأ بأكبر شبكة (LAN-A)، وبعدها اللي بعدها، عشان ما يحصلش تداخل.</p>
+<h4>2) الحل الكامل (بعد Lab 8): Static Routes</h4>
+<p>المشكلة: R1 مش عارف 192.168.10.64/27 وR2 مش عارف 192.168.10.0/26. الحل:</p>
+<pre class="code">R1(config)# ip route 192.168.10.64 255.255.255.224 192.168.10.98
+R2(config)# ip route 192.168.10.0  255.255.255.192 192.168.10.97</pre>
+<h4>3) التحقق</h4>
+<pre class="code">R1# show ip route
+C    192.168.10.0/26 is directly connected, GigabitEthernet0/0
+C    192.168.10.96/30 is directly connected, GigabitEthernet0/1
+S    192.168.10.64/27 [1/0] via 192.168.10.98
+
+PC-A&gt; ping 192.168.10.70      <i>! دلوقتي ينجح</i></pre>
+<p>اللي بيظهر في الـ Route Table ممكن يحتوي كمان على سطور <b>L</b> (Local) حسب إصدار IOS.</p>
+<h4>التمرين الإضافي: 172.16.0.0/16 على 8 Subnets</h4>
+<p>8 Subnets = 3 bits → /19 (255.255.224.0)، Block = 32 في الـ Octet الثالث.</p>
+<table><tr><th>#</th><th class="l">Network</th><th class="l">Broadcast</th></tr>
+<tr><td>1</td><td class="l">172.16.0.0/19</td><td class="l">172.16.31.255</td></tr>
+<tr><td>2</td><td class="l">172.16.32.0/19</td><td class="l">172.16.63.255</td></tr>
+<tr><td>3</td><td class="l">172.16.64.0/19</td><td class="l">172.16.95.255</td></tr>
+<tr><td>4</td><td class="l">172.16.96.0/19</td><td class="l">172.16.127.255</td></tr>
+<tr><td>5</td><td class="l">172.16.128.0/19</td><td class="l">172.16.159.255</td></tr>
+<tr><td>6</td><td class="l">172.16.160.0/19</td><td class="l">172.16.191.255</td></tr>
+<tr><td>7</td><td class="l">172.16.192.0/19</td><td class="l">172.16.223.255</td></tr>
+<tr><td>8</td><td class="l">172.16.224.0/19</td><td class="l">172.16.255.255</td></tr></table>
+<p>كل Subnet فيها 2<sup>13</sup> − 2 = 8190 Host.</p>
+</div></details>
 </div>
 
 <div class="q"><h3>أسئلة مراجعة</h3>
@@ -585,6 +711,42 @@ R1# show ipv6 route
 R1# show ipv6 interface brief</pre></li>
 </ol>
 <p><b>أسئلة:</b> قارن الـ Interface ID اللي PC1 ولّده بالـ MAC بتاعه (شوفه من <span class="en">ipconfig /all</span>). هل نفس القاعدة (FFFE + قلب البت)؟</p>
+
+<details class="sol"><summary>🔑 حل الـ Lab</summary><div class="solbody">
+<h4>1) Config كامل (اللي في الـ Lab + اللي ناقص)</h4>
+<p>الأوامر الأساسية موجودة في الخطوات 2 و3. نقطتين لازم تتأكد منهم:</p>
+<ul><li><b>ipv6 unicast-routing</b> على الراوترين، وبدونه R1 مش هيبعت RA ولا هيعمل Routing.</li>
+<li>PC2: <b>IPv6 Address = 2001:DB8:2::10/64</b> و <b>Default Gateway = 2001:DB8:2::1</b>.</li></ul>
+<h4>2) النتيجة المتوقعة</h4>
+<pre class="code">PC1&gt; ipconfig
+   IPv6 Address......: 2001:DB8:1:0:2E0:F9FF:FE12:3456   <i>! Prefix من R1 + EUI-64 (مثال)</i>
+   Link-local Address: FE80::2E0:F9FF:FE12:3456
+   Default Gateway...: FE80::&lt;Link-local بتاع R1 G0/0&gt;      <i>! الـ GW هو Link-local مش 2001:DB8:1::1</i>
+
+PC1&gt; ping 2001:DB8:2::10
+Reply from 2001:DB8:2::10: bytes=32 time=1ms TTL=126</pre>
+<pre class="code">R1# show ipv6 route
+C   2001:DB8:1::/64 [0/0]  via GigabitEthernet0/0, directly connected
+L   2001:DB8:1::1/128 [0/0] via GigabitEthernet0/0, receive
+C   2001:DB8:12::/64 [0/0] via GigabitEthernet0/1, directly connected
+S   2001:DB8:2::/64 [1/0]  via 2001:DB8:12::2
+
+R1# show ipv6 interface brief
+GigabitEthernet0/0   [up/up]   FE80::..., 2001:DB8:1::1
+GigabitEthernet0/1   [up/up]   FE80::..., 2001:DB8:12::1</pre>
+<h4>3) إجابة السؤال (EUI-64)</h4>
+<p>القاعدة: خد الـ MAC (48 bit)، ضيف <b>FFFE</b> في النص، واقلب البت السابع (U/L) في أول Byte. مثال:</p>
+<pre class="code">MAC          : 00E0.F912.3456
+نقسم         : 00E0F9 | 123456
+نضيف FFFE    : 00E0F9 FFFE 123456
+نقلب البت 7  : 00 (0000 0000) ← 02 (0000 0010)
+Interface ID : 02E0:F9FF:FE12:3456</pre>
+<p>الـ Interface ID بيتكتب بدون أصفار بادئة: <b>2E0:F9FF:FE12:3456</b>. الـ Packet Tracer ممكن يستخدم قاعدة مختلفة شوية حسب الإصدار، لكن غالبًا نفس EUI-64.</p>
+<h4>أخطاء شائعة</h4>
+<ul><li>PC1 مش بياخد Prefix → ناسي <b>ipv6 unicast-routing</b> (الـ RA مش بيتبعت).</li>
+<li>الـ ping من PC1 لـ PC2 بيفشل → PC2 مش ضابط Default Gateway، فالـ Reply مش راجع.</li>
+<li>Static Route مكتوب بـ Next-hop غلط (لازم Global Address للطرف التاني: 2001:DB8:12::2).</li></ul>
+</div></details>
 </div>
 
 <div class="q"><h3>أسئلة مراجعة</h3>
@@ -698,6 +860,97 @@ SW1# show interfaces trunk
 R1# show ip route</pre></li>
 </ol>
 <p><b>تحدّي:</b> (1) غيّر الـ Native VLAN على SW2 فقط لـ 1 وراقب الرسائل. (2) حوّل SW1 لـ <span class="en">Layer 3 Switch (3560)</span> وطبّق SVIs بدل الـ ROAS.</p>
+
+<details class="sol"><summary>🔑 حل الـ Lab</summary><div class="solbody">
+<h4>1) SW1</h4>
+<pre class="code">vlan 10
+ name SALES
+vlan 20
+ name IT
+vlan 99
+ name NATIVE
+interface fa0/1
+ switchport mode access
+ switchport access vlan 10
+interface fa0/2
+ switchport mode access
+ switchport access vlan 20
+interface range g0/1 - 2
+ switchport mode trunk
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,99</pre>
+<h4>2) SW2</h4>
+<pre class="code">vlan 10
+ name SALES
+vlan 20
+ name IT
+vlan 99
+ name NATIVE
+interface fa0/1
+ switchport mode access
+ switchport access vlan 10
+interface fa0/2
+ switchport mode access
+ switchport access vlan 20
+interface g0/1
+ switchport mode trunk
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,99</pre>
+<h4>3) R1 (Router-on-a-Stick)</h4>
+<pre class="code">interface g0/0
+ no shutdown                         <i>! الـ Physical من غير IP</i>
+interface g0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+interface g0/0.20
+ encapsulation dot1Q 20
+ ip address 192.168.20.1 255.255.255.0
+interface g0/0.99
+ encapsulation dot1Q 99 native
+ ip address 192.168.99.1 255.255.255.0</pre>
+<p>على الـ 2960 مفيش <b>switchport trunk encapsulation</b> (بيدعم dot1q بس).</p>
+<h4>4) الـ PCs</h4>
+<table><tr><th>PC</th><th class="l">IP</th><th class="l">Gateway</th></tr>
+<tr><td>PC1 (V10)</td><td class="l">192.168.10.10/24</td><td class="l">192.168.10.1</td></tr>
+<tr><td>PC3 (V10)</td><td class="l">192.168.10.11/24</td><td class="l">192.168.10.1</td></tr>
+<tr><td>PC2 (V20)</td><td class="l">192.168.20.10/24</td><td class="l">192.168.20.1</td></tr>
+<tr><td>PC4 (V20)</td><td class="l">192.168.20.11/24</td><td class="l">192.168.20.1</td></tr></table>
+<h4>5) التحقق</h4>
+<pre class="code">SW1# show vlan brief
+10   SALES    active    Fa0/1
+20   IT       active    Fa0/2
+99   NATIVE   active
+
+SW1# show interfaces trunk
+Port   Mode  Encapsulation  Status    Native vlan
+Gi0/1  on    802.1q         trunking  99
+Gi0/2  on    802.1q         trunking  99
+Port   Vlans allowed on trunk
+Gi0/1  10,20,99
+
+R1# show ip route
+C  192.168.10.0/24 is directly connected, GigabitEthernet0/0.10
+C  192.168.20.0/24 is directly connected, GigabitEthernet0/0.20
+C  192.168.99.0/24 is directly connected, GigabitEthernet0/0.99</pre>
+<h4>التحديات</h4>
+<ul>
+<li><b>Native VLAN Mismatch:</b> لما تغيّر Native على SW2 لـ 1 هتشوف رسالة CDP زي: <i>%CDP-4-NATIVE_VLAN_MISMATCH: Native VLAN mismatch discovered on GigabitEthernet0/1 (1), with SW1 GigabitEthernet0/1 (99)</i>. الترافيك ممكن يتسرب بين VLAN 1 و VLAN 99 وده ثغرة.</li>
+<li><b>Layer 3 Switch (3560):</b> شيل R1 واعمل على SW1:
+<pre class="code">ip routing
+interface vlan 10
+ ip address 192.168.10.1 255.255.255.0
+interface vlan 20
+ ip address 192.168.20.1 255.255.255.0
+interface g0/1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk</pre>
+والـ Gateway بيفضل نفس الـ IPs. بيشتغل أسرع (Hardware routing) وبدون Bottleneck الـ Trunk الواحد.</li></ul>
+<h4>أخطاء شائعة</h4>
+<ul><li>الـ Sub-interface من غير <b>encapsulation dot1Q</b> قبل الـ IP (هيرفض الـ IP).</li>
+<li>نسيت <b>no shutdown</b> على g0/0 الـ Physical (الـ Sub-interfaces هتفضل down).</li>
+<li>VLAN مش موجودة على أحد الـ Switchين → Trunk شغال لكن الـ PCs ما بيشوفوش بعض.</li>
+<li>الـ Allowed list ما فيهاش الـ VLAN.</li></ul>
+</div></details>
 </div>
 
 <div class="q"><h3>أسئلة مراجعة</h3>
@@ -792,6 +1045,49 @@ SW2(config)# spanning-tree vlan 1 root secondary</pre></li>
 <li><b>اختبار الفشل:</b> من PC1 اعمل <span class="en">ping -t</span> لـ PC2 (IP أنت عينته 192.168.1.x)، وبعدين اعمل <span class="en">shutdown</span> لـ G0/2 على SW2 وراقب كام ping ضاع. قارنها بنتيجة PVST+ العادي (<span class="en">spanning-tree mode pvst</span>).</li>
 <li><b>BPDU Guard:</b> وصّل Switch ثالث (أو Hub-style) على Fa0/1 وشوف البورت بيتحول <span class="en">err-disabled</span>. الإرجاع: <span class="en">shutdown</span> ثم <span class="en">no shutdown</span>.</li>
 </ol>
+
+<details class="sol"><summary>🔑 حل الـ Lab</summary><div class="solbody">
+<h4>1) الـ Root قبل التعديل</h4>
+<p>الـ Priority متساوية (32768 + رقم الـ VLAN = 32769)، فالـ Root هو <b>أقل MAC Address</b>. شوفه بـ <b>show spanning-tree vlan 1</b>: السطر "This bridge is the root" بيظهر عند الـ Root بس.</p>
+<h4>2) Config</h4>
+<pre class="code">! على SW1
+spanning-tree mode rapid-pvst
+spanning-tree vlan 1 root primary
+! على SW2
+spanning-tree mode rapid-pvst
+spanning-tree vlan 1 root secondary
+! على SW3
+spanning-tree mode rapid-pvst
+! على بورتات الـ PCs (SW2 Fa0/1 و SW3 Fa0/1)
+interface fa0/1
+ spanning-tree portfast
+ spanning-tree bpduguard enable</pre>
+<p>الأمر <b>root primary</b> بيحط Priority = 24576 (+VLAN)، و <b>root secondary</b> = 28672. تقدر تتأكد بـ show spanning-tree.</p>
+<h4>3) الأدوار المتوقعة بعد التعديل</h4>
+<table><tr><th>Switch</th><th>الـ Port</th><th>الدور</th><th>الحالة</th></tr>
+<tr><td>SW1 (Root)</td><td class="l">G0/1, G0/2</td><td>Designated</td><td>Forwarding</td></tr>
+<tr><td>SW2</td><td class="l">G0/1</td><td>Root Port</td><td>Forwarding</td></tr>
+<tr><td>SW2</td><td class="l">G0/2</td><td>Designated</td><td>Forwarding</td></tr>
+<tr><td>SW3</td><td class="l">G0/1</td><td>Root Port</td><td>Forwarding</td></tr>
+<tr><td>SW3</td><td class="l">G0/2</td><td><b>Alternate</b></td><td><b>Blocking/Discarding</b></td></tr></table>
+<p>ليه SW3 G0/2 هو اللي يتقفل؟ التكلفة للـ Root متساوية على اللينك بين SW2 و SW3، فالمقارنة بالـ Bridge ID: SW2 (28673) أقل من SW3 (32769) فـ SW2 يبقى Designated على اللينك ده، و SW3 يبقى Alternate.</p>
+<pre class="code">SW1# show spanning-tree vlan 1
+  This bridge is the root
+  Root ID    Priority    24577
+  Interface  Role  Sts  Cost  Prio.Nbr  Type
+  Gi0/1      Desg  FWD  4     128.25    P2p
+  Gi0/2      Desg  FWD  4     128.26    P2p</pre>
+<h4>4) اختبار الفشل: ملاحظة مهمة</h4>
+<p>الأمر <b>shutdown على SW2 G0/2</b> بيقفل لينك <b>مش مستخدم</b> (Blocked جانب SW3)، فمش هتلاحظ ضياع Pings أصلًا. عشان تشوف Failover حقيقي اقفل <b>SW2 G0/1</b> (الـ Root Port بتاع SW2، والطريق الفعلي بين PC1 و PC2).</p>
+<table><tr><th>الوضع</th><th>التقارب التقريبي</th></tr>
+<tr><td>PVST+ (802.1D)</td><td>حوالي 30–50 ثانية (Max-age + Listening + Learning)</td></tr>
+<tr><td>Rapid PVST+ (802.1w)</td><td>أقل من 1–2 ثانية (حوالي 0–2 ping يضيع)</td></tr></table>
+<p>الأرقام تقريبية وبتختلف في Packet Tracer.</p>
+<h4>5) BPDU Guard</h4>
+<pre class="code">%SPANTREE-2-BLOCK_BPDUGUARD: Received BPDU on port Fa0/1 with BPDU Guard enabled. Disabling port.
+%PM-4-ERR_DISABLE: bpduguard error detected on Fa0/1, putting Fa0/1 in err-disable state</pre>
+<p>الإرجاع: شيل الـ Switch المتوصل، وبعدين على البورت <b>shutdown</b> ثم <b>no shutdown</b>. (أو <b>errdisable recovery cause bpduguard</b> للإرجاع التلقائي.)</p>
+</div></details>
 </div>
 
 <div class="q"><h3>أسئلة مراجعة</h3>
@@ -863,6 +1159,45 @@ show interfaces trunk</pre></li>
 <li><b>تجربة الفشل:</b> غيّر SW2 لـ <span class="en">mode on</span> وشوف إيه اللي بيحصل (Mismatch).</li>
 <li>على SW1: <span class="en">show cdp neighbors detail</span> واسأل نفسك: إيه المعلومات اللي ظهرت؟ (Device ID, IP, Platform, Interface).</li>
 </ol>
+
+<details class="sol"><summary>🔑 حل الـ Lab</summary><div class="solbody">
+<h4>1) Config</h4>
+<pre class="code">! SW1 (Active)
+interface range fa0/1 - 2
+ channel-group 1 mode active
+interface port-channel 1
+ switchport mode trunk
+
+! SW2 (Passive)
+interface range fa0/1 - 2
+ channel-group 1 mode passive
+interface port-channel 1
+ switchport mode trunk</pre>
+<p>الـ PCs: PC1 = 192.168.1.11/24 و PC2 = 192.168.1.12/24. الأفضل تضبط الـ Port-channel (switchport mode trunk) <b>بعد</b> ما تعمل channel-group.</p>
+<div class="note">عشان LACP يتكوّن: واحد على الأقل Active (Active + Active أو Active + Passive). Passive + Passive ما بيتكوّنش.</div>
+<h4>2) التحقق</h4>
+<pre class="code">SW1# show etherchannel summary
+Flags:  S - Layer2   U - in use   P - bundled in port-channel
+Group  Port-channel  Protocol    Ports
+1      Po1(SU)       LACP        Fa0/1(P)  Fa0/2(P)
+
+SW1# show spanning-tree
+  Interface Role Sts Cost  Prio.Nbr Type
+  Po1       Root FWD 9     128.28   P2p      <i>! STP شايف Po1 كـ Port واحد</i></pre>
+<h4>3) اختبار الـ Redundancy</h4>
+<p>الـ ping -t يفضل شغال. فصل كابل واحد → قد يضيع Packet واحد وبعدها يكمّل على الكابل التاني (Bandwidth بيقل للنص).</p>
+<h4>4) تجربة الفشل (mode on)</h4>
+<ul><li>SW1 = active (بيبعت LACPDUs) و SW2 = on (Static، مش بيكلّم LACP). الـ Mismatch ده مش بيكوّن Bundle سليم: البورتات بتظهر (I) Stand-alone أو (s)/(D) أو بتدخل err-disable (channel-misconfig). النتيجة بتختلف حسب الـ IOS، وفي الأجهزة الحقيقية ممكن يحصل Loop. القاعدة: <b>استخدم نفس البروتوكول على الطرفين</b> (LACP مع LACP).</li></ul>
+<h4>5) إجابة CDP</h4>
+<pre class="code">SW1# show cdp neighbors detail
+Device ID: SW2
+Entry address(es):
+  IP address: 192.168.1.x         <i>! لو في Management IP</i>
+Platform: cisco WS-C2960-24TT-L, Capabilities: Switch IGMP
+Interface: FastEthernet0/1, Port ID (outgoing port): FastEthernet0/1
+Holdtime: 150 sec</pre>
+<p>المعلومات: Device ID، IP، Platform، الـ Local Interface والـ Remote Port ID. بتطلع لكل بورت فيزيائي (Fa0/1 و Fa0/2).</p>
+</div></details>
 </div>
 
 <div class="q"><h3>أسئلة مراجعة</h3>
@@ -946,6 +1281,75 @@ ip route 10.2.2.0 255.255.255.0 172.16.23.2</pre></li>
 </ol>
 <p><b>ارجع لـ Lab 3:</b> أضف Static Routes على R1 و R2 فيه وتأكد إن PC-A بيوصل لـ PC-B.</p>
 <p><b>تحدّي:</b> اعمل Default Route على R1 ناحية R2 بدل الـ Specific route، واكتب <span class="en">show ip route</span> وحدد الـ Gateway of last resort.</p>
+
+<details class="sol"><summary>🔑 حل الـ Lab</summary><div class="solbody">
+<h4>1) الـ Interfaces</h4>
+<pre class="code">! R1
+interface g0/0
+ ip address 10.1.1.1 255.255.255.0
+ no shutdown
+interface g0/1
+ ip address 172.16.12.1 255.255.255.252
+ no shutdown
+interface g0/2
+ ip address 172.16.13.1 255.255.255.252
+ no shutdown
+! R2
+interface g0/0
+ ip address 10.2.2.1 255.255.255.0
+ no shutdown
+interface g0/1
+ ip address 172.16.12.2 255.255.255.252
+ no shutdown
+interface g0/2
+ ip address 172.16.23.2 255.255.255.252
+ no shutdown
+! R3
+interface g0/0
+ ip address 172.16.13.2 255.255.255.252
+ no shutdown
+interface g0/1
+ ip address 172.16.23.1 255.255.255.252
+ no shutdown</pre>
+<h4>2) الـ Static Routes</h4>
+<pre class="code">! R1
+ip route 10.2.2.0 255.255.255.0 172.16.12.2          <i>! Primary (AD 1)</i>
+ip route 10.2.2.0 255.255.255.0 172.16.13.2 200      <i>! Floating (AD 200)</i>
+! R2
+ip route 10.1.1.0 255.255.255.0 172.16.12.1
+ip route 10.1.1.0 255.255.255.0 172.16.23.1 200
+! R3 (Transit)
+ip route 10.1.1.0 255.255.255.0 172.16.13.1
+ip route 10.2.2.0 255.255.255.0 172.16.23.2</pre>
+<p>الـ PC1 Gateway = 10.1.1.1، PC2 Gateway = 10.2.2.1.</p>
+<h4>3) النتيجة قبل الفشل</h4>
+<pre class="code">R1# show ip route static
+S  10.2.2.0/24 [1/0] via 172.16.12.2         <i>! الـ 200 مش ظاهر (مخفي)</i>
+
+PC1&gt; tracert 10.2.2.10
+ 1  10.1.1.1
+ 2  172.16.12.2
+ 3  10.2.2.10</pre>
+<h4>4) بعد shutdown على R1 g0/1</h4>
+<pre class="code">R1# show ip route static
+S  10.2.2.0/24 [200/0] via 172.16.13.2        <i>! الـ Floating ظهر</i>
+
+PC1&gt; tracert 10.2.2.10
+ 1  10.1.1.1
+ 2  172.16.13.2        <i>! R3</i>
+ 3  172.16.23.2        <i>! R2</i>
+ 4  10.2.2.10</pre>
+<p>الـ R2 كمان لازم يغيّر مساره للرجوع. ده بيحصل لأن لينك R1–R2 اتقفل على الطرفين (Physical Down)، فـ Route الـ AD 1 على R2 اتشال هو كمان وظهر الـ AD 200 عبر R3.</p>
+<div class="note"><b>تنبيه:</b> لو الـ Link بين الراوترين عن طريق Switch (مش مباشر)، الـ Interface بيفضل Up حتى لو الطرف التاني وقع، فالـ Floating Route مش هيشتغل. الحل الحقيقي: <b>IP SLA + track</b> أو بروتوكول Routing ديناميكي.</div>
+<h4>التحدي: Default Route</h4>
+<pre class="code">R1(config)# no ip route 10.2.2.0 255.255.255.0 172.16.12.2
+R1(config)# ip route 0.0.0.0 0.0.0.0 172.16.12.2
+R1# show ip route
+Gateway of last resort is 172.16.12.2 to network 0.0.0.0
+S*  0.0.0.0/0 [1/0] via 172.16.12.2</pre>
+<h4>ارجع لـ Lab 3</h4>
+<p>الـ Static Routes اللازمة موجودة في حل Lab 3 (R1 → 192.168.10.64/27 عبر 192.168.10.98، و R2 → 192.168.10.0/26 عبر 192.168.10.97).</p>
+</div></details>
 </div>
 
 <div class="q"><h3>أسئلة مراجعة</h3>
@@ -1043,6 +1447,81 @@ R2# clear ip ospf process</pre>
 <li><b>Cost:</b> اعمل <span class="en">show ip ospf interface g0/1</span> واكتب الـ Cost. جرّب <span class="en">ip ospf cost 50</span> وراقب تغيّر الـ Metric في الجدول.</li>
 </ol>
 <p><b>تحدّي:</b> غيّر الـ Hello interval على R1 لـ 5 بس وشوف إن العلاقة بتقع. ليه؟ (Timers mismatch) ثم صلّحها.</p>
+
+<details class="sol"><summary>🔑 حل الـ Lab</summary><div class="solbody">
+<h4>1) Config</h4>
+<pre class="code">! R1
+interface g0/0
+ ip address 192.168.1.1 255.255.255.0
+ no shutdown
+interface g0/1
+ ip address 10.0.0.1 255.255.255.0
+ no shutdown
+router ospf 1
+ router-id 1.1.1.1
+ network 192.168.1.0 0.0.0.255 area 0
+ network 10.0.0.0 0.0.0.255 area 0
+ passive-interface g0/0
+
+! R2
+interface g0/0
+ ip address 192.168.2.1 255.255.255.0
+ no shutdown
+interface g0/1
+ ip address 10.0.0.2 255.255.255.0
+ no shutdown
+router ospf 1
+ router-id 2.2.2.2
+ network 192.168.2.0 0.0.0.255 area 0
+ network 10.0.0.0 0.0.0.255 area 0
+ passive-interface g0/0
+
+! R3
+interface g0/0
+ ip address 192.168.3.1 255.255.255.0
+ no shutdown
+interface g0/1
+ ip address 10.0.0.3 255.255.255.0
+ no shutdown
+interface loopback 0
+ ip address 8.8.8.8 255.255.255.255
+ip route 0.0.0.0 0.0.0.0 loopback 0
+router ospf 1
+ router-id 3.3.3.3
+ network 192.168.3.0 0.0.0.255 area 0
+ network 10.0.0.0 0.0.0.255 area 0
+ passive-interface g0/0
+ default-information originate</pre>
+<h4>2) النتيجة المتوقعة</h4>
+<pre class="code">R1# show ip ospf neighbor
+Neighbor ID  Pri  State       Dead Time  Address    Interface
+2.2.2.2      1    FULL/BDR    00:00:33   10.0.0.2   GigabitEthernet0/1
+3.3.3.3      1    FULL/DR     00:00:35   10.0.0.3   GigabitEthernet0/1
+
+R1# show ip route ospf
+O     192.168.2.0/24 [110/2] via 10.0.0.2
+O     192.168.3.0/24 [110/2] via 10.0.0.3
+O*E2  0.0.0.0/0 [110/1] via 10.0.0.3</pre>
+<p>الـ Priority متساوية (1) فالـ DR هو أعلى Router-ID: <b>R3 = DR</b> و <b>R2 = BDR</b> و R1 = DROTHER (بيكوّن FULL مع الـ DR والـ BDR بس، ومع DROTHER تاني بيفضل 2-WAY).</p>
+<h4>3) تغيير الـ DR</h4>
+<pre class="code">R2(config)# interface g0/1
+R2(config-if)# ip ospf priority 100
+R1# clear ip ospf process     <i>! على الـ 3 راوترات (yes)</i>
+R1# show ip ospf neighbor
+2.2.2.2  100  FULL/DR  ...
+3.3.3.3  1    FULL/BDR ...</pre>
+<p>الـ DR <b>non-preemptive</b>: تغيير الـ Priority لوحده مش بيبدّل الـ DR الحالي، لازم يحصل إعادة انتخاب (clear ip ospf process أو إعادة تشغيل الـ Interface). والـ BDR الجديد = أعلى Router-ID من الباقيين (R3).</p>
+<h4>4) الـ Cost</h4>
+<pre class="code">R1# show ip ospf interface g0/1
+ ... Cost: 1                 <i>! GigabitEthernet: Reference BW 100 Mbps ⇒ Cost 1</i>
+R1(config-if)# ip ospf cost 50
+R1# show ip route ospf
+O  192.168.2.0/24 [110/51] via 10.0.0.2      <i>! 50 + 1 (LAN2)</i></pre>
+<h4>التحدي: Hello Timer</h4>
+<pre class="code">R1(config-if)# ip ospf hello-interval 5
+%OSPF-5-ADJCHG: Process 1, Nbr 2.2.2.2 on GigabitEthernet0/1 from FULL to DOWN, Neighbor Down: Dead timer expired</pre>
+<p>الـ Hello/Dead لازم يتطابقوا بين الجيران (Broadcast: Hello 10 / Dead 40). R1 بقى Hello 5 / Dead 20 والباقي 10/40 فالعلاقة بتقع. الحل: <b>no ip ospf hello-interval</b> على R1، أو ضبط 5 على الجميع.</p>
+</div></details>
 </div>
 
 <div class="q"><h3>أسئلة مراجعة</h3>
@@ -1113,6 +1592,70 @@ CORE(config)# ip route 192.168.1.0 255.255.255.0 10.0.2.1</pre></li>
 <li><b>Failover:</b> شغّل <span class="en">ping -t 172.16.0.10</span> من PC، وعلى R1 اعمل <span class="en">interface g0/0</span> ← <span class="en">shutdown</span>. لاحظ إن الـ Ping يقع ثواني قليلة ويرجع، وبعدها <span class="en">tracert</span> هيعدي R2.</li>
 <li>رجّع R1 (<span class="en">no shutdown</span>) وشوف الـ Preempt بيرجّع R1 Active.</li>
 </ol>
+
+<details class="sol"><summary>🔑 حل الـ Lab</summary><div class="solbody">
+<h4>1) Config</h4>
+<pre class="code">! R1 (Active)
+interface g0/0
+ ip address 192.168.1.2 255.255.255.0
+ standby 1 ip 192.168.1.254
+ standby 1 priority 110
+ standby 1 preempt
+ no shutdown
+interface g0/1
+ ip address 10.0.1.1 255.255.255.252
+ no shutdown
+ip route 0.0.0.0 0.0.0.0 10.0.1.2
+
+! R2 (Standby)
+interface g0/0
+ ip address 192.168.1.3 255.255.255.0
+ standby 1 ip 192.168.1.254
+ standby 1 priority 100
+ standby 1 preempt
+ no shutdown
+interface g0/1
+ ip address 10.0.2.1 255.255.255.252
+ no shutdown
+ip route 0.0.0.0 0.0.0.0 10.0.2.2
+
+! CORE
+interface g0/0
+ ip address 10.0.1.2 255.255.255.252
+ no shutdown
+interface g0/1
+ ip address 10.0.2.2 255.255.255.252
+ no shutdown
+interface g0/2
+ ip address 172.16.0.1 255.255.255.0
+ no shutdown
+ip route 192.168.1.0 255.255.255.0 10.0.1.1
+ip route 192.168.1.0 255.255.255.0 10.0.2.1</pre>
+<p>PC: IP 192.168.1.10 / GW <b>192.168.1.254</b> (الـ Virtual IP). Server: 172.16.0.10 / GW 172.16.0.1.</p>
+<h4>2) التحقق</h4>
+<pre class="code">R1# show standby brief
+Interface  Grp  Pri  P  State    Active   Standby      Virtual IP
+Gi0/0      1    110  P  Active   local    192.168.1.3  192.168.1.254
+
+R2# show standby brief
+Gi0/0      1    100  P  Standby  192.168.1.2  local    192.168.1.254
+
+PC&gt; tracert 172.16.0.10
+ 1  192.168.1.2       <i>! R1</i>
+ 2  10.0.1.2          <i>! CORE</i>
+ 3  172.16.0.10</pre>
+<h4>3) Failover و Preempt</h4>
+<ul><li>بعد <b>shutdown</b> على R1 g0/0: R2 مش بيسمع Hello من R1، وبعد الـ Hold time (افتراضي <b>10 ثواني</b>، Hello = 3) بيبقى <b>Active</b>. الـ ping بيضيع كام Packet وبعدين يرجع. الـ tracert هيعدي بـ 192.168.1.3 (R2).</li>
+<li>بعد <b>no shutdown</b> على R1: بسبب <b>preempt</b> وPriority الأعلى (110) بيرجع Active.</li></ul>
+<h4>4) ملاحظات تصميمية</h4>
+<ul>
+<li>الـ CORE عنده Routes متساوية للـ LAN عبر R1 و R2، فالرد ممكن يرجع من أي واحد (<b>Asymmetric</b>)، وده شغال في الـ Lab لأن الاتنين عندهم Route للـ Server.</li>
+<li>من غير <b>track</b>: لو لينك R1–CORE وقع، R1 يفضل Active ويرمي الترافيك. الحل (لو Packet Tracer بيدعم):
+<pre class="code">R1(config)# track 1 interface g0/1 line-protocol
+R1(config)# interface g0/0
+R1(config-if)# standby 1 track 1 decrement 20     <i>! 110 → 90 فيطلع R2 Active</i></pre></li>
+<li>الـ Virtual MAC لـ HSRP v1 = 0000.0C07.ACxx (xx = رقم الـ Group)، والـ PC بيعمل ARP للـ VIP ويفضل بنفس الـ MAC لما الـ Active يتغير.</li></ul>
+</div></details>
 </div>
 
 <div class="q"><h3>أسئلة مراجعة</h3>
@@ -1262,6 +1805,70 @@ show ntp status</pre>
 <pre class="code">ip nat inside source static 192.168.1.100 203.0.113.5</pre>
 وعلى ISP أضف Route: <span class="en">ip route 203.0.113.5 255.255.255.255 203.0.113.1</span> (أو سيبه Connected عبر /29)، واختبر الوصول لـ LocalSrv من WebServer.</li>
 </ol>
+
+<details class="sol"><summary>🔑 حل الـ Lab</summary><div class="solbody">
+<h4>1) R1</h4>
+<pre class="code">hostname R1
+interface g0/0
+ ip address 192.168.1.1 255.255.255.0
+ ip nat inside
+ no shutdown
+interface g0/1
+ ip address 203.0.113.1 255.255.255.252
+ ip nat outside
+ no shutdown
+!
+ip dhcp excluded-address 192.168.1.1 192.168.1.20
+ip dhcp excluded-address 192.168.1.100          <i>! عنوان LocalSrv الثابت، لازم يتستثنى</i>
+ip dhcp pool LAN1
+ network 192.168.1.0 255.255.255.0
+ default-router 192.168.1.1
+ dns-server 198.51.100.10
+!
+ip route 0.0.0.0 0.0.0.0 203.0.113.2
+access-list 1 permit 192.168.1.0 0.0.0.255
+ip nat inside source list 1 interface g0/1 overload
+!
+ntp server 192.168.1.100
+logging host 192.168.1.100
+logging trap informational</pre>
+<h4>2) ISP (مش محتاج Routes للـ LAN لأن PAT بيخفيها)</h4>
+<pre class="code">hostname ISP
+interface g0/1
+ ip address 203.0.113.2 255.255.255.252
+ no shutdown
+interface g0/0
+ ip address 198.51.100.1 255.255.255.0
+ no shutdown</pre>
+<h4>3) الـ Servers</h4>
+<table><tr><th>الجهاز</th><th class="l">IP / GW</th><th>الخدمات</th></tr>
+<tr><td>WebServer</td><td class="l">198.51.100.10 / GW 198.51.100.1</td><td>DNS On + A Record: www.lab.com ← 198.51.100.10 (و HTTP)</td></tr>
+<tr><td>LocalSrv</td><td class="l">192.168.1.100 / GW 192.168.1.1</td><td>NTP On + SYSLOG On</td></tr></table>
+<h4>4) النتيجة المتوقعة</h4>
+<pre class="code">PC1&gt; ipconfig
+   IP Address: 192.168.1.21   Mask: 255.255.255.0
+   Gateway: 192.168.1.1       DNS: 198.51.100.10
+
+R1# show ip nat translations
+Pro  Inside global      Inside local      Outside local     Outside global
+icmp 203.0.113.1:1      192.168.1.21:1    198.51.100.10:1   198.51.100.10:1
+tcp  203.0.113.1:1025   192.168.1.21:1025 198.51.100.10:80  198.51.100.10:80
+
+R1# show ntp status
+Clock is synchronized, stratum 2, reference is 192.168.1.100</pre>
+<p>كل الأجهزة بتظهر بنفس الـ Inside Global (203.0.113.1) وبـ Ports مختلفة، وده تعريف الـ PAT. الـ Syslog: عملنا <b>shutdown / no shutdown</b> على g0/1 فهتشوف رسائل <i>%LINK-5-CHANGED</i> و <i>%LINEPROTO-5-UPDOWN</i> في Services → SYSLOG.</p>
+<h4>5) Static NAT (اختياري)</h4>
+<pre class="code">! غيّر الوصلة لـ /29 على الطرفين
+R1(config-if)# ip address 203.0.113.1 255.255.255.248      <i>! g0/1</i>
+ISP(config-if)# ip address 203.0.113.2 255.255.255.248     <i>! g0/1</i>
+R1(config)# ip nat inside source static 192.168.1.100 203.0.113.5</pre>
+<p>من WebServer: ping 203.0.113.5 ينجح. مش محتاج Route على الـ ISP لأن 203.0.113.5 جوه الـ /29 المتوصل بيه، والـ R1 بيرد على ARP عنه (Proxy ARP للـ Inside Global).</p>
+<h4>أخطاء شائعة</h4>
+<ul><li>ناسي <b>ip nat inside/outside</b> أو عاكسهم → مفيش ترجمة.</li>
+<li>ما استثنيتش 192.168.1.100 من الـ DHCP → تعارض IP.</li>
+<li>نسيت Default Route على R1.</li>
+<li>ACL 1 ما فيهاش الـ LAN → PAT مش بيشتغل.</li></ul>
+</div></details>
 </div>
 
 <div class="q"><h3>أسئلة مراجعة</h3>
@@ -1407,6 +2014,79 @@ line vty 0 4
 <li><b>Port Security على SW1:</b> على Fa0/1 و Fa0/2 طبّق إعداد القسم 12.4 مع <span class="en">maximum 1</span> و <span class="en">violation restrict</span> لـ Fa0/2 و <span class="en">shutdown</span> لـ Fa0/1. افصل PC-Admin ووصّل Laptop بدله على نفس البورت وراقب <span class="en">show port-security interface fa0/1</span> وحالة البورت (err-disabled).</li>
 <li>رجّع البورت: <span class="en">shutdown</span> ثم <span class="en">no shutdown</span> (بعد توصيل الجهاز الأصلي أو <span class="en">clear port-security sticky</span>).</li>
 </ol>
+
+<details class="sol"><summary>🔑 حل الـ Lab</summary><div class="solbody">
+<h4>1) R1 (Interfaces + ACL + SSH)</h4>
+<pre class="code">hostname R1
+interface g0/0
+ ip address 192.168.10.1 255.255.255.0
+ ip access-group USERS-IN in
+ no shutdown
+interface g0/1
+ ip address 192.168.20.1 255.255.255.0
+ no shutdown
+!
+ip access-list extended USERS-IN
+ 10 permit ip host 192.168.10.10 any
+ 20 permit tcp host 192.168.10.11 host 192.168.20.10 eq 80
+ 30 deny ip any any log
+!
+ip domain-name lab.local
+username admin secret Admin@123
+crypto key generate rsa modulus 2048
+ip ssh version 2
+access-list 5 permit host 192.168.10.10
+line vty 0 4
+ login local
+ transport input ssh
+ access-class 5 in</pre>
+<h4>2) SW1 (Port Security)</h4>
+<pre class="code">interface fa0/1
+ switchport mode access
+ switchport port-security
+ switchport port-security maximum 1
+ switchport port-security mac-address sticky
+ switchport port-security violation shutdown
+interface fa0/2
+ switchport mode access
+ switchport port-security
+ switchport port-security maximum 1
+ switchport port-security mac-address sticky
+ switchport port-security violation restrict</pre>
+<p>الـ PCs: Admin = 192.168.10.10 و User = 192.168.10.11 (GW 192.168.10.1)، Server = 192.168.20.10 (GW 192.168.20.1).</p>
+<h4>3) النتيجة المتوقعة</h4>
+<table><tr><th>من</th><th>إلى</th><th>النتيجة</th></tr>
+<tr><td>PC-Admin</td><td>Server (Ping/HTTP/FTP) + SSH لـ R1</td><td>✅ ينجح كله</td></tr>
+<tr><td>PC-User</td><td>HTTP للـ Server</td><td>✅</td></tr>
+<tr><td>PC-User</td><td>Ping / FTP للـ Server</td><td>❌ (Rule 30)</td></tr>
+<tr><td>PC-User</td><td>SSH لـ R1</td><td>❌</td></tr></table>
+<pre class="code">R1# show access-lists
+Extended IP access list USERS-IN
+    10 permit ip host 192.168.10.10 any (15 match(es))
+    20 permit tcp host 192.168.10.11 host 192.168.20.10 eq www (6 match(es))
+    30 deny ip any any log (4 match(es))</pre>
+<div class="note">الـ SSH من PC-User بيتمنع مرتين: مرة من الـ ACL (Rule 30) ومرة من access-class. الـ access-class بيحمي الـ VTY بغض النظر عن الـ Interface اللي جه منه الترافيك.</div>
+<h4>4) Port Security</h4>
+<pre class="code">SW1# show port-security interface fa0/1
+Port Security              : Enabled
+Port Status                : Secure-shutdown        <i>! بعد توصيل Laptop</i>
+Violation Mode             : Shutdown
+Sticky MAC Addresses       : 1
+Last Source Address:Vlan   : 0001.xxxx.xxxx:1
+Security Violation Count   : 1
+
+%PORT_SECURITY-2-PSECURE_VIOLATION: Security violation occurred, caused by MAC address ... on port FastEthernet0/1.
+%PM-4-ERR_DISABLE: psecure-violation error detected on Fa0/1, putting Fa0/1 in err-disable state</pre>
+<ul><li><b>Fa0/1 (shutdown):</b> البورت بيقع (err-disabled).</li>
+<li><b>Fa0/2 (restrict):</b> البورت يفضل Up، بيرمي Frames الجهاز الغريب ويزوّد Violation Counter ويطلع Log.</li></ul>
+<h4>5) الإرجاع</h4>
+<pre class="code">SW1(config)# interface fa0/1
+SW1(config-if)# shutdown
+SW1(config-if)# no shutdown
+! لو عايز تغيّر الجهاز المسموح: امسح الـ Sticky
+SW1# clear port-security sticky interface fa0/1</pre>
+<p>لازم توصّل الجهاز الأصلي (أو تمسح الـ Sticky) قبل الـ no shutdown، وإلا الـ Violation هيتكرر.</p>
+</div></details>
 </div>
 
 <div class="q"><h3>أسئلة مراجعة</h3>
@@ -1490,6 +2170,34 @@ line vty 0 4
 <li><b>تجربة:</b> غيّر الـ Passphrase على Laptop2 لغلط وشوف إن الاتصال بيفشل. جرّب كمان <span class="en">MAC Filtering</span> من <span class="en">Wireless → Wireless MAC Filter</span>.</li>
 </ol>
 <p><b>Lab متقدم (WLC):</b> لو عندك Packet Tracer 8.x: ضيف <span class="en">WLC-PT</span> + <span class="en">Light-weight AP</span> + Switch، وافتح <span class="en">GUI</span> للـ WLC وأنشئ WLAN جديد حسب 13.4.</p>
+
+<details class="sol"><summary>🔑 حل الـ Lab</summary><div class="solbody">
+<h4>1) الإعدادات المطلوبة</h4>
+<table><tr><th>الإعداد</th><th>القيمة</th></tr>
+<tr><td>Router (WRT300N) LAN IP</td><td class="l">192.168.0.1 (الافتراضي) — admin / admin</td></tr>
+<tr><td>SSID</td><td class="l">Lab-WiFi</td></tr>
+<tr><td>Mode / Channel</td><td>Mixed / 6</td></tr>
+<tr><td>Security</td><td>WPA2 Personal + AES</td></tr>
+<tr><td>Passphrase</td><td class="l">Cisco@12345</td></tr></table>
+<p>الخطوات بالترتيب: Physical على Laptop (إطفاء ← شيل كارت Ethernet ← ركّب WPC300N ← تشغيل) ← من PC: http://192.168.0.1 ← Wireless → Basic Wireless Settings ← Wireless Security ← Save Settings ← على كل Laptop: PC Wireless → Connect → اختار Lab-WiFi → اكتب الـ Key.</p>
+<h4>2) النتيجة المتوقعة</h4>
+<pre class="code">Laptop1&gt; ipconfig
+   IP Address: 192.168.0.100  Mask: 255.255.255.0  Gateway: 192.168.0.1
+Laptop2&gt; ipconfig     <i>! 192.168.0.101</i>
+Laptop3&gt; ipconfig     <i>! 192.168.0.102</i>
+PC&gt;      ipconfig     <i>! 192.168.0.103 (أو أي عنوان من نفس الـ Range)</i>
+
+Laptop1&gt; ping 192.168.0.101       <i>! ينجح</i></pre>
+<p>الـ DHCP في الـ Router بيبدأ افتراضيًا من <b>192.168.0.100</b>، فالأرقام هتتوزع بترتيب الاتصال، وممكن تختلف.</p>
+<h4>3) التجارب</h4>
+<ul><li><b>Passphrase غلط على Laptop2:</b> الـ Authentication بيفشل، الـ Laptop ما بيتوصلش بالـ Router، ومش بياخد IP (بيظهر 0.0.0.0 أو 169.254.x.x). ده الدليل إن WPA2-PSK بيتحقق من المفتاح فعلًا.</li>
+<li><b>MAC Filtering:</b> Wireless → Wireless MAC Filter → Enabled → <i>Prevent PCs listed below from accessing the wireless network</i> → أضف MAC بتاع Laptop3 → الـ Laptop ده بيفقد الاتصال. جرّب <i>Permit</i> بدلها (Whitelist) وشوف العكس.</li></ul>
+<div class="note">الـ MAC Filtering مش حماية حقيقية لأن الـ MAC بيتزوّر بسهولة. الاعتماد الأساسي على WPA2/WPA3 بـ Passphrase قوية.</div>
+<h4>أخطاء شائعة</h4>
+<ul><li>Laptop مفيهوش كارت Wireless (لسه Ethernet) → مش بيشوف الـ SSID.</li>
+<li>اختلاف نوع الـ Security (WEP على Router و WPA2 على Laptop).</li>
+<li>نسيت Save Settings.</li></ul>
+</div></details>
 </div>
 
 <div class="q"><h3>أسئلة مراجعة</h3>
@@ -1617,8 +2325,71 @@ logging host 192.168.1.10</pre></li>
 }</pre>
 <ul><li>إيه نوع <span class="en">"devices"</span>؟ <i>(Array of Objects)</i></li><li>إزاي توصل لـ IP الـ R1؟ <i>(devices[0].interfaces[0].ip = "10.0.0.1")</i></li><li>ليه <span class="en">null</span> في SW1؟ <i>(مفيش IP)</i></li></ul></li>
 <li><b>على Lab حقيقي:</b> شغّل سكريبت Netmiko من القسم 14.7 ضد R1 (بعد توصيل الـ Lab بالجهاز اللي بيشغّل Python)، وراجع النتيجة.</li>
-<li><b>Postman/curl على Controller حقيقي أو Sandbox (Cisco DevNet):</b> جرّب GET على <span class="en">/dna/system/api/v1/auth/token</span> ثم GET على <span class="en">/dna/intent/api/v1/network-device</span>.</li>
+<li><b>Postman/curl على Controller حقيقي أو Sandbox (Cisco DevNet):</b> جرّب <span class="en">POST</span> (Basic Auth) على <span class="en">/dna/system/api/v1/auth/token</span> ثم GET على <span class="en">/dna/intent/api/v1/network-device</span>.</li>
 </ol>
+
+<details class="sol"><summary>🔑 حل الـ Lab</summary><div class="solbody">
+<h4>1) R1</h4>
+<pre class="code">hostname R1
+enable secret Cisco@123
+ip domain-name lab.local
+username admin secret Admin@123
+crypto key generate rsa modulus 2048
+ip ssh version 2
+line vty 0 4
+ login local
+ transport input ssh
+interface g0/0
+ ip address 192.168.1.1 255.255.255.0
+ no shutdown
+!
+ip http server
+snmp-server community Public RO
+logging host 192.168.1.10</pre>
+<p>PC: 192.168.1.10/24، GW 192.168.1.1. الاختبار: <b>ssh -l admin 192.168.1.1</b> من PC.</p>
+<div class="warn">الـ Config ده للتجربة فقط: <b>ip http server</b> بدون HTTPS و <b>snmp community Public</b> أسماء معروفة = ثغرات. في الإنتاج استخدم HTTPS/RESTCONF و SNMPv3.</div>
+<h4>2) إجابات الـ JSON</h4>
+<ul>
+<li><b>نوع "devices"؟</b> Array (قائمة) من Objects (كل عنصر فيه hostname و role و interfaces).</li>
+<li><b>IP الـ R1؟</b> <code>devices[0].interfaces[0].ip</code> وقيمته <code>"10.0.0.1"</code>. (الـ Index بيبدأ من 0.)</li>
+<li><b>ليه null في SW1؟</b> الـ Switch Port Layer 2 مفيهوش IP، وnull = "قيمة غير موجودة" (مختلفة عن "" أو 0).</li>
+<li>عدد الأجهزة = 2، وعدد Interfaces لكل جهاز = 1.</li></ul>
+<h4>3) قراءة الـ JSON بالـ Python</h4>
+<pre class="code">import json
+data = json.loads('''{
+  "devices": [
+    {"hostname": "R1", "role": "router", "interfaces": [{"name": "G0/0", "ip": "10.0.0.1"}]},
+    {"hostname": "SW1", "role": "switch", "interfaces": [{"name": "Fa0/1", "ip": null}]}
+  ]
+}''')
+for d in data["devices"]:
+    for i in d["interfaces"]:
+        print(d["hostname"], i["name"], i["ip"])
+# R1 G0/0 10.0.0.1
+# SW1 Fa0/1 None</pre>
+<h4>4) Netmiko على Lab حقيقي</h4>
+<pre class="code">pip install netmiko
+
+from netmiko import ConnectHandler
+r1 = {"device_type": "cisco_ios", "host": "192.168.1.1",
+      "username": "admin", "password": "Admin@123", "secret": "Cisco@123"}
+with ConnectHandler(**r1) as c:
+    c.enable()
+    print(c.send_command("show ip interface brief"))
+    c.send_config_set(["interface loopback 99", "ip address 99.99.99.99 255.255.255.255"])
+    c.save_config()</pre>
+<h4>5) Cisco DevNet Sandbox (DNA Center)</h4>
+<div class="note">تصحيح: الحصول على الـ Token بيتم بطلب <b>POST</b> (مش GET) مع Basic Auth.</div>
+<pre class="code"># 1) Token
+curl -k -X POST https://&lt;DNAC&gt;/dna/system/api/v1/auth/token \
+     -u &lt;username&gt;:&lt;password&gt;
+{"Token": "eyJ0eXAiOiJKV1Qi..."}
+
+# 2) قائمة الأجهزة
+curl -k https://&lt;DNAC&gt;/dna/intent/api/v1/network-device \
+     -H "X-Auth-Token: &lt;TOKEN&gt;"</pre>
+<p>بيانات الـ Sandbox (العنوان واليوزر) بتتاخد من صفحة الـ Reservation في DevNet. الـ Response JSON فيه <b>response</b> (Array) بكل جهاز: hostname, managementIpAddress, platformId, softwareVersion.</p>
+</div></details>
 </div>
 
 <div class="q"><h3>أسئلة مراجعة</h3>
@@ -1688,6 +2459,55 @@ logging host 192.168.1.10</pre></li>
 <h3>15.6 Lab ختامي (Capstone) <span class="tag">تحدّي</span></h3>
 <div class="lab">
 <p>ابني شبكة شركة فيها: 3 VLANs (Sales, IT, Guest) • Router-on-a-Stick أو L3 Switch • EtherChannel بين Switchين • Rapid PVST+ مع PortFast/BPDU Guard • OSPF بين راوترين وفرع • DHCP لكل VLAN • PAT للإنترنت • ACL تمنع Guest من الوصول للـ IT • Port-Security • SSH فقط للإدارة • NTP + Syslog • HSRP للـ Gateway. وثّق: جدول IPs، Topology، وأوامر الـ Verification.</p>
+
+<details class="sol"><summary>🔑 حل الـ Lab (Blueprint)</summary><div class="solbody">
+<p>الحل الكامل بالأوامر والـ Topology للـ Capstone موجود في <b>Lab 23</b>. هنا الـ Blueprint والترتيب الصح، مع إضافة <b>HSRP</b> (المطلوب في الصياغة ده).</p>
+<h4>1) خطة العناوين المقترحة</h4>
+<table><tr><th>الشبكة</th><th class="l">Subnet</th><th>Gateway / HSRP VIP</th></tr>
+<tr><td>VLAN 10 Sales</td><td class="l">192.168.10.0/24</td><td class="l">VIP .254 (R1 = .2، R2 = .3)</td></tr>
+<tr><td>VLAN 20 IT</td><td class="l">192.168.20.0/24</td><td class="l">VIP .254</td></tr>
+<tr><td>VLAN 30 Guest</td><td class="l">192.168.30.0/24</td><td class="l">VIP .254</td></tr>
+<tr><td>VLAN 99 Mgmt</td><td class="l">192.168.99.0/24</td><td class="l">SW1 = .2، SW2 = .3</td></tr>
+<tr><td>HQ ↔ Branch</td><td class="l">10.0.0.0/30</td><td>R1 .1 / Branch .2</td></tr>
+<tr><td>HQ ↔ ISP</td><td class="l">203.0.113.0/30</td><td>R1 .1 / ISP .2</td></tr></table>
+<h4>2) ترتيب العمل (طبقة بطبقة)</h4>
+<ol>
+<li><b>L2:</b> VLANs + Trunks + EtherChannel + Rapid PVST+ (SW1 Root) + PortFast/BPDU Guard + Port-Security.</li>
+<li><b>L3 داخلي:</b> ROAS أو SVI + DHCP لكل VLAN.</li>
+<li><b>Redundancy:</b> HSRP بين راوترين.</li>
+<li><b>Routing:</b> OSPF بين HQ والفرع + Default Route.</li>
+<li><b>Internet:</b> PAT على الـ Outside Interface.</li>
+<li><b>Security:</b> ACL للـ Guest + SSH فقط + Banner + Passwords.</li>
+<li><b>Management:</b> NTP + Syslog.</li>
+<li><b>Verification:</b> اختبر كل طبقة قبل اللي بعدها.</li></ol>
+<h4>3) إضافة HSRP على الـ VLANs (مثال VLAN 10)</h4>
+<pre class="code">! R1 (Active)
+interface g0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.10.2 255.255.255.0
+ standby 10 ip 192.168.10.254
+ standby 10 priority 110
+ standby 10 preempt
+! R2 (Standby)
+interface g0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.10.3 255.255.255.0
+ standby 10 ip 192.168.10.254
+ standby 10 priority 100
+ standby 10 preempt</pre>
+<p>بنفس الطريقة لـ VLAN 20/30 (Group 20/30). وبعدها DHCP Pools بتدّي <b>default-router 192.168.x.254</b> (الـ VIP). ولو عايز Load-sharing خلّي R1 Active لـ VLAN 10/20 و R2 Active لـ VLAN 30.</p>
+<h4>4) قائمة التحقق</h4>
+<table><tr><th>الاختبار</th><th>المتوقع</th></tr>
+<tr><td>show etherchannel summary</td><td>Po1(SU)</td></tr>
+<tr><td>show spanning-tree</td><td>SW1 = Root</td></tr>
+<tr><td>show standby brief</td><td>Active/Standby صح</td></tr>
+<tr><td>Sales ↔ IT</td><td>✅ ينجح</td></tr>
+<tr><td>Guest ← Sales/IT</td><td>❌ ممنوع (ACL)</td></tr>
+<tr><td>Guest → Internet</td><td>✅</td></tr>
+<tr><td>show ip ospf neighbor / show ip nat translations</td><td>FULL + ترجمات PAT</td></tr>
+<tr><td>ssh من IT / telnet</td><td>ينجح / يترفض</td></tr>
+<tr><td>show port-security</td><td>Secure-up</td></tr></table>
+</div></details>
 </div>
 <p style="text-align:center;margin-top:20px"><b>بالتوفيق يا هندسة في الـ CCNA 🎯</b></p>
 </section>
@@ -1826,6 +2646,90 @@ interface g0/0
 <li><b>Ping:</b> من PC LAN1 لـ LAN2 و LAN3. اعمل <span class="en">tracert</span> وراقب المسار.</li>
 <li><b>Failover:</b> على R1 اعمل <span class="en">interface g0/1 → shutdown</span> وراقب التبديل التلقائي للمسار عبر R3 (<span class="en">show ip route eigrp</span>).</li>
 <li><b>تحدّي:</b> غيّر <span class="en">bandwidth</span> على g0/2 لـ R1 لـ 64 وشوف تأثيره على الـ Metric، ثم جرّب <span class="en">variance 2</span> للـ Load-balancing.</li></ol>
+
+<details class="sol"><summary>🔑 حل الـ Lab</summary><div class="solbody">
+<h4>1) Interfaces</h4>
+<pre class="code">! R1
+interface g0/0
+ ip address 192.168.1.1 255.255.255.0
+ no shutdown
+interface g0/1
+ ip address 10.0.12.1 255.255.255.252
+ no shutdown
+interface g0/2
+ ip address 10.0.13.1 255.255.255.252
+ no shutdown
+! R2
+interface g0/0
+ ip address 192.168.2.1 255.255.255.0
+ no shutdown
+interface g0/1
+ ip address 10.0.12.2 255.255.255.252
+ no shutdown
+interface g0/2
+ ip address 10.0.23.1 255.255.255.252
+ no shutdown
+! R3
+interface g0/0
+ ip address 192.168.3.1 255.255.255.0
+ no shutdown
+interface g0/1
+ ip address 10.0.23.2 255.255.255.252
+ no shutdown
+interface g0/2
+ ip address 10.0.13.2 255.255.255.252
+ no shutdown</pre>
+<h4>2) EIGRP</h4>
+<pre class="code">! R1
+router eigrp 100
+ router-id 1.1.1.1
+ network 192.168.1.0 0.0.0.255
+ network 10.0.12.0 0.0.0.3
+ network 10.0.13.0 0.0.0.3
+ no auto-summary
+ passive-interface g0/0
+! R2
+router eigrp 100
+ router-id 2.2.2.2
+ network 192.168.2.0 0.0.0.255
+ network 10.0.12.0 0.0.0.3
+ network 10.0.23.0 0.0.0.3
+ no auto-summary
+ passive-interface g0/0
+! R3
+router eigrp 100
+ router-id 3.3.3.3
+ network 192.168.3.0 0.0.0.255
+ network 10.0.23.0 0.0.0.3
+ network 10.0.13.0 0.0.0.3
+ no auto-summary
+ passive-interface g0/0</pre>
+<p>الـ AS number (100) لازم يتطابق على الكل. والـ PCs: IP .10 على كل LAN و Gateway = .1.</p>
+<h4>3) النتيجة المتوقعة (R1)</h4>
+<pre class="code">R1# show ip eigrp neighbors
+H  Address     Interface  Hold  Uptime    SRTT  RTO  Q  Seq
+0  10.0.12.2   Gi0/1      12    00:03:10  40    1000 0  5
+1  10.0.13.2   Gi0/2      13    00:03:05  35    1000 0  4
+
+R1# show ip route eigrp
+D   192.168.2.0/24 [90/3072] via 10.0.12.2, Gi0/1
+D   192.168.3.0/24 [90/3072] via 10.0.13.2, Gi0/2
+D   10.0.23.0/30   [90/3072] via 10.0.12.2, Gi0/1
+                   [90/3072] via 10.0.13.2, Gi0/2      <i>! Load-balance متساوي</i></pre>
+<p>الأرقام تقريبية (بتتحسب من Bandwidth و Delay للـ Interfaces). المرجع عندك هو <b>show ip eigrp topology</b>.</p>
+<h4>4) Successor و Feasible Successor</h4>
+<ul><li><b>Successor:</b> أفضل مسار (أقل Feasible Distance). مثلًا R1 → LAN2 عبر R2 مباشرة.</li>
+<li><b>Feasible Successor:</b> مسار بديل بشرط <b>Reported Distance &lt; Feasible Distance</b> للـ Successor. في Topology بالـ Metrics دي، المسار عبر R3 غالبًا RD بتاعه مساوي أو أكبر، فـ R3 ممكن ما يبقاش FS، وده معناه إن DUAL بيعمل Query بدل ما يبدّل فورًا (التقارب بيفضل سريع في شبكة صغيرة). اتأكد بنفسك من الـ topology.</li></ul>
+<h4>5) Failover</h4>
+<pre class="code">R1(config)# interface g0/1
+R1(config-if)# shutdown
+R1# show ip route eigrp
+D  192.168.2.0/24 [90/3328] via 10.0.13.2, Gi0/2       <i>! عبر R3 والـ Metric أعلى</i>
+PC1&gt; tracert 192.168.2.10     <i>! 192.168.1.1 → 10.0.13.2 → 10.0.23.1 → 192.168.2.10</i></pre>
+<h4>التحدي</h4>
+<ul><li><b>bandwidth 64</b> على R1 g0/2 بيخلي Metric أي مسار يعدي منه ضخم جدًا (الـ Bandwidth الأدنى في المسار بيدخل الحساب)، فالـ R1 هيفضّل g0/1.</li>
+<li><b>variance 2</b> بيسمح بتوزيع الحمل بس على <b>Feasible Successors</b> اللي Metric بتاعهم ≤ 2 × أفضل Metric. لو المسار مش FS، الـ variance مش هيعمل حاجة. الـ bandwidth الصغير غالبًا هيطلّع الـ Metric أكبر بكتير من الـ variance.</li></ul>
+</div></details>
 </div>
 
 <div class="lab">
@@ -1841,6 +2745,36 @@ interface g0/0
  passive-interface g0/0</pre></li>
 <li>اتحقق: <span class="en">show ip route rip</span> (رمز <b>R</b>، الـ Metric = Hops)، <span class="en">show ip protocols</span> (شوف Timers).</li>
 <li>أضف Router رابع بعد 16 Hop تقريبًا (نظريًا) وناقش ليه RIP محدود، وقارن سرعة التقارب مع EIGRP بعد قطع Link.</li></ol>
+
+<details class="sol"><summary>🔑 حل الـ Lab</summary><div class="solbody">
+<h4>1) Config (على الـ 3 راوترات، غيّر الـ LAN فقط)</h4>
+<pre class="code">no router eigrp 100              <i>! لو EIGRP لسه شغال (AD 90 أقل من RIP 120 فهيتغلب عليه)</i>
+router rip
+ version 2
+ no auto-summary
+ network 192.168.1.0              <i>! R2: 192.168.2.0 • R3: 192.168.3.0</i>
+ network 10.0.0.0
+ passive-interface g0/0</pre>
+<p>الـ RIP بيستخدم <b>Classful network statements</b>: <b>network 10.0.0.0</b> بيغطي كل Interfaces اللي في 10.x.x.x (الثلاث وصلات /30).</p>
+<h4>2) النتيجة المتوقعة (R1)</h4>
+<pre class="code">R1# show ip route rip
+R   192.168.2.0/24 [120/1] via 10.0.12.2, 00:00:12, Gi0/1
+R   192.168.3.0/24 [120/1] via 10.0.13.2, 00:00:08, Gi0/2
+R   10.0.23.0/30   [120/1] via 10.0.12.2, 00:00:12, Gi0/1
+                   [120/1] via 10.0.13.2, 00:00:08, Gi0/2
+
+R1# show ip protocols
+Routing Protocol is "rip"
+  Sending updates every 30 seconds
+  Invalid after 180 seconds, hold down 180, flushed after 240
+  Default version control: send version 2, receive version 2
+  Passive Interface(s): GigabitEthernet0/0
+  Routing for Networks: 10.0.0.0  192.168.1.0</pre>
+<h4>3) الأسئلة</h4>
+<ul><li><b>ليه RIP محدود؟</b> أقصى عدد Hops = <b>15</b> (16 = Unreachable). كمان بيبعث الجدول كله كل 30 ثانية، التقارب بطيء، والـ Metric Hop Count بس (بيتجاهل السرعة).</li>
+<li><b>مقارنة التقارب:</b> بعد قطع Link، RIP بيحتاج Timers (Invalid 180 ثانية، Triggered updates بتسرّع شوية)، أما EIGRP بيرد في ثواني لأنه بيشتغل بـ Hello/Hold وDUAL.</li>
+<li>RIPv2 بيستخدم Multicast <b>224.0.0.9</b> و AD = <b>120</b> و UDP 520، ويدعم VLSM و Authentication (v1 ما بيدعمش).</li></ul>
+</div></details>
 </div>
 
 <div class="q"><h3>أسئلة مراجعة</h3>
@@ -1972,6 +2906,37 @@ nbtstat -n             route print           <i>! (Linux: ip a • ip r • trac
 <li>فعّل خدمة HTTP على Server وافتح الصفحة من PC وراقب الـ <b>TCP 3-Way Handshake</b> (SYN, SYN-ACK, ACK) ثم GET و FIN.</li>
 <li>ثبّت DHCP على PC وراقب خطوات <b>DORA</b>.</li>
 <li><b>سؤال:</b> ليه الـ Src/Dst MAC بتتغير في كل Hop بينما الـ IP لا؟ <i>(الـ MAC محلي على الـ Link، الـ IP end-to-end)</i></li></ol>
+
+<details class="sol"><summary>🔑 حل الـ Lab</summary><div class="solbody">
+<h4>1) Topology مقترح</h4>
+<table><tr><th>الجهاز</th><th class="l">IP</th><th>ملاحظة</th></tr>
+<tr><td>PC1</td><td class="l">192.168.1.10/24</td><td class="l">GW 192.168.1.1</td></tr>
+<tr><td>R1 G0/0</td><td class="l">192.168.1.1/24</td><td>ناحية PC1</td></tr>
+<tr><td>R1 G0/1</td><td class="l">192.168.2.1/24</td><td>ناحية PC2/Server</td></tr>
+<tr><td>PC2 (أو Server)</td><td class="l">192.168.2.10/24</td><td class="l">GW 192.168.2.1</td></tr></table>
+<h4>2) تسلسل الـ Packets في ping</h4>
+<div class="seq">{"a":["PC1","R1","PC2"],"m":[[0,1,"ARP Request: who has 192.168.1.1 (Broadcast)"],[1,0,"ARP Reply"],[0,1,"ICMP Echo Request (Dst MAC = R1)"],[1,2,"ARP Request: who has 192.168.2.10"],[2,1,"ARP Reply"],[1,2,"ICMP Echo Request (Src MAC = R1 G0/1)"],[2,1,"ICMP Echo Reply"],[1,0,"ICMP Echo Reply"]]}</div>
+<h4>3) جدول الـ MAC/IP في كل Hop</h4>
+<table><tr><th>Hop</th><th>Src MAC</th><th>Dst MAC</th><th class="l">Src IP</th><th class="l">Dst IP</th><th>TTL</th></tr>
+<tr><td>PC1 → R1</td><td>PC1</td><td>R1 G0/0</td><td class="l">192.168.1.10</td><td class="l">192.168.2.10</td><td>128</td></tr>
+<tr><td>R1 → PC2</td><td>R1 G0/1</td><td>PC2</td><td class="l">192.168.1.10</td><td class="l">192.168.2.10</td><td>127</td></tr></table>
+<p>الـ <b>IP ثابت</b> (End-to-End)، والـ <b>MAC بيتغير</b> في كل Hop، والـ TTL بينقص 1 عند كل Router.</p>
+<h4>4) TCP 3-Way Handshake (HTTP)</h4>
+<pre class="code">1. PC → Server : SYN
+2. Server → PC : SYN, ACK
+3. PC → Server : ACK
+4. PC → Server : HTTP GET /
+5. Server → PC : HTTP 200 OK (+ الصفحة)
+6. FIN / ACK لإنهاء الاتصال</pre>
+<h4>5) DHCP DORA</h4>
+<table><tr><th>الخطوة</th><th>من → إلى</th><th>النوع</th></tr>
+<tr><td>Discover</td><td>Client → 255.255.255.255 (من 0.0.0.0)</td><td>Broadcast</td></tr>
+<tr><td>Offer</td><td>Server → Client</td><td>Unicast/Broadcast</td></tr>
+<tr><td>Request</td><td>Client → 255.255.255.255</td><td>Broadcast</td></tr>
+<tr><td>Acknowledge</td><td>Server → Client</td><td>Unicast/Broadcast</td></tr></table>
+<h4>6) إجابة السؤال</h4>
+<p>الـ MAC Address له معنى على <b>اللينك المحلي بس</b> (Layer 2)، فكل Hop لازم Frame جديد بـ MAC جديد. الـ IP للـ End-to-End (Layer 3)، فمصدره ووجهته ثابتين.</p>
+</div></details>
 </div>
 
 <div class="q"><h3>أسئلة مراجعة</h3>
@@ -2091,6 +3056,58 @@ Address or name of remote host []? 192.168.1.100
 Source filename []? R1-backup.cfg</pre></li>
 <li><span class="en">show running-config</span> وتأكد إن الإعدادات رجعت. جرّب كمان <span class="en">copy flash: tftp:</span> لنسخ صورة الـ IOS.</li>
 <li>جرّب <span class="en">show version</span> وسجّل: Model, IOS version, Config register, Uptime, حجم الـ Flash/NVRAM.</li></ol>
+
+<details class="sol"><summary>🔑 حل الـ Lab</summary><div class="solbody">
+<h4>1) الإعدادات الأساسية</h4>
+<pre class="code">hostname R1
+banner motd # Backup Lab #
+interface loopback 1
+ ip address 1.1.1.1 255.255.255.255
+interface g0/0
+ ip address 192.168.1.1 255.255.255.0
+ no shutdown</pre>
+<p>Server = 192.168.1.100/24 (GW 192.168.1.1) + Services → TFTP → On.</p>
+<h4>2) Backup</h4>
+<pre class="code">R1# ping 192.168.1.100
+R1# copy running-config tftp:
+Address or name of remote host []? 192.168.1.100
+Destination filename [R1-confg]? R1-backup.cfg
+!!
+[OK - 850 bytes]</pre>
+<p>الملف بيظهر في Server → Services → TFTP (اسمه R1-backup.cfg).</p>
+<h4>3) اختبار الـ Restore</h4>
+<pre class="code">R1# erase startup-config
+Erasing the nvram filesystem will remove all configuration files! Continue? [confirm]
+R1# reload
+System configuration has been modified. Save? [yes/no]: no
+Proceed with reload? [confirm]
+
+Router&gt; enable
+Router# configure terminal
+Router(config)# interface g0/0
+Router(config-if)# ip address 192.168.1.1 255.255.255.0
+Router(config-if)# no shutdown
+Router(config-if)# end
+Router# copy tftp: running-config
+Address or name of remote host []? 192.168.1.100
+Source filename []? R1-backup.cfg
+Destination filename [running-config]?
+[OK - 850 bytes]
+R1# copy running-config startup-config</pre>
+<div class="warn"><b>نقطة مهمة:</b> الـ Copy من TFTP لـ running-config بيعمل <b>Merge</b> مش Replace. والـ Interfaces ممكن تفضل Shutdown لأن الملف المحفوظ مفيهوش سطر <i>no shutdown</i> (الحالة الافتراضية). بعد الـ Restore اعمل <b>no shutdown</b> على الـ Interfaces اللازمة. ولاستبدال كامل استخدم: <b>copy tftp: startup-config</b> ثم reload.</div>
+<h4>4) الصورة (IOS)</h4>
+<pre class="code">R1# show flash
+R1# copy flash: tftp:
+Source filename []? c2900-universalk9-mz.SPA.xxx.bin
+Address or name of remote host []? 192.168.1.100</pre>
+<h4>5) show version: إيه تسجّل</h4>
+<table><tr><th>البند</th><th>مثال</th></tr>
+<tr><td>Model</td><td class="l">Cisco 2911 / CISCO2911/K9</td></tr>
+<tr><td>IOS version</td><td class="l">15.1(4)M4</td></tr>
+<tr><td>Config register</td><td class="l">0x2102 (يقلع من Flash ويحمّل startup-config)</td></tr>
+<tr><td>Uptime</td><td>مدة التشغيل من آخر Reload</td></tr>
+<tr><td>Flash / NVRAM</td><td>حجم الـ Flash (للـ IOS) والـ NVRAM (للـ startup-config)</td></tr></table>
+</div></details>
 </div>
 
 <div class="q"><h3>أسئلة مراجعة</h3>
@@ -2157,6 +3174,43 @@ router ospf 1
  passive-interface g0/1</pre></li>
 <li>PC1 GW = 192.168.10.1 • PC2 GW = 192.168.20.1 • Server GW = 172.16.0.1. اختبر: PC1 ↔ PC2 (تتوجه داخل الـ L3 Switch)، PC1 → Server (عبر OSPF).</li>
 <li>الفحص: <span class="en">show ip route</span> و <span class="en">show ip ospf neighbor</span> على SW-L3 و R1، و <span class="en">show ip interface brief</span> (شوف حالة Vlan10/Vlan20: up/up لازم VLAN يكون موجود وفي بورت active).</li></ol>
+
+<details class="sol"><summary>🔑 حل الـ Lab</summary><div class="solbody">
+<h4>1) الإعدادات (كما في الـ Lab)</h4>
+<p>الأوامر الكاملة موجودة فوق في خطوات الـ Lab. أهم النقط اللي بتقع فيها الناس:</p>
+<ul>
+<li>على الـ L3 Switch لازم <b>ip routing</b> أولًا، وإلا الـ SVIs مش هتعمل Routing.</li>
+<li>على 3560 لازم <b>switchport trunk encapsulation dot1q</b> قبل <b>mode trunk</b> (على 2960 مش موجود).</li>
+<li>الـ Routed Port: <b>no switchport</b> قبل ما تحط IP.</li>
+<li>الـ PC Gateway = الـ SVI. و Server Gateway = 172.16.0.1.</li>
+<li>الـ R1 محتاج يعرف الشبكات 192.168.x (OSPF بيعلمهم له).</li></ul>
+<h4>2) النتيجة المتوقعة</h4>
+<pre class="code">SW-L3# show ip interface brief
+Vlan10    192.168.10.1  YES manual up   up
+Vlan20    192.168.20.1  YES manual up   up
+Gi0/2     10.0.0.2      YES manual up   up
+
+SW-L3# show ip ospf neighbor
+Neighbor ID   Pri State     Dead Time Address   Interface
+172.16.0.1    1   FULL/BDR  00:00:35  10.0.0.1  GigabitEthernet0/2
+
+SW-L3# show ip route ospf
+O   172.16.0.0/24 [110/2] via 10.0.0.1, 00:02:10, GigabitEthernet0/2
+
+R1# show ip route ospf
+O   192.168.10.0/24 [110/2] via 10.0.0.2, GigabitEthernet0/0
+O   192.168.20.0/24 [110/2] via 10.0.0.2, GigabitEthernet0/0
+
+PC1&gt; ping 192.168.20.10     <i>! ينجح (Inter-VLAN داخل SW-L3)</i>
+PC1&gt; ping 172.16.0.10       <i>! ينجح (عبر OSPF)</i></pre>
+<div class="note">الـ Neighbor ID هو الـ Router-ID (أعلى IP على Loopback أو Interface)، والـ State (DR/BDR) ممكن يختلف عندك. المهم FULL.</div>
+<h4>3) Troubleshooting</h4>
+<table><tr><th>العَرَض</th><th>السبب الأرجح</th></tr>
+<tr><td>Vlan10 down/down</td><td>مفيش بورت Active في VLAN 10 (Trunk شغال؟ VLAN معمولة على L3؟)</td></tr>
+<tr><td>PC1 مش بيوصل لـ PC2</td><td>ip routing ناقص أو Gateway غلط</td></tr>
+<tr><td>OSPF مفيش Neighbor</td><td>Routed port لسه Switchport، أو Mask غلط على الوصلة /30</td></tr>
+<tr><td>PC1 مش بيوصل للـ Server</td><td>R1 ما بيعرفش الطريق الراجع، راجع network statements</td></tr></table>
+</div></details>
 </div>
 
 <div class="lab">
@@ -2184,6 +3238,42 @@ ip dhcp pool LAN10
  dns-server 8.8.8.8</pre></li>
 <li>اضبط PC1 و PC2 على <span class="en">DHCP</span>. اتحقق: <span class="en">ipconfig</span> على PC، و <span class="en">show ip dhcp binding</span> على R2.</li>
 <li><b>تجربة:</b> شيل <span class="en">ip helper-address</span> وجرّب Renew (<span class="en">ipconfig /release</span> ثم <span class="en">/renew</span>) وشوف الفشل (APIPA 169.254.x.x). ارجع للـ Simulation وراقب الـ DISCOVER هو Broadcast ويتحوّل Unicast للـ Server بعد الـ relay.</li></ol>
+
+<details class="sol"><summary>🔑 حل الـ Lab</summary><div class="solbody">
+<h4>1) الفكرة</h4>
+<p>الـ DHCP Discover هو <b>Broadcast</b> (255.255.255.255) ومش بيعدّي الـ Router. فـ R1 بيستلمه على G0/0 ويحوّله <b>Unicast</b> للـ Server 10.0.0.2 (Relay) مع تعبئة حقل <b>giaddr = 192.168.10.1</b>. الـ Server بيستخدم الـ giaddr يعرف أنهي Pool يختار (LAN10).</p>
+<h4>2) الإعدادات</h4>
+<p>الأوامر بالظبط زي ما في الـ Lab. أهم نقطتين: <b>ip helper-address 10.0.0.2</b> على الـ Interface اللي ناحية الـ Clients (مش على G0/1)، وعلى R2 لازم <b>Route راجع</b> للشبكة 192.168.10.0/24 عبر R1 (وإلا الـ Offer مش هيرجع).</p>
+<h4>3) النتيجة المتوقعة</h4>
+<pre class="code">PC1&gt; ipconfig
+   IP Address ......: 192.168.10.21
+   Subnet Mask .....: 255.255.255.0
+   Default Gateway .: 192.168.10.1
+   DNS Server ......: 8.8.8.8
+
+R2# show ip dhcp binding
+IP address       Client-ID/Hardware address   Lease expiration   Type
+192.168.10.21    0001.6345.AB12               --                 Automatic
+192.168.10.22    0002.1789.CD34               --                 Automatic
+
+R2# show ip dhcp pool LAN10
+ Total addresses : 254   Leased addresses : 2   Excluded addresses : 20 (تقريبًا)</pre>
+<p>أول عنوان بيتوزع هو .21 لأننا استبعدنا .1–.20.</p>
+<h4>4) التجربة (شيل الـ helper)</h4>
+<pre class="code">R1(config)# interface g0/0
+R1(config-if)# no ip helper-address
+PC1&gt; ipconfig /release
+PC1&gt; ipconfig /renew
+   DHCP request failed.       <i>! IP = 169.254.x.x (APIPA)</i></pre>
+<p>ده بيثبت إن الـ Broadcast ما بيعدّيش الـ Router بدون Relay.</p>
+<h4>5) في Simulation Mode</h4>
+<table><tr><th>الخطوة</th><th>المرحلة</th></tr>
+<tr><td>PC1 → SW → R1</td><td>DISCOVER Broadcast (Dst MAC FFFF.FFFF.FFFF, IP 255.255.255.255)</td></tr>
+<tr><td>R1 → R2</td><td>نفس الرسالة لكن Unicast: Src 192.168.10.1 / Dst 10.0.0.2 (UDP 67)</td></tr>
+<tr><td>R2 → R1 → PC1</td><td>OFFER (Unicast للـ giaddr ثم R1 بيوصله للعميل)</td></tr>
+<tr><td>REQUEST / ACK</td><td>نفس المسار</td></tr></table>
+<div class="note">لو في VLANs متعددة محتاج helper على كل Interface/Sub-interface، وPool منفصل لكل شبكة.</div>
+</div></details>
 </div>
 
 <div class="lab">
@@ -2212,6 +3302,61 @@ ip nat inside source list 10 pool PUB</pre></li>
 <li><b>تحويل لـ PAT:</b> امسح الـ Dynamic واستخدم <span class="en">ip nat inside source list 10 pool PUB overload</span> أو <span class="en">interface g0/1 overload</span> وقارن النتيجة والـ Ports.</li>
 <li>الـ Debug المفيد: <span class="en">debug ip nat</span> (ثم <span class="en">undebug all</span>)، و <span class="en">clear ip nat translation *</span>.</li></ol>
 <p><b>ملاحظة:</b> لو الـ ping بيفشل مع Dynamic NAT في Packet Tracer، تأكد من <span class="en">ip nat inside/outside</span> على الـ Interfaces الصح (أشهر خطأ)، ومن الـ ACL، ومن عدم وجود Pool متداخل مع عنوان الـ Interface.</p>
+
+<details class="sol"><summary>🔑 حل الـ Lab</summary><div class="solbody">
+<h4>1) باقي الإعدادات</h4>
+<pre class="code">! ISP (Static Routes للـ Public Pool)
+interface g0/0
+ ip address 203.0.113.2 255.255.255.248
+ no shutdown
+interface g0/1
+ ip address 198.51.100.1 255.255.255.0
+ no shutdown
+ip route 203.0.113.0 255.255.255.248 g0/0 203.0.113.1   <i>! مش لازم لو متصلة مباشرة</i>
+
+! R1
+interface g0/0
+ ip address 192.168.1.1 255.255.255.0
+ no shutdown
+interface g0/1
+ ip address 203.0.113.1 255.255.255.248
+ no shutdown
+ip route 0.0.0.0 0.0.0.0 203.0.113.2</pre>
+<p>Gateway للـ LAN = 192.168.1.1. OutPC: 198.51.100.10 و GW 198.51.100.1. ملاحظة: الـ Pool (.4–.6) والـ Static (.3) كلهم داخل نفس الـ /29 المتصل بـ ISP، فـ ISP يعرفهم بدون Route إضافي.</p>
+<h4>2) النتيجة المتوقعة</h4>
+<pre class="code">R1# show ip nat translations
+Pro  Inside global     Inside local       Outside local      Outside global
+---  203.0.113.3       192.168.1.10       ---                ---
+icmp 203.0.113.4:1     192.168.1.20:1     198.51.100.10:1    198.51.100.10:1
+---  203.0.113.4       192.168.1.20       ---                ---
+
+R1# show ip nat statistics
+Total active translations: 3 (1 static, 2 dynamic)
+Inside interfaces: GigabitEthernet0/0   Outside interfaces: GigabitEthernet0/1
+Pool PUB: netmask 255.255.255.248  start 203.0.113.4 end 203.0.113.6  total addresses 3, allocated 1</pre>
+<h4>3) المصطلحات</h4>
+<table><tr><th>Term</th><th>معناه</th><th>مثال هنا</th></tr>
+<tr><td>Inside Local</td><td>عنوان الجهاز الداخلي الحقيقي</td><td class="l">192.168.1.20</td></tr>
+<tr><td>Inside Global</td><td>العنوان العام اللي بيظهر بيه للخارج</td><td class="l">203.0.113.4</td></tr>
+<tr><td>Outside Local / Global</td><td>عنوان الجهاز الخارجي (غالبًا نفس القيمة)</td><td class="l">198.51.100.10</td></tr></table>
+<h4>4) استنفاد الـ Pool</h4>
+<p>الـ Pool فيه 3 عناوين: أول 3 أجهزة بتاخد .4 .5 .6، الرابع بيفشل (Packet بيتسقط وICMP Host Unreachable). الترجمة بتتمسح بعد Timeout (24 ساعة افتراضيًا للـ Dynamic بدون Traffic، أو بـ <b>clear ip nat translation *</b>).</p>
+<h4>5) التحويل لـ PAT</h4>
+<pre class="code">R1(config)# no ip nat inside source list 10 pool PUB
+R1(config)# ip nat inside source list 10 pool PUB overload
+<i>! أو بعنوان الـ Interface:</i>
+R1(config)# ip nat inside source list 10 interface g0/1 overload
+
+R1# show ip nat translations
+icmp 203.0.113.4:1024 192.168.1.20:1  198.51.100.10:1 198.51.100.10:1
+icmp 203.0.113.4:1025 192.168.1.21:1  198.51.100.10:1 198.51.100.10:1</pre>
+<p>دلوقتي عنوان عام واحد بيخدم الكل، والتمييز بـ <b>Port numbers</b>. ده اللي بيتعمل في كل راوتر بيت.</p>
+<h4>أخطاء شائعة</h4>
+<ul><li>نسيان <b>ip nat inside/outside</b> أو عكسهم.</li>
+<li>ACL 10 بتسمح للشبكة غلط (Wildcard).</li>
+<li>الـ Pool متداخل مع عنوان الـ Interface نفسه (.1) أو مع الـ Static (.3).</li>
+<li>ISP مفيهوش طريق للـ Pool/المدى العام.</li></ul>
+</div></details>
 </div>
 
 <div class="lab">
@@ -2232,6 +3377,61 @@ show ip dhcp snooping binding</pre></li>
 <li><b>بعد الحماية:</b> اعمل <span class="en">ipconfig /release</span> ثم <span class="en">/renew</span> على PC1 و PC2: لازم ياخدوا من الـ Legit فقط. شوف جدول الـ Binding.</li>
 <li>أضف <b>Port Security</b> على بورتات PCs (<span class="en">maximum 1</span> + <span class="en">sticky</span>) وجرّب توصيل جهاز تاني.</li>
 <li><b>DAI (لو مدعوم):</b> <span class="en">ip arp inspection vlan 1</span> مع <span class="en">ip arp inspection trust</span> على بورت الـ Server. بعض إصدارات Packet Tracer لا تدعم DAI؛ ده مش خطأ منك، جرّبه على EVE-NG/CML أو أجهزة حقيقية.</li></ol>
+
+<details class="sol"><summary>🔑 حل الـ Lab</summary><div class="solbody">
+<h4>1) الإعدادات الكاملة على SW1</h4>
+<pre class="code">ip dhcp snooping
+ip dhcp snooping vlan 1
+!
+interface fa0/1
+ ip dhcp snooping trust
+interface range fa0/2-4
+ ip dhcp snooping limit rate 10
+!
+<i>! Port Security على بورتات الـ PCs</i>
+interface range fa0/2, fa0/4
+ switchport mode access
+ switchport port-security
+ switchport port-security maximum 1
+ switchport port-security mac-address sticky
+ switchport port-security violation shutdown
+<i>! DAI (لو مدعوم)</i>
+ip arp inspection vlan 1
+interface fa0/1
+ ip arp inspection trust</pre>
+<p>الـ Rogue على Fa0/3 يفضل <b>untrusted</b> (مش بنكتب له trust). الـ DHCP الشرعي على Fa0/1 هو الوحيد Trusted.</p>
+<h4>2) المتوقع قبل وبعد</h4>
+<table><tr><th>الحالة</th><th>اللي بيحصل</th></tr>
+<tr><td>قبل الحماية</td><td>أول Offer بيوصل يكسب، فممكن PC ياخد Gateway 192.168.10.99 و DNS 6.6.6.6 (Man-in-the-Middle).</td></tr>
+<tr><td>بعد الحماية</td><td>الـ Switch بيسقط أي <b>DHCP Offer/ACK</b> داخل من بورت Untrusted، فالـ Clients ياخدوا من الـ Legit فقط.</td></tr></table>
+<pre class="code">SW1# show ip dhcp snooping
+Switch DHCP snooping is enabled
+DHCP snooping is configured on following VLANs: 1
+Interface   Trusted   Rate limit (pps)
+Fa0/1       yes       unlimited
+Fa0/2       no        10
+Fa0/3       no        10
+Fa0/4       no        10
+
+SW1# show ip dhcp snooping binding
+MacAddress         IpAddress      Lease  Type           VLAN  Interface
+0001.6345.AB12     192.168.10.21  86400  dhcp-snooping  1     FastEthernet0/2
+0002.1789.CD34     192.168.10.22  86400  dhcp-snooping  1     FastEthernet0/4</pre>
+<div class="note">الـ Binding Table بتخزّن (MAC + IP + VLAN + Port)، وهي اللي DAI و IP Source Guard بيعتمدوا عليها. لو Packet Tracer مش بيدعم أوامر معينة (زي DAI) فده قصور في الأداة مش خطأ منك.</div>
+<h4>3) Port Security</h4>
+<p>وصّل جهاز تاني بنفس البورت (أو غيّر MAC): الـ Port يدخل <b>err-disabled</b> (violation shutdown).</p>
+<pre class="code">SW1# show port-security interface fa0/2
+Port Status : Secure-shutdown
+SW1(config)# interface fa0/2
+SW1(config-if)# shutdown
+SW1(config-if)# no shutdown          <i>! للرجوع</i>
+<i>! أو errdisable recovery:</i>
+SW1(config)# errdisable recovery cause psecure-violation</pre>
+<h4>أسئلة شائعة</h4>
+<ul><li><b>ليه trust على بورت الـ Server بس؟</b> لأنه المسار اللي بيجي منه DHCP Offer. أي بورت تاني ممكن يكون عميل أو Rogue.</li>
+<li><b>لو في Switch تاني Uplink؟</b> بورت الـ Uplink ناحية الـ DHCP لازم Trusted.</li>
+<li><b>rate limit بيحمي من إيه؟</b> DHCP Starvation (طوفان Discover بـ MACs مزيفة).</li></ul>
+</div></details>
 </div>
 
 <div class="lab">
@@ -2423,6 +3623,53 @@ interface g0/1
 <li>Port-Security: <span class="en">SW2# show port-security</span>.</li></ul>
 <p><b>تطويرات اختيارية:</b> أضف R3 + HSRP للـ Gateway • DHCP Snooping على SW2 • Syslog + NTP • IPv6 Dual-stack • ACL تمنع Telnet.</p>
 <div class="note"><b>ملاحظة صدق:</b> الـ ISP مفيهوش Route للـ 192.168.x.x لأن الـ PAT على R1 بيغيّر المصدر لـ 203.0.113.1 (Connected عند الـ ISP). ولو شغّلت الـ ping من Router الـ ISP نفسه للشبكات الداخلية هيفشل وده طبيعي.</div>
+
+<details class="sol"><summary>🔑 حل الـ Lab: ترتيب التنفيذ والتحقق</summary><div class="solbody">
+<p>الـ Configs الكاملة فوق. هنا <b>ترتيب التنفيذ</b> الصح (عشان تعرف تلاقي الغلط بسرعة) وجدول الأعطال الشائعة.</p>
+<h4>1) ترتيب التنفيذ</h4>
+<ol>
+<li><b>Layer 2:</b> SW1/SW2: VLANs ← EtherChannel (Po1) ← Trunks (Native 99) ← Rapid PVST+. اختبر: <code>show etherchannel summary</code> و <code>show interfaces trunk</code>.</li>
+<li><b>R1 ROAS:</b> <code>no shutdown</code> على G0/0 ثم الـ Sub-interfaces. اختبر: ping من SW1 للـ 192.168.99.1.</li>
+<li><b>DHCP:</b> Pools + excluded. اختبر <code>ipconfig</code> على كل PC.</li>
+<li><b>R1–R2–ISP:</b> الـ IPs ثم OSPF ثم Default Route + <code>default-information originate</code>.</li>
+<li><b>PAT + ACL:</b> <code>ip nat inside/outside</code> على الـ Interfaces ثم ACL 1 ثم GUEST-IN.</li>
+<li><b>Port-Security + SSH.</b></li></ol>
+<h4>2) النتائج المتوقعة</h4>
+<pre class="code">SW1# show etherchannel summary
+1  Po1(SU)  LACP  Fa0/1(P) Fa0/2(P)
+
+SW1# show spanning-tree vlan 10
+This bridge is the root
+
+R1# show ip ospf neighbor
+2.2.2.2  1  FULL/BDR  00:00:33  10.0.0.2  GigabitEthernet0/1
+
+R2# show ip route
+O*E2 0.0.0.0/0 [110/1] via 10.0.0.1, GigabitEthernet0/0
+
+R1# show ip nat translations
+icmp 203.0.113.1:5  192.168.10.10:5  198.51.100.10:5  198.51.100.10:5
+
+R1# show access-lists
+Extended IP access list GUEST-IN
+    10 deny ip 192.168.30.0 0.0.0.255 192.168.10.0 0.0.0.255 (4 match(es))
+    ...
+    50 permit ip any any (12 match(es))</pre>
+<h4>3) جدول الاختبارات</h4>
+<table><tr><th>من → إلى</th><th>النتيجة</th><th>السبب</th></tr>
+<tr><td>Sales → IT</td><td>✅</td><td>Inter-VLAN عبر ROAS</td></tr>
+<tr><td>Guest → Sales</td><td>❌</td><td>GUEST-IN deny</td></tr>
+<tr><td>Guest → Web (198.51.100.10)</td><td>✅</td><td>permit ip any any + PAT</td></tr>
+<tr><td>Branch → Web</td><td>✅</td><td>Default من OSPF + PAT (192.168.40.x داخل ACL 1)</td></tr>
+<tr><td>ISP router → 192.168.x</td><td>❌ طبيعي</td><td>مفيش Route (PAT مخفي الداخل)</td></tr></table>
+<h4>4) أعطال شائعة</h4>
+<table><tr><th>العَرَض</th><th>الحل</th></tr>
+<tr><td>PCs مش بتاخد IP</td><td><code>no shutdown</code> على R1 G0/0، تأكد Native/Allowed VLANs متطابقة على الطرفين</td></tr>
+<tr><td>Native VLAN mismatch (رسائل CDP)</td><td>نفس الـ Native 99 على Trunk و <code>encapsulation dot1Q 99 native</code></td></tr>
+<tr><td>Branch ما بياخدش DHCP</td><td>تأكد <code>ip helper-address 10.0.0.1</code> على R2 G0/1 ومسار 192.168.40.0 معروف عند R1</td></tr>
+<tr><td>لا Internet</td><td><code>ip nat outside</code> على G0/2 + ACL 1 + Default Route</td></tr>
+<tr><td>Port في err-disable</td><td>BPDU Guard أو Port-Security: <code>shutdown</code> ثم <code>no shutdown</code> بعد إزالة السبب</td></tr></table>
+</div></details>
 </div>
 </section>
 <section class="module" id="appA">
@@ -3103,12 +4350,53 @@ document.querySelectorAll('section.module').forEach(s=>{
 const links=[...toc.querySelectorAll('a')];
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle('on',l.getAttribute('href')==='#'+e.target.id))}}),{rootMargin:'-20% 0px -70% 0px'});
 document.querySelectorAll('section.module').forEach(s=>io.observe(s));
+/* ---------- Bidi fix ---------- */
+(function(){
+const SKIP='PRE,CODE,.en,td.l,th.l,svg,.topo,.seq,.diagram,script,style,bdi,button,textarea,input';
+const AR=/[؀-ۿ]/;
+const root=document.querySelector('main')||document.body;
+const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const nodes=[];
+while(w.nextNode()){const n=w.currentNode;if(!n.nodeValue.trim())continue;if(n.parentElement.closest(SKIP))continue;nodes.push(n)}
+const LAT=/[A-Za-z0-9](?:[A-Za-z0-9._\-\/:@#%+=*&()\[\]{},'"!?;~ ]*[A-Za-z0-9%])?/g;
+nodes.forEach(n=>{
+  let s=n.nodeValue.replace(/→/g,'←');
+  if(!/[A-Za-z0-9]/.test(s)){if(s!==n.nodeValue)n.nodeValue=s;return}
+  const f=document.createDocumentFragment();let last=0,m;LAT.lastIndex=0;
+  while((m=LAT.exec(s))){
+    let a=m.index,b=a+m[0].length,x=m[0];
+    const o=(x.match(/\(/g)||[]).length,c=(x.match(/\)/g)||[]).length;
+    if(o>c&&s[b]===')')b++;
+    else if(c>o&&s[a-1]==='('&&a>last)a--;
+    else if(c>o){let k=x.length;while(k>0&&(x.match(/\)/g)||[]).length>(x.slice(0,k).match(/\(/g)||[]).length&&x[k-1]!==')')k--;}
+    x=s.slice(a,b);
+    if(a>last)f.appendChild(document.createTextNode(s.slice(last,a)));
+    const e=document.createElement('bdi');e.className='lt';e.textContent=x;f.appendChild(e);last=b;LAT.lastIndex=b;
+  }
+  if(last<s.length)f.appendChild(document.createTextNode(s.slice(last)));
+  n.parentNode.replaceChild(f,n);
+});
+/* Arabic comments inside code blocks */
+document.querySelectorAll('pre.code').forEach(p=>{
+  const w2=document.createTreeWalker(p,NodeFilter.SHOW_TEXT);const ns=[];
+  while(w2.nextNode())if(AR.test(w2.currentNode.nodeValue))ns.push(w2.currentNode);
+  ns.forEach(n=>{
+    const s=n.nodeValue,f=document.createDocumentFragment();let last=0;
+    const re=/[؀-ۿ][^\n]*/g;let m;
+    while((m=re.exec(s))){
+      if(m.index>last)f.appendChild(document.createTextNode(s.slice(last,m.index)));
+      const e=document.createElement('bdi');e.setAttribute('dir','rtl');e.textContent=m[0];f.appendChild(e);last=m.index+m[0].length;
+    }
+    if(last<s.length)f.appendChild(document.createTextNode(s.slice(last)));
+    n.parentNode.replaceChild(f,n);
+  });
+});
+})();
 /* ---------- Copy buttons ---------- */
 document.querySelectorAll('pre.code').forEach(p=>{
-  const b=document.createElement('button');b.className='cp';b.textContent='Copy';
-  b.onclick=()=>{const t=p.cloneNode(true);t.querySelector('.cp').remove();
-    const txt=t.textContent.replace(/^\s*!.*$/gm,m=>m);navigator.clipboard&&navigator.clipboard.writeText(txt).then(()=>{b.textContent='✓';setTimeout(()=>b.textContent='Copy',1200)})};
-  p.appendChild(b);
+  const wrap=document.createElement('div');wrap.className='codewrap';p.parentNode.insertBefore(wrap,p);wrap.appendChild(p);
+  const b=document.createElement('button');b.className='cp';b.textContent='Copy';b.type='button';
+  b.onclick=()=>{const txt=p.textContent;navigator.clipboard&&navigator.clipboard.writeText(txt).then(()=>{b.textContent='✓';setTimeout(()=>b.textContent='Copy',1200)})};
+  wrap.appendChild(b);
 });
 /* ---------- Search ---------- */
 (function(){

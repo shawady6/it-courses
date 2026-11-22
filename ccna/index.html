@@ -349,7 +349,7 @@ show ip ssh</pre>
  no shutdown</pre>
 <table>
 <tr><th>الظاهرة</th><th>السبب المحتمل</th></tr>
-<tr><td class="l">Interface up / Line protocol down</td><td>مشكلة Layer 2: Encapsulation، Keepalive، أو Speed/Duplex mismatch</td></tr>
+<tr><td class="l">Interface up / Line protocol down</td><td>مشكلة Layer 2: Encapsulation أو Keepalive (الـ Speed/Duplex mismatch عادة بيطلع up/up مع Late collisions و CRC)</td></tr>
 <tr><td class="l">administratively down</td><td>الـ Interface عليه <span class="en">shutdown</span></td></tr>
 <tr><td class="l">down / down</td><td>الكابل مفصول أو غلط (Layer 1)</td></tr>
 <tr><td class="l">Late collisions</td><td>Duplex mismatch</td></tr>
@@ -968,7 +968,7 @@ interface g0/1
 <h3>6.2 إزاي STP بيشتغل؟ (4 خطوات)</h3>
 <ol>
 <li><b>انتخاب الـ Root Bridge:</b> أقل <span class="en">Bridge ID</span> يكسب. Bridge ID = <span class="en">Priority (default 32768) + Extended System ID (VLAN) + MAC</span>. الأقل Priority، ولو متساوي الأقل MAC.</li>
-<li><b>اختيار الـ Root Port (RP)</b> على كل Non-root switch: البورت صاحب أقل <span class="en">Root Path Cost</span> للـ Root. (التعادل: أقل Sender BID ثم أقل Sender Port ID).</li>
+<li><b>اختيار الـ Root Port (RP)</b> على كل Non-root switch: البورت صاحب أقل <span class="en">Root Path Cost</span> للـ Root. (التعادل: أقل Sender BID ثم أقل Sender Port Priority ثم أقل Sender Port ID).</li>
 <li><b>اختيار الـ Designated Port (DP)</b> لكل Segment: البورت صاحب أقل Cost للـ Root على الـ Link. كل بورتات الـ Root = DP.</li>
 <li>باقي البورتات = <b>Alternate/Blocking</b>.</li>
 </ol>
@@ -980,9 +980,9 @@ interface g0/1
 <h3>6.3 الـ Port Roles والـ States</h3>
 <table>
 <tr><th>STP 802.1D States</th><th>مدة</th><th>RSTP 802.1w States</th></tr>
-<tr><td class="l">Blocking</td><td>20s (Max Age)</td><td rowspan="3" class="l">Discarding</td></tr>
+<tr><td class="l">Disabled</td><td>—</td><td class="l">Discarding</td></tr>
+<tr><td class="l">Blocking</td><td>لحد 20s (Max Age) قبل ما يتحرك</td><td rowspan="2" class="l">Discarding</td></tr>
 <tr><td class="l">Listening</td><td>15s</td></tr>
-<tr><td class="l">Disabled</td><td>—</td></tr>
 <tr><td class="l">Learning</td><td>15s</td><td class="l">Learning</td></tr>
 <tr><td class="l">Forwarding</td><td>—</td><td class="l">Forwarding</td></tr></table>
 <p>الـ <span class="en">STP</span> الكلاسيك بيحتاج لحد <b>50 ثانية</b> للتقارب (20+15+15). الـ <span class="en">RSTP</span> بيتقارب في ثواني.</p>
@@ -1042,7 +1042,7 @@ SW2(config)# spanning-tree vlan 1 root secondary</pre></li>
 <pre class="code">interface fa0/1
  spanning-tree portfast
  spanning-tree bpduguard enable</pre></li>
-<li><b>اختبار الفشل:</b> من PC1 اعمل <span class="en">ping -t</span> لـ PC2 (IP أنت عينته 192.168.1.x)، وبعدين اعمل <span class="en">shutdown</span> لـ G0/2 على SW2 وراقب كام ping ضاع. قارنها بنتيجة PVST+ العادي (<span class="en">spanning-tree mode pvst</span>).</li>
+<li><b>اختبار الفشل:</b> من PC1 اعمل <span class="en">ping -t</span> لـ PC2 (IP أنت عينته 192.168.1.x)، وبعدين اعمل <span class="en">shutdown</span> لـ G0/1 على SW2 (اللينك اللي شغال فعليًا ناحية الـ Root. G0/2 على SW2 مش بيشيل Traffic فمش هتشوف فرق) وراقب كام ping ضاع. قارنها بنتيجة PVST+ العادي (<span class="en">spanning-tree mode pvst</span>).</li>
 <li><b>BPDU Guard:</b> وصّل Switch ثالث (أو Hub-style) على Fa0/1 وشوف البورت بيتحول <span class="en">err-disabled</span>. الإرجاع: <span class="en">shutdown</span> ثم <span class="en">no shutdown</span>.</li>
 </ol>
 
@@ -1343,6 +1343,7 @@ PC1&gt; tracert 10.2.2.10
 <div class="note"><b>تنبيه:</b> لو الـ Link بين الراوترين عن طريق Switch (مش مباشر)، الـ Interface بيفضل Up حتى لو الطرف التاني وقع، فالـ Floating Route مش هيشتغل. الحل الحقيقي: <b>IP SLA + track</b> أو بروتوكول Routing ديناميكي.</div>
 <h4>التحدي: Default Route</h4>
 <pre class="code">R1(config)# no ip route 10.2.2.0 255.255.255.0 172.16.12.2
+R1(config)# no ip route 10.2.2.0 255.255.255.0 172.16.13.2 200   <i>! لازم تشيل الـ Floating كمان، وإلا يفضل Specific Route أطول Prefix ويكسب على الـ Default</i>
 R1(config)# ip route 0.0.0.0 0.0.0.0 172.16.12.2
 R1# show ip route
 Gateway of last resort is 172.16.12.2 to network 0.0.0.0
@@ -1372,7 +1373,7 @@ S*  0.0.0.0/0 [1/0] via 172.16.12.2</pre>
 
 <h3>9.2 شروط الـ Neighbor</h3>
 <ul>
-<li>نفس <span class="en">Area ID</span> • نفس <span class="en">Hello/Dead timers</span> • نفس <span class="en">Subnet & Mask</span> • نفس <span class="en">Authentication</span> • <span class="en">Router-ID</span> مختلف • نفس <span class="en">Network type</span> (MTU matching كمان).</li>
+<li>نفس <span class="en">Area ID</span> • نفس <span class="en">Hello/Dead timers</span> • نفس <span class="en">Subnet & Mask</span> • نفس <span class="en">Authentication</span> • <span class="en">Router-ID</span> مختلف • <span class="en">MTU</span> متطابق، ونفس <span class="en">Network type</span> يفضّل (الاختلاف ممكن يكوّن Adjacency لكن بمشاكل DR/Routes).</li>
 </ul>
 <h4>حالات الـ Neighbor <span class="en">(Neighbor States)</span></h4>
 <div class="bits"><div>Down</div><div>Init</div><div>2-Way</div><div>ExStart</div><div>Exchange</div><div>Loading</div><div style="background:#16a34a;color:#fff">Full</div></div>
@@ -1401,7 +1402,7 @@ interface g0/1
  ip ospf hello-interval 10
 !
 show ip ospf neighbor
-show ip ospf interface brief
+show ip ospf interface
 show ip route ospf
 show ip protocols
 clear ip ospf process</pre>
@@ -1439,7 +1440,7 @@ router ospf 1
 show ip route ospf
 PC1&gt; ping 192.168.3.10
 R1# ping 8.8.8.8</pre></li>
-<li><b>مين DR؟</b> لاحظ إن الـ DR هو الأعلى Router-ID (R3). غيّر الأولوية على R2:
+<li><b>مين DR؟</b> لاحظ إن الـ DR هو الأعلى Router-ID (R3) <b>بشرط</b> إنك شغّلت الـ 3 راوترات مع بعض، لأن الانتخاب Non-preemptive (أول واحد يطلع ممكن يكسب). لو طلع غير كده اعمل <span class="en">clear ip ospf process</span> على الكل. غيّر الأولوية على R2:
 <pre class="code">R2(config)# interface g0/1
 R2(config-if)# ip ospf priority 100
 R2# clear ip ospf process</pre>
@@ -1649,12 +1650,12 @@ PC&gt; tracert 172.16.0.10
 <li>بعد <b>no shutdown</b> على R1: بسبب <b>preempt</b> وPriority الأعلى (110) بيرجع Active.</li></ul>
 <h4>4) ملاحظات تصميمية</h4>
 <ul>
-<li>الـ CORE عنده Routes متساوية للـ LAN عبر R1 و R2، فالرد ممكن يرجع من أي واحد (<b>Asymmetric</b>)، وده شغال في الـ Lab لأن الاتنين عندهم Route للـ Server.</li>
+<li>الـ CORE عنده Routes متساوية للـ LAN عبر R1 و R2، فالرد ممكن يرجع من أي واحد (<b>Asymmetric</b>)، وده شغال في الـ Lab لأن الاتنين عندهم Route للـ Server. تنبيه: لو CORE عنده Routes Static متساوية عبر R1 و R2، ممكن جزء من الـ Return Traffic يروح للـ R1 الواقع وقت الـ Failover. للتجربة الأنضف اضبط CORE بـ Static Route واحد للـ VIP، أو شغّل OSPF، أو اعمل shutdown لـ G0/1 (ناحية الـ CORE) على R1 بدل G0/0.</li>
 <li>من غير <b>track</b>: لو لينك R1–CORE وقع، R1 يفضل Active ويرمي الترافيك. الحل (لو Packet Tracer بيدعم):
 <pre class="code">R1(config)# track 1 interface g0/1 line-protocol
 R1(config)# interface g0/0
 R1(config-if)# standby 1 track 1 decrement 20     <i>! 110 → 90 فيطلع R2 Active</i></pre></li>
-<li>الـ Virtual MAC لـ HSRP v1 = 0000.0C07.ACxx (xx = رقم الـ Group)، والـ PC بيعمل ARP للـ VIP ويفضل بنفس الـ MAC لما الـ Active يتغير.</li></ul>
+<li>الـ Virtual MAC لـ HSRP v2 (زي الـ Lab ده، Group 1) = 0000.0C9F.F001 (في v1 بيبقى 0000.0C07.ACxx)، والـ PC بيعمل ARP للـ VIP ويفضل بنفس الـ MAC لما الـ Active يتغير.</li></ul>
 </div></details>
 </div>
 
@@ -1988,7 +1989,7 @@ interface g0/1
 <tr><th>الشبكة</th><th>العنوان</th><th>تفاصيل</th></tr>
 <tr><td>Users LAN</td><td class="l">192.168.10.0/24</td><td>R1 G0/0 = .1 • PC-Admin = .10 • PC-User = .11</td></tr>
 <tr><td>Server LAN</td><td class="l">192.168.20.0/24</td><td>R1 G0/1 = .1 • Server = .10 (HTTP + FTP)</td></tr></table>
-<div class="topo">{"w":720,"h":230,"n":[["ADM","pc",60,50,"PC-Admin|.10"],["USR","pc",60,160,"PC-User|.11"],["SW1","switch",190,105,"SW1"],["R1","router",350,105,"R1"],["SRV","server",620,105,"Server|192.168.20.10"]],"l":[["ADM","SW1","","Fa0/1"],["USR","SW1","","Fa0/2"],["SW1","R1","Fa0/24","G0/0"],["R1","SRV","G0/1"]],"t":[[470,90,"ACL: WEB-ONLY (in على G0/0)",12,"#dc2626"]]}</div>
+<div class="topo">{"w":720,"h":230,"n":[["ADM","pc",60,50,"PC-Admin|.10"],["USR","pc",60,160,"PC-User|.11"],["SW1","switch",190,105,"SW1"],["R1","router",350,105,"R1"],["SRV","server",620,105,"Server|192.168.20.10"]],"l":[["ADM","SW1","","Fa0/1"],["USR","SW1","","Fa0/2"],["SW1","R1","Fa0/24","G0/0"],["R1","SRV","G0/1"]],"t":[[470,90,"ACL: USERS-IN (in على G0/0)",12,"#dc2626"]]}</div>
 <p><b>السياسة المطلوبة:</b> (1) PC-Admin يوصل لكل حاجة. (2) PC-User يفتح HTTP (80) للـ Server فقط ويتمنع منه Ping و FTP. (3) SSH للـ R1 مسموح لـ PC-Admin بس. (4) Port-Security على SW1.</p>
 <ol>
 <li>ابني الـ Topology، اضبط IPs والـ Gateways، وتأكد إن الكل بيعمل Ping للـ Server <b>قبل</b> الـ ACL (Baseline). فعّل <span class="en">HTTP</span> و <span class="en">FTP</span> على الـ Server.</li>
@@ -2132,7 +2133,7 @@ SW1# clear port-security sticky interface fa0/1</pre>
 <tr><td class="l">Cloud-based AP</td><td>إدارة من Cloud (Meraki)</td></tr>
 <tr><td class="l">Mobility Express</td><td>WLC مدمج في AP</td></tr></table>
 <p><b>أوضاع الـ AP:</b> <span class="en">Local, FlexConnect</span> (يحوّل محليًا لو الـ WLC وقع)، <span class="en">Monitor, Sniffer, Rogue Detector, Bridge/Mesh</span>.</p>
-<p><b>الـ Cabling:</b> الـ AP بيتوصل بـ <span class="en">Access port</span> (Autonomous) أو Access port لـ Lightweight (CAPWAP) وبيتغذى بـ <span class="en">PoE</span>. الـ WLC بيتوصل بـ <span class="en">Trunk</span> (أو LAG).</p>
+<p><b>الـ Cabling:</b> الـ Lightweight AP (CAPWAP، Local mode) بيتوصل بـ <span class="en">Access port</span>، أما الـ Autonomous AP اللي بيطلّع أكتر من SSID/VLAN وكمان FlexConnect فبيتوصلوا بـ <span class="en">Trunk</span> وبيتغذى بـ <span class="en">PoE</span>. الـ WLC بيتوصل بـ <span class="en">Trunk</span> (أو LAG).</p>
 <h4>الـ WLC Interfaces</h4>
 <table><tr><th>Interface</th><th>الوظيفة</th></tr>
 <tr><td class="l">Service Port</td><td>Out-of-band management / recovery</td></tr>
@@ -2228,7 +2229,7 @@ Laptop1&gt; ping 192.168.0.101       <i>! ينجح</i></pre>
 </ul>
 <table>
 <tr><th>المنتج</th><th>الاستخدام</th></tr>
-<tr><td class="l">Cisco DNA Center</td><td>Controller للـ Campus: Automation + Assurance + SD-Access</td></tr>
+<tr><td class="l">Cisco DNA Center (اتسمّى Catalyst Center)</td><td>Controller للـ Campus: Automation + Assurance + SD-Access</td></tr>
 <tr><td class="l">SD-Access</td><td>Fabric للـ Campus (Underlay + Overlay)</td></tr>
 <tr><td class="l">SD-WAN</td><td>إدارة مركزية للـ WAN وتحسين المسارات</td></tr>
 <tr><td class="l">Underlay / Overlay / Fabric</td><td>الـ Underlay = الشبكة الفيزيائية، الـ Overlay = Tunnels فوقها (VXLAN)، Fabric = المجموع</td></tr></table>
@@ -2437,14 +2438,14 @@ curl -k https://&lt;DNAC&gt;/dna/intent/api/v1/network-device \
 
 <h3>15.4 نصايح الامتحان</h3>
 <ul>
-<li>الامتحان فيه: Multiple choice، Drag & Drop، <b>Simulation Labs</b> (CLI حقيقي)، و Testlets. الوقت: 120 دقيقة تقريبًا، النجاح عادة ~825/1000.</li>
+<li>الامتحان فيه: Multiple choice، Drag & Drop، <b>Simulation Labs</b> (CLI حقيقي)، و Testlets. الوقت: 120 دقيقة تقريبًا، درجة النجاح غير معلنة رسميًا (بيتقال تقريبًا 825/1000).</li>
 <li>اتدرّب على الـ <b>Subnetting</b> لحد ما تحلها في أقل من 30 ثانية.</li>
 <li>في الـ Sims اتأكد من الحفظ <span class="en">copy run start</span> وإنك ما غيّرتش حاجة بره المطلوب.</li>
 <li>اقرأ السؤال كويس: "<span class="en">Which command</span>" مقابل "<span class="en">Which two</span>" (اختار اتنين).</li>
 <li>راجع الـ <b>Exam Blueprint</b> الرسمي من موقع Cisco قبل الامتحان لأن النسب والمواضيع بتتحدّث.</li>
 </ul>
 
-<h3>15.5 خطة مذاكرة مقترحة (8 أسابيع)</h3>
+<h3>15.5 خطة مذاكرة مقترحة (9 أسابيع)</h3>
 <table>
 <tr><th>الأسبوع</th><th>الموديولات</th><th>الهدف</th></tr>
 <tr><td>1</td><td>1, 2</td><td>الأساسيات والـ CLI</td></tr>
@@ -2454,7 +2455,8 @@ curl -k https://&lt;DNAC&gt;/dna/intent/api/v1/network-device \
 <tr><td>5</td><td>9, 10</td><td>OSPF + HSRP</td></tr>
 <tr><td>6</td><td>11, 12</td><td>IP Services + Security</td></tr>
 <tr><td>7</td><td>13, 14</td><td>Wireless + Automation</td></tr>
-<tr><td>8</td><td>15</td><td>مراجعة + Practice exams + Labs شاملة</td></tr></table>
+<tr><td>8</td><td>15, 16</td><td>مراجعة + EIGRP/RIP/BGP + Practice exams</td></tr>
+<tr><td>9</td><td>17, 18, 19</td><td>Deep Dive + إدارة IOS + Lab Workbook</td></tr></table>
 
 <h3>15.6 Lab ختامي (Capstone) <span class="tag">تحدّي</span></h3>
 <div class="lab">
@@ -2602,7 +2604,7 @@ show ip bgp</pre>
 <ul>
 <li><span class="en">Area 0 (Backbone)</span>: كل الـ Areas لازم تتصل بيه. <span class="en">ABR</span> = Router بين Areas. <span class="en">ASBR</span> = Router بيدخل Routes من خارج OSPF (Redistribution).</li>
 <li>الـ Multi-area بيقلل حجم الـ LSDB والـ SPF runs.</li>
-<li><span class="en">Network types</span>: Broadcast (DR/BDR، Hello 10/40)، Point-to-Point (بدون DR)، NBMA/Point-to-Multipoint (Hello 30/120).</li>
+<li><span class="en">Network types</span>: Broadcast (DR/BDR، Hello 10/40)، Point-to-Point (Hello 10/Dead 40، بدون DR)، Point-to-Multipoint (Hello 30/Dead 120، بدون DR)، NBMA (Hello 30/Dead 120، فيه DR/BDR).</li>
 <li><span class="en">OSPFv3</span>: لـ IPv6، بيشتغل على الـ Link، بيستخدم <span class="en">FF02::5</span> و <span class="en">FF02::6</span>، والـ Router-ID لسه 32-bit بصيغة IPv4.</li>
 <li><span class="en">Authentication</span>: Simple (نص) أو MD5/SHA.</li>
 <li>أوامر مفيدة: <span class="en">show ip ospf database</span>، <span class="en">show ip ospf</span>، <span class="en">debug ip ospf adj</span>.</li></ul>
@@ -2825,7 +2827,7 @@ Routing Protocol is "rip"
 <h3>17.4 TCP بالتفصيل</h3>
 <div class="bits"><div>Source Port 16b</div><div>Destination Port 16b</div></div>
 <div class="bits"><div style="flex:1">Sequence Number 32b</div><div style="flex:1">Acknowledgment Number 32b</div></div>
-<div class="bits"><div>Data Offset 4b</div><div>Flags: URG ACK PSH RST SYN FIN</div><div>Window Size 16b</div></div>
+<div class="bits"><div>Data Offset 4b</div><div>Flags (6 الكلاسيكية): URG ACK PSH RST SYN FIN</div><div>Window Size 16b</div></div>
 <div class="bits"><div>Checksum 16b</div><div>Urgent Pointer 16b</div><div>Options (MSS…)</div></div>
 <table>
 <tr><th>Flag</th><th>الوظيفة</th></tr>
@@ -3081,6 +3083,7 @@ Erasing the nvram filesystem will remove all configuration files! Continue? [con
 R1# reload
 System configuration has been modified. Save? [yes/no]: no
 Proceed with reload? [confirm]
+<i>! بعد الإقلاع: Would you like to enter the initial configuration dialog? [yes/no]: no</i>
 
 Router&gt; enable
 Router# configure terminal
@@ -3203,7 +3206,7 @@ O   192.168.20.0/24 [110/2] via 10.0.0.2, GigabitEthernet0/0
 
 PC1&gt; ping 192.168.20.10     <i>! ينجح (Inter-VLAN داخل SW-L3)</i>
 PC1&gt; ping 172.16.0.10       <i>! ينجح (عبر OSPF)</i></pre>
-<div class="note">الـ Neighbor ID هو الـ Router-ID (أعلى IP على Loopback أو Interface)، والـ State (DR/BDR) ممكن يختلف عندك. المهم FULL.</div>
+<div class="note">الـ Neighbor ID هو الـ Router-ID (أعلى IP على Loopback لو موجود، وإلا أعلى IP على Interface شغالة)، والـ State (DR/BDR) ممكن يختلف عندك. المهم FULL.</div>
 <h4>3) Troubleshooting</h4>
 <table><tr><th>العَرَض</th><th>السبب الأرجح</th></tr>
 <tr><td>Vlan10 down/down</td><td>مفيش بورت Active في VLAN 10 (Trunk شغال؟ VLAN معمولة على L3؟)</td></tr>
@@ -3269,7 +3272,7 @@ PC1&gt; ipconfig /renew
 <h4>5) في Simulation Mode</h4>
 <table><tr><th>الخطوة</th><th>المرحلة</th></tr>
 <tr><td>PC1 → SW → R1</td><td>DISCOVER Broadcast (Dst MAC FFFF.FFFF.FFFF, IP 255.255.255.255)</td></tr>
-<tr><td>R1 → R2</td><td>نفس الرسالة لكن Unicast: Src 192.168.10.1 / Dst 10.0.0.2 (UDP 67)</td></tr>
+<tr><td>R1 → R2</td><td>نفس الرسالة لكن Unicast: Src 10.0.0.1 / Dst 10.0.0.2 (UDP 67) وحقل giaddr جوه الرسالة = 192.168.10.1</td></tr>
 <tr><td>R2 → R1 → PC1</td><td>OFFER (Unicast للـ giaddr ثم R1 بيوصله للعميل)</td></tr>
 <tr><td>REQUEST / ACK</td><td>نفس المسار</td></tr></table>
 <div class="note">لو في VLANs متعددة محتاج helper على كل Interface/Sub-interface، وPool منفصل لكل شبكة.</div>
@@ -3312,7 +3315,6 @@ interface g0/0
 interface g0/1
  ip address 198.51.100.1 255.255.255.0
  no shutdown
-ip route 203.0.113.0 255.255.255.248 g0/0 203.0.113.1   <i>! مش لازم لو متصلة مباشرة</i>
 
 ! R1
 interface g0/0
@@ -3565,6 +3567,8 @@ ip access-list extended GUEST-IN
  deny ip 192.168.30.0 0.0.0.255 192.168.20.0 0.0.0.255
  deny ip 192.168.30.0 0.0.0.255 192.168.40.0 0.0.0.255
  deny ip 192.168.30.0 0.0.0.255 192.168.99.0 0.0.0.255
+ deny ip 192.168.30.0 0.0.0.255 10.0.0.0 0.0.0.3
+ deny ip 192.168.30.0 0.0.0.255 host 203.0.113.1
  permit ip any any
 !
 access-list 1 permit 192.168.0.0 0.0.255.255
@@ -3575,6 +3579,7 @@ router ospf 1
  network 192.168.10.0 0.0.0.255 area 0
  network 192.168.20.0 0.0.0.255 area 0
  network 192.168.30.0 0.0.0.255 area 0
+ network 192.168.99.0 0.0.0.255 area 0
  network 10.0.0.0 0.0.0.3 area 0
  passive-interface g0/0.10
  passive-interface g0/0.20
@@ -3642,7 +3647,7 @@ SW1# show spanning-tree vlan 10
 This bridge is the root
 
 R1# show ip ospf neighbor
-2.2.2.2  1  FULL/BDR  00:00:33  10.0.0.2  GigabitEthernet0/1
+2.2.2.2  1  FULL/DR   00:00:33  10.0.0.2  GigabitEthernet0/1
 
 R2# show ip route
 O*E2 0.0.0.0/0 [110/1] via 10.0.0.1, GigabitEthernet0/0
@@ -3668,7 +3673,7 @@ Extended IP access list GUEST-IN
 <tr><td>Native VLAN mismatch (رسائل CDP)</td><td>نفس الـ Native 99 على Trunk و <code>encapsulation dot1Q 99 native</code></td></tr>
 <tr><td>Branch ما بياخدش DHCP</td><td>تأكد <code>ip helper-address 10.0.0.1</code> على R2 G0/1 ومسار 192.168.40.0 معروف عند R1</td></tr>
 <tr><td>لا Internet</td><td><code>ip nat outside</code> على G0/2 + ACL 1 + Default Route</td></tr>
-<tr><td>Port في err-disable</td><td>BPDU Guard أو Port-Security: <code>shutdown</code> ثم <code>no shutdown</code> بعد إزالة السبب</td></tr></table>
+<tr><td>Port في err-disable</td><td>BPDU Guard (و Port-Security لو الـ violation = shutdown، هنا restrict): <code>shutdown</code> ثم <code>no shutdown</code> بعد إزالة السبب</td></tr></table>
 </div></details>
 </div>
 </section>
@@ -3836,7 +3841,7 @@ Extended IP access list GUEST-IN
 <tr><td class="l">MAC Address</td><td>عنوان فيزيائي 48-bit.</td></tr>
 <tr><td class="l">MFA</td><td>Multi-Factor Authentication.</td></tr>
 <tr><td class="l">MPLS</td><td>تحويل بالـ Labels عند الـ ISP.</td></tr>
-<tr><td class="l">MTU / MSS</td><td>أقصى حجم Frame / Segment.</td></tr>
+<tr><td class="l">MTU / MSS</td><td>MTU = أكبر Packet (L3) ينفع يعدّي على اللينك بدون Fragmentation. MSS = أكبر Payload في TCP Segment (تقريبًا MTU − 40).</td></tr>
 <tr><td class="l">Multicast</td><td>إرسال لمجموعة محددة.</td></tr>
 <tr><td class="l">NAT / PAT</td><td>ترجمة العناوين / ترجمة مع الـ Ports.</td></tr>
 <tr><td class="l">NDP</td><td>Neighbor Discovery في IPv6 (بدل ARP).</td></tr>
@@ -4039,7 +4044,7 @@ Extended IP access list GUEST-IN
 <tr><td>Ping لـ Gateway ينجح، لبعيد يفشل</td><td>Route ناقص، Default GW غلط، ACL، NAT</td><td class="l">show ip route / show access-lists</td></tr>
 <tr><td>IP بيبدأ بـ 169.254</td><td>DHCP مش شغال/Relay ناقص/Pool خلص</td><td class="l">show ip dhcp binding</td></tr>
 <tr><td>Ping بالـ IP ينجح وبالاسم يفشل</td><td>DNS غلط/مش متظبط</td><td class="l">nslookup</td></tr>
-<tr><td>OSPF عالق Init/ExStart</td><td>Timers/Mask/MTU/Area mismatch أو ACL بيمنع</td><td class="l">show ip ospf neighbor</td></tr>
+<tr><td>OSPF عالق Init/ExStart</td><td>عدم ظهور Neighbor أصلًا = Timers/Mask/Area/Auth mismatch أو ACL. العالق في ExStart/Exchange غالبًا MTU mismatch</td><td class="l">show ip ospf neighbor</td></tr>
 <tr><td>Port err-disabled</td><td>Port-Sec / BPDU Guard / EtherChannel</td><td class="l">show interfaces status err-disabled</td></tr>
 <tr><td>بطء شديد وLEDs بتلمع</td><td>Loop / Broadcast storm</td><td class="l">show spanning-tree / show proc cpu</td></tr>
 <tr><td>SSH مش شغال</td><td>مفيش RSA key/domain-name/login local/transport</td><td class="l">show ip ssh</td></tr></table>

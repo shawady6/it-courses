@@ -70,7 +70,19 @@ p.req{margin:4px 0 10px;font-size:13.5px;opacity:.85}
 section.partdiv{background:linear-gradient(135deg,#1d4ed8,#7c3aed);color:#fff;border:0}
 section.partdiv>h2{color:#fff;border-color:rgba(255,255,255,.4)}
 section.partdiv p{margin:6px 0 0}
-#toc a.part{font-weight:700;color:#93c5fd;margin-top:10px;border-top:1px solid #1e293b}
+#toc .tt{display:flex;gap:6px;margin:6px 0 10px}
+#toc .tt button{flex:1;background:#1e293b;color:#cbd5e1;border:0;border-radius:6px;padding:5px;font-size:12px;cursor:pointer}
+#toc .tt button:hover{background:#334155;color:#fff}
+#toc .tg{margin-top:10px;border-top:2px solid #334155;padding-top:6px}
+#toc .tgh{width:100%;display:flex;align-items:center;gap:8px;background:linear-gradient(90deg,#1e293b,#0f172a);color:#93c5fd;border:0;border-radius:8px;padding:9px 10px;font-weight:700;font-size:13.5px;cursor:pointer;text-align:right}
+#toc .tgh:hover{color:#fff}
+#toc .tgh .tx{flex:1}
+#toc .tgh .cnt{background:#334155;color:#cbd5e1;border-radius:10px;padding:1px 8px;font-size:11px;font-weight:400}
+#toc .tgh .ch{transition:transform .2s;display:inline-block}
+#toc .tg.closed .ch{transform:rotate(90deg)}
+#toc .tg.closed .tgc{display:none}
+#toc .tgc{padding:4px 0 0 0}
+#toc .tgc a{padding-right:18px;border-right:2px solid #1e293b;margin-right:6px;font-size:13.5px}
 a.btn{display:inline-block;background:#16a34a;color:#fff!important;text-decoration:none;font-weight:700;padding:10px 18px;border-radius:10px}
 a.btn:hover{background:#15803d}
 p.navbtn{margin:18px 0 4px;text-align:center}
@@ -10637,13 +10649,37 @@ document.querySelectorAll('.topo').forEach(e=>{topo(e);fit(e)});
 document.querySelectorAll('.seq').forEach(e=>{seq(e);fit(e)});
 /* ---------- TOC ---------- */
 const toc=document.getElementById('toc');
+const KEY='ccna-toc-collapsed';let saved={};
+try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(e){}};
+const tools=document.createElement('div');tools.className='tt';
+tools.innerHTML='<button type="button" data-a="open">فتح الكل</button><button type="button" data-a="close">طي الكل</button>';
+toc.appendChild(tools);
+let cur=toc;
 document.querySelectorAll('section.module').forEach(s=>{
   const h=s.querySelector('h2');if(!h)return;
+  if(s.classList.contains('partdiv')){
+    const g=document.createElement('div');g.className='tg';g.dataset.id=s.id;
+    const hd=document.createElement('button');hd.type='button';hd.className='tgh';
+    hd.innerHTML='<span class="ch">▾</span><span class="tx"></span><span class="cnt"></span>';
+    hd.querySelector('.tx').textContent=h.textContent;hd.dir='auto';
+    const body=document.createElement('div');body.className='tgc';
+    g.appendChild(hd);g.appendChild(body);toc.appendChild(g);cur=body;
+    if(saved[s.id])g.classList.add('closed');
+    hd.onclick=()=>{g.classList.toggle('closed');saved[s.id]=g.classList.contains('closed')?1:0;save()};
+    return;
+  }
   const a=document.createElement('a');a.href='#'+s.id;a.textContent=h.textContent;a.dir='auto';
-  a.onclick=()=>document.getElementById('side').classList.remove('open');toc.appendChild(a);
+  a.onclick=()=>document.getElementById('side').classList.remove('open');cur.appendChild(a);
 });
+toc.querySelectorAll('.tg').forEach(g=>g.querySelector('.cnt').textContent=g.querySelectorAll('.tgc a').length);
+tools.onclick=e=>{const a=e.target.dataset&&e.target.dataset.a;if(!a)return;
+  toc.querySelectorAll('.tg').forEach(g=>{g.classList.toggle('closed',a==='close');saved[g.dataset.id]=a==='close'?1:0});save()};
 const links=[...toc.querySelectorAll('a')];
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle('on',l.getAttribute('href')==='#'+e.target.id))}}),{rootMargin:'-20% 0px -70% 0px'});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){
+  links.forEach(l=>l.classList.toggle('on',l.getAttribute('href')==='#'+e.target.id));
+  const on=toc.querySelector('a.on');
+  if(on){const g=on.closest('.tg');if(g&&g.classList.contains('closed'))g.classList.remove('closed');on.scrollIntoView({block:'nearest'})}}}),{rootMargin:'-20% 0px -70% 0px'});
 document.querySelectorAll('section.module').forEach(s=>io.observe(s));
 /* ---------- Bidi fix ---------- */
 (function(){
